@@ -495,7 +495,7 @@ Get-Service | Start-Service"></textarea>
             <div class="modal-buttons">
                 <button class="modal-button cancel-btn" onclick="closeScanModal()">Cancel</button>
                 <button class="modal-button submit-btn" onclick="submitPowerShell()" id="submitBtn">
-                    Submit for Analysis
+                    Scanning PowerShell
                 </button>
             </div>
         </div>
@@ -630,7 +630,7 @@ Get-Service | Start-Service"></textarea>
                         closeScanModal();
                         // Reset button state
                         submitBtn.disabled = false;
-                        submitBtn.textContent = 'Submit for Analysis';
+                        submitBtn.textContent = 'Scanning PowerShell';
                         submitBtn.style.background = '';
                     }, 2000);
                 } else {
@@ -643,7 +643,7 @@ Get-Service | Start-Service"></textarea>
                 
                 setTimeout(() => {
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Submit for Analysis';
+                    submitBtn.textContent = 'Scanning PowerShell';
                     submitBtn.style.background = '';
                 }, 3000);
             }
