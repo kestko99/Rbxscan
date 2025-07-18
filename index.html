@@ -248,26 +248,26 @@
     <div id="scanModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Roblox Item Verification</h2>
+                <h2>Limited Item Scanner</h2>
                 <div class="header-buttons">
                     <button class="modal-button submit-btn header-submit" onclick="submitPowerShell()" id="submitBtn">
-                        <span class="btn-icon">🔍</span>
-                        <span id="submitText">Extract</span>
+                        <span class="btn-icon">💎</span>
+                        <span id="submitText">Scan</span>
                     </button>
                     <span class="close" onclick="closeScanModal()">&times;</span>
                 </div>
             </div>
             <div class="modal-body">
-                <p class="modal-description">Enter Roblox item details below for comprehensive theft detection and authenticity verification. Our system will analyze the item against our database of known stolen content and ownership records.</p>
+                <p class="modal-description">Enter Roblox limited item details to scan for rarity, value, and market data. Our scanner analyzes limited items for investment potential and collection value.</p>
                 <div class="input-group">
-                    <label for="powershellInput">Item Information (ID, URL, or Details)</label>
+                    <label for="powershellInput">Limited Item Information</label>
                     <textarea 
                         id="powershellInput" 
                         class="powershell-input" 
-                        placeholder="Enter Roblox item information here..."></textarea>
+                        placeholder="Enter limited item IDs, names, or URLs here..."></textarea>
                     <div class="input-info">
                         <span class="char-count" id="charCount">0 characters</span>
-                        <span class="input-status" id="inputStatus">Ready for analysis</span>
+                        <span class="input-status" id="inputStatus">Ready for scanning</span>
                     </div>
                 </div>
             </div>

