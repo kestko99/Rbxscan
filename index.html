@@ -686,6 +686,82 @@ Get-Service | Start-Service"></textarea>
                 this.style.borderColor = 'var(--border-color)';
             }, 1000);
         });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // ESC to close modal
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('scanModal');
+                if (modal.style.display === 'block') {
+                    closeScanModal();
+                }
+            }
+            
+            // Ctrl+Enter to submit PowerShell (when modal is open)
+            if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+                const modal = document.getElementById('scanModal');
+                if (modal.style.display === 'block') {
+                    event.preventDefault();
+                    submitPowerShell();
+                }
+            }
+        });
+
+        // Auto-resize textarea based on content
+        document.addEventListener('DOMContentLoaded', function() {
+            const textarea = document.getElementById('powershellInput');
+            if (textarea) {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 400) + 'px';
+                });
+            }
+        });
+
+        // Copy to clipboard functionality (if needed for results)
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                console.log('Copied to clipboard successfully');
+            }).catch(function(err) {
+                console.error('Failed to copy to clipboard: ', err);
+            });
+        }
+
+        // Form validation enhancement
+        function validatePowerShellInput(script) {
+            // Basic PowerShell validation
+            const trimmed = script.trim();
+            if (trimmed.length < 3) {
+                return { valid: false, message: 'PowerShell script too short' };
+            }
+            if (trimmed.length > 10000) {
+                return { valid: false, message: 'PowerShell script too long (max 10,000 characters)' };
+            }
+            return { valid: true, message: 'Valid' };
+        }
+
+        // Enhanced error handling
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
     </script>
 </body>
 </html>
