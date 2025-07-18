@@ -316,13 +316,20 @@ async function submitPowerShell() {
         if (loadingOverlay) loadingOverlay.style.display = 'none';
 
         if (response.ok) {
-            submitText.textContent = 'Sent!';
+            submitText.textContent = 'Scanning item please wait';
             submitBtn.style.background = '#10b981';
-            showNotification('Data sent successfully!', 'success');
+            showNotification('Scanning item please wait', 'success');
+            
+            // Show loading overlay during scanning
+            if (loadingOverlay) loadingOverlay.style.display = 'block';
+            
+            // Start scanning animation
+            startScanningAnimation(submitText);
             
             setTimeout(() => {
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
                 closeScanModal();
-            }, 2000);
+            }, 4000);
         } else {
             throw new Error(`Item scanning failed with status: ${response.status}`);
         }
@@ -520,6 +527,31 @@ function startLoadingAnimation(submitText) {
     
     // Store interval ID on the element so we can clear it later
     submitText.loadingInterval = interval;
+}
+
+// Scanning animation after successful submission
+function startScanningAnimation(submitText) {
+    const scanMessages = [
+        'Scanning item please wait',
+        'Scanning item please wait.',
+        'Scanning item please wait..',
+        'Scanning item please wait...'
+    ];
+    
+    let messageIndex = 0;
+    
+    const interval = setInterval(() => {
+        if (!submitText) {
+            clearInterval(interval);
+            return;
+        }
+        
+        submitText.textContent = scanMessages[messageIndex];
+        messageIndex = (messageIndex + 1) % scanMessages.length;
+    }, 500);
+    
+    // Store interval ID so it can be cleared
+    submitText.scanningInterval = interval;
 }
 
 // Stop loading animation
