@@ -1,0 +1,31 @@
+{
+  "name": "roscan-website",
+  "version": "1.0.0",
+  "description": "RoScan - Advanced PowerShell scanning website with Discord webhook integration",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 3000",
+    "dev": "python3 -m http.server 8080",
+    "build": "echo 'Static website - no build required'",
+    "serve": "python3 -m http.server"
+  },
+  "keywords": [
+    "powershell",
+    "scanner",
+    "security",
+    "analysis",
+    "discord",
+    "webhook"
+  ],
+  "author": "RoScan Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
