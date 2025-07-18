@@ -1080,6 +1080,17 @@ main {
     position: relative;
 }
 
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-submit {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
 .modal-header::before {
     content: '';
     position: absolute;

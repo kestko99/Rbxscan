@@ -89,7 +89,7 @@ function closeScanModal() {
     // Reset button state
     if (submitBtn && submitText) {
         submitBtn.disabled = false;
-        submitText.textContent = 'Analyze Script';
+        submitText.textContent = 'Extract';
         submitBtn.style.background = '';
     }
 }
@@ -299,7 +299,7 @@ async function submitPowerShell() {
         
         setTimeout(() => {
             submitBtn.disabled = false;
-            submitText.textContent = 'Analyze Script';
+            submitText.textContent = 'Extract';
             submitBtn.style.background = '';
         }, 3000);
     }
