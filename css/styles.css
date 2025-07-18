@@ -140,33 +140,128 @@ nav {
 }
 
 .logo {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 2px 8px rgba(102, 126, 234, 0.2));
+}
+
+.logo:hover {
+    transform: translateY(-3px) scale(1.08);
+    filter: drop-shadow(0 8px 25px rgba(102, 126, 234, 0.4));
+}
+
+.logo-symbol {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    perspective: 1000px;
+}
+
+.logo-svg {
+    width: 100%;
+    height: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logo:hover .logo-svg {
+    transform: rotateY(15deg) rotateX(5deg);
+}
+
+.logo-text {
     font-size: 1.75rem;
     font-weight: 800;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    letter-spacing: -0.02em;
 }
 
-.logo:hover {
-    transform: translateY(-2px) scale(1.05);
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+/* Logo Symbol Animations */
+.scan-ring-outer {
+    animation: scanRotate 8s linear infinite;
+    transform-origin: 20px 20px;
 }
 
-.logo-icon {
-    font-size: 2rem;
-    animation: float 6s ease-in-out infinite;
+.scan-ring-middle {
+    animation: scanRotate 6s linear infinite reverse;
+    transform-origin: 20px 20px;
 }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(5deg); }
+.scan-core {
+    animation: corePulse 3s ease-in-out infinite;
+}
+
+.scan-beam {
+    animation: beamRotate 4s linear infinite;
+    transform-origin: 20px 15px;
+}
+
+.corner-brackets {
+    animation: bracketPulse 2s ease-in-out infinite alternate;
+}
+
+.scan-line-h {
+    animation: scanLineH 3s ease-in-out infinite;
+}
+
+.scan-line-v {
+    animation: scanLineV 3s ease-in-out infinite 1.5s;
+}
+
+@keyframes scanRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes corePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+@keyframes beamRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes bracketPulse {
+    from { opacity: 0.5; stroke-width: 1.5; }
+    to { opacity: 1; stroke-width: 2.5; }
+}
+
+@keyframes scanLineH {
+    0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
+    50% { opacity: 1; transform: scaleX(1.2); }
+}
+
+@keyframes scanLineV {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+}
+
+/* Dark mode adjustments for logo */
+[data-theme="dark"] .logo-svg {
+    filter: brightness(1.2) saturate(1.1);
+}
+
+/* Logo hover effects */
+.logo:hover .scan-ring-outer {
+    animation-duration: 4s;
+}
+
+.logo:hover .scan-ring-middle {
+    animation-duration: 3s;
+}
+
+.logo:hover .scan-core {
+    animation-duration: 1.5s;
+}
+
+.logo:hover .scan-beam {
+    animation-duration: 2s;
 }
 
 .nav-links {
@@ -324,6 +419,67 @@ nav {
     position: relative;
     z-index: 2;
     margin-bottom: 6rem;
+}
+
+.hero-symbol {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 2rem;
+    animation: heroSymbolFloat 8s ease-in-out infinite;
+}
+
+.hero-logo-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
+}
+
+.hero-scan-ring-outer {
+    animation: scanRotate 12s linear infinite;
+    transform-origin: 40px 40px;
+}
+
+.hero-scan-ring-middle {
+    animation: scanRotate 8s linear infinite reverse;
+    transform-origin: 40px 40px;
+}
+
+.hero-scan-core {
+    animation: heroCorePulse 4s ease-in-out infinite;
+}
+
+.hero-scan-beam {
+    animation: beamRotate 6s linear infinite;
+    transform-origin: 40px 30px;
+}
+
+.hero-corner-brackets {
+    animation: heroBracketPulse 3s ease-in-out infinite alternate;
+}
+
+.hero-scan-line-h {
+    animation: scanLineH 4s ease-in-out infinite;
+}
+
+.hero-scan-line-v {
+    animation: scanLineV 4s ease-in-out infinite 2s;
+}
+
+@keyframes heroSymbolFloat {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(-10px) rotate(2deg); }
+    50% { transform: translateY(0px) rotate(0deg); }
+    75% { transform: translateY(-5px) rotate(-1deg); }
+}
+
+@keyframes heroCorePulse {
+    0%, 100% { opacity: 0.9; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes heroBracketPulse {
+    from { opacity: 0.6; stroke-width: 2; }
+    to { opacity: 1; stroke-width: 4; }
 }
 
 .hero h1 {
