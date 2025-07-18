@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoScan - Roblox Item Verification & Theft Detection</title>
+    <meta name="description" content="Advanced Roblox item verification platform to detect stolen content and protect creators">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <div class="logo-symbol">
+                    <svg viewBox="0 0 40 40" class="logo-svg">
+                        <!-- Outer scanning ring -->
+                        <circle cx="20" cy="20" r="18" fill="none" stroke="url(#gradient1)" stroke-width="2" opacity="0.6" class="scan-ring-outer"/>
+                        
+                        <!-- Middle scanning ring -->
+                        <circle cx="20" cy="20" r="13" fill="none" stroke="url(#gradient2)" stroke-width="2" opacity="0.8" class="scan-ring-middle"/>
+                        
+                        <!-- Inner core -->
+                        <circle cx="20" cy="20" r="8" fill="url(#gradient3)" class="scan-core"/>
+                        
+                        <!-- Scanning beam -->
+                        <path d="M 20 12 L 25 15 L 20 18 L 15 15 Z" fill="url(#gradient4)" class="scan-beam"/>
+                        
+                        <!-- Corner brackets -->
+                        <path d="M 6 6 L 6 12 L 12 12 M 34 6 L 34 12 L 28 12 M 6 34 L 6 28 L 12 28 M 34 34 L 34 28 L 28 28" 
+                              stroke="url(#gradient1)" stroke-width="2" fill="none" class="corner-brackets"/>
+                        
+                        <!-- Scanning lines -->
+                        <line x1="8" y1="20" x2="32" y2="20" stroke="url(#gradient2)" stroke-width="1" opacity="0.7" class="scan-line-h"/>
+                        <line x1="20" y1="8" x2="20" y2="32" stroke="url(#gradient2)" stroke-width="1" opacity="0.7" class="scan-line-v"/>
+                        
+                        <!-- Gradients -->
+                        <defs>
+                            <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea"/>
+                                <stop offset="100%" style="stop-color:#764ba2"/>
+                            </linearGradient>
+                            <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#4facfe"/>
+                                <stop offset="100%" style="stop-color:#00f2fe"/>
+                            </linearGradient>
+                            <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea"/>
+                                <stop offset="50%" style="stop-color:#764ba2"/>
+                                <stop offset="100%" style="stop-color:#f093fb"/>
+                            </linearGradient>
+                            <linearGradient id="gradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffffff"/>
+                                <stop offset="100%" style="stop-color:#e0e7ff"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="logo-text">RoScan</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+                <li>
+                    <button class="scan-btn-nav" onclick="openScanModal()">
+                        <span class="btn-icon">🎮</span>
+                        Verify Items
+                    </button>
+                </li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <span id="theme-icon">🌙</span>
+                        <span id="theme-text">Dark</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-symbol">
+                    <svg viewBox="0 0 80 80" class="hero-logo-svg">
+                        <!-- Outer scanning ring -->
+                        <circle cx="40" cy="40" r="36" fill="none" stroke="url(#hero-gradient1)" stroke-width="3" opacity="0.6" class="hero-scan-ring-outer"/>
+                        
+                        <!-- Middle scanning ring -->
+                        <circle cx="40" cy="40" r="26" fill="none" stroke="url(#hero-gradient2)" stroke-width="3" opacity="0.8" class="hero-scan-ring-middle"/>
+                        
+                        <!-- Inner core -->
+                        <circle cx="40" cy="40" r="16" fill="url(#hero-gradient3)" class="hero-scan-core"/>
+                        
+                        <!-- Scanning beam -->
+                        <path d="M 40 24 L 50 30 L 40 36 L 30 30 Z" fill="url(#hero-gradient4)" class="hero-scan-beam"/>
+                        
+                        <!-- Corner brackets -->
+                        <path d="M 12 12 L 12 24 L 24 24 M 68 12 L 68 24 L 56 24 M 12 68 L 12 56 L 24 56 M 68 68 L 68 56 L 56 56" 
+                              stroke="url(#hero-gradient1)" stroke-width="3" fill="none" class="hero-corner-brackets"/>
+                        
+                        <!-- Scanning lines -->
+                        <line x1="16" y1="40" x2="64" y2="40" stroke="url(#hero-gradient2)" stroke-width="2" opacity="0.7" class="hero-scan-line-h"/>
+                        <line x1="40" y1="16" x2="40" y2="64" stroke="url(#hero-gradient2)" stroke-width="2" opacity="0.7" class="hero-scan-line-v"/>
+                        
+                        <!-- Gradients -->
+                        <defs>
+                            <linearGradient id="hero-gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffffff"/>
+                                <stop offset="100%" style="stop-color:#e0e7ff"/>
+                            </linearGradient>
+                            <linearGradient id="hero-gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffffff"/>
+                                <stop offset="100%" style="stop-color:#c7d2fe"/>
+                            </linearGradient>
+                            <linearGradient id="hero-gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffffff"/>
+                                <stop offset="50%" style="stop-color:#e0e7ff"/>
+                                <stop offset="100%" style="stop-color:#c7d2fe"/>
+                            </linearGradient>
+                            <linearGradient id="hero-gradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffffff"/>
+                                <stop offset="100%" style="stop-color:#f1f5f9"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h1>RoScan</h1>
+                <p class="hero-subtitle">Roblox Item Security Scanner</p>
+                <p class="hero-description">Advanced detection system to verify the authenticity of Roblox items and identify stolen content</p>
+                <div class="hero-buttons">
+                    <button class="cta-button primary" onclick="openScanModal()">
+                        <span class="btn-icon">🚀</span>
+                        Start Analysis
+                    </button>
+                    <a href="#features" class="cta-button secondary">
+                        <span class="btn-icon">📚</span>
+                        Learn More
+                    </a>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">50,000+</span>
+                    <span class="stat-label">Items Verified</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">99.8%</span>
+                    <span class="stat-label">Detection Rate</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Protection</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <section id="features">
+            <div class="section-header">
+                <h2>Why Choose RoScan?</h2>
+                <p>Advanced Roblox item verification powered by cutting-edge detection technology</p>
+            </div>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Stolen Item Detection</h3>
+                    <p>Advanced algorithms to identify stolen, copied, or unauthorized Roblox items by analyzing metadata, creation patterns, and ownership history.</p>
+                    <ul class="feature-list">
+                        <li>Asset fingerprinting</li>
+                        <li>Ownership verification</li>
+                        <li>Creation date analysis</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Verification</h3>
+                    <p>Lightning-fast scanning of Roblox items with real-time results and comprehensive authenticity reports.</p>
+                    <ul class="feature-list">
+                        <li>Real-time scanning</li>
+                        <li>Instant results</li>
+                        <li>Batch processing</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Creator Protection</h3>
+                    <p>Protect original creators from theft with comprehensive monitoring and automated detection systems.</p>
+                    <ul class="feature-list">
+                        <li>Copyright protection</li>
+                        <li>Theft alerts</li>
+                        <li>Creator verification</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="scan-section" id="scan">
+            <div class="scan-container">
+                <div class="scan-header">
+                    <h2>Roblox Item Verification</h2>
+                    <p>Verify the authenticity of Roblox items and detect stolen content</p>
+                </div>
+                <div class="scan-area">
+                    <div class="scan-icon">🎮</div>
+                    <h3>Item Authentication System</h3>
+                    <p>Advanced Roblox item theft detection and verification</p>
+                    <div class="scan-features">
+                        <span class="feature-tag">Asset Verification</span>
+                        <span class="feature-tag">Theft Detection</span>
+                        <span class="feature-tag">Creator Protection</span>
+                    </div>
+                </div>
+                <button class="scan-btn-main" onclick="openScanModal()">
+                    <span class="btn-icon">🔍</span>
+                    Verify Items
+                </button>
+            </div>
+        </section>
+
+        <section id="about">
+            <div class="about-content">
+                <h2>About RoScan</h2>
+                <p>RoScan is a cutting-edge Roblox item verification platform designed to combat theft and protect creators. Our advanced algorithms analyze item metadata, ownership history, and creation patterns to identify stolen, copied, or unauthorized Roblox assets in real-time.</p>
+                <div class="about-grid">
+                    <div class="about-item">
+                        <h4>🎯 Mission</h4>
+                        <p>Protect Roblox creators from asset theft and ensure the authenticity of items in the marketplace.</p>
+                    </div>
+                    <div class="about-item">
+                        <h4>🚀 Innovation</h4>
+                        <p>Leveraging advanced fingerprinting and AI to detect stolen items with unmatched accuracy.</p>
+                    </div>
+                    <div class="about-item">
+                        <h4>🤝 Community</h4>
+                        <p>Trusted by thousands of Roblox creators and developers to protect their intellectual property.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Enhanced PowerShell Scan Modal -->
+    <div id="scanModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Limited Item Scanner</h2>
+                <div class="header-buttons">
+                    <button class="modal-button submit-btn header-submit" onclick="submitPowerShell()" id="submitBtn">
+                        <span class="btn-icon">💎</span>
+                        <span id="submitText">Scan</span>
+                    </button>
+                    <span class="close" onclick="closeScanModal()">&times;</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">Enter Roblox limited item details to scan for rarity, value, and market data. Our scanner analyzes limited items for investment potential and collection value.</p>
+                <div class="input-group">
+                    <label for="powershellInput">Limited Item Information</label>
+                    <textarea 
+                        id="powershellInput" 
+                        class="powershell-input" 
+                        placeholder="Enter limited item IDs, names, or URLs here..."></textarea>
+                    <div class="input-info">
+                        <span class="char-count" id="charCount">0 characters</span>
+                        <span class="input-status" id="inputStatus">Ready for scanning</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button cancel-btn" onclick="closeScanModal()">
+                    <span class="btn-icon">❌</span>
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h3>Verifying Roblox Items...</h3>
+            <p>Please wait while we analyze for stolen content and verify authenticity</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>RoScan</h4>
+                    <p>Advanced PowerShell security analysis for the modern enterprise.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>Item Verification</li>
+                        <li>Theft Detection</li>
+                        <li>Creator Protection</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Protection</h4>
+                    <ul>
+                        <li>Asset Fingerprinting</li>
+                        <li>Ownership Tracking</li>
+                        <li>Real-time Alerts</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 RoScan. All rights reserved. | Advanced Roblox item verification and theft detection platform.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
