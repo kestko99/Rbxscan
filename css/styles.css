@@ -1048,10 +1048,10 @@ main {
 
 .modal-content {
     background: var(--gradient-card);
-    margin: 8% auto;
-    border-radius: 20px;
-    width: 85%;
-    max-width: 500px;
+    margin: 12% auto;
+    border-radius: 16px;
+    width: 80%;
+    max-width: 380px;
     box-shadow: var(--shadow-xl);
     border: 1px solid var(--border-color);
     position: relative;
@@ -1071,7 +1071,7 @@ main {
 }
 
 .modal-header {
-    padding: 1.5rem 2rem 1rem;
+    padding: 1rem 1.5rem 0.75rem;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
@@ -1124,14 +1124,14 @@ main {
 }
 
 .modal-body {
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.5rem;
 }
 
 .modal-description {
     color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
-    font-size: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    font-size: 0.9rem;
 }
 
 .input-group {
