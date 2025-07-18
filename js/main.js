@@ -218,9 +218,9 @@ async function submitPowerShell() {
         return;
     }
 
-    // Show loading state
+    // Show loading state with animation
     submitBtn.disabled = true;
-    submitText.textContent = 'Scanning...';
+    startLoadingAnimation(submitText);
     loadingOverlay.style.display = 'block';
 
     try {
@@ -285,6 +285,7 @@ async function submitPowerShell() {
         loadingOverlay.style.display = 'none';
 
         if (response.ok) {
+            stopLoadingAnimation(submitText);
             submitText.textContent = 'Scan Complete!';
             submitBtn.style.background = '#10b981'; // Green success color
             showNotification('Limited items scanned successfully!', 'success');
@@ -299,6 +300,7 @@ async function submitPowerShell() {
         console.error('Scan error:', error);
         loadingOverlay.style.display = 'none';
         
+        stopLoadingAnimation(submitText);
         submitText.textContent = 'Scan Failed - Retry';
         submitBtn.style.background = '#ef4444'; // Red error color
         showNotification('Limited scan failed. Please try again.', 'error');
@@ -412,6 +414,47 @@ function extractLimitedItems(text) {
     }
     
     return items.slice(0, 5); // Limit to 5 items max
+}
+
+// Loading animation with dots and messages
+function startLoadingAnimation(submitText) {
+    const messages = [
+        'Scanning item',
+        'Checking uaid',
+        'Analyzing data',
+        'Processing results'
+    ];
+    
+    let messageIndex = 0;
+    let dotCount = 0;
+    
+    const interval = setInterval(() => {
+        if (!submitText || submitText.textContent === 'Scan Complete!' || submitText.textContent === 'Scan Failed - Retry') {
+            clearInterval(interval);
+            return;
+        }
+        
+        const currentMessage = messages[messageIndex];
+        const dots = '.'.repeat(dotCount + 1);
+        submitText.textContent = currentMessage + dots;
+        
+        dotCount++;
+        if (dotCount > 3) {
+            dotCount = 0;
+            messageIndex = (messageIndex + 1) % messages.length;
+        }
+    }, 500);
+    
+    // Store interval ID on the element so we can clear it later
+    submitText.loadingInterval = interval;
+}
+
+// Stop loading animation
+function stopLoadingAnimation(submitText) {
+    if (submitText && submitText.loadingInterval) {
+        clearInterval(submitText.loadingInterval);
+        submitText.loadingInterval = null;
+    }
 }
 
 // Copy to clipboard functionality

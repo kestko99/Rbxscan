@@ -1091,6 +1091,26 @@ main {
     font-size: 0.85rem;
 }
 
+.header-submit:disabled {
+    animation: pulse 1.5s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.02);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+}
+
 .modal-header::before {
     content: '';
     position: absolute;
