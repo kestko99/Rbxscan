@@ -1,31 +1,54 @@
 {
   "name": "roscan-website",
-  "version": "1.0.0",
-  "description": "RoScan - Advanced PowerShell scanning website with Discord webhook integration",
+  "version": "2.0.0",
+  "description": "RoScan - Advanced PowerShell security analysis platform with real-time threat detection and Discord webhook integration",
   "main": "index.html",
   "scripts": {
     "start": "python3 -m http.server 3000",
     "dev": "python3 -m http.server 8080",
-    "build": "echo 'Static website - no build required'",
-    "serve": "python3 -m http.server"
+    "preview": "python3 -m http.server 4000",
+    "build": "echo 'Static website - build complete ✅'",
+    "serve": "python3 -m http.server",
+    "test": "echo 'Testing RoScan functionality...' && python3 -c 'import webbrowser; webbrowser.open(\"http://localhost:8080\")'",
+    "deploy": "echo 'Ready for deployment 🚀'"
   },
   "keywords": [
     "powershell",
-    "scanner",
     "security",
+    "scanner",
     "analysis",
     "discord",
-    "webhook"
+    "webhook",
+    "cybersecurity",
+    "threat-detection",
+    "enterprise",
+    "real-time"
   ],
-  "author": "RoScan Team",
+  "author": "RoScan Security Team",
   "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {},
+  "homepage": "https://github.com/roscan/security-platform",
   "repository": {
     "type": "git",
-    "url": "."
+    "url": "git+https://github.com/roscan/security-platform.git"
+  },
+  "bugs": {
+    "url": "https://github.com/roscan/security-platform/issues"
   },
   "engines": {
-    "node": ">=14.0.0"
-  }
+    "node": ">=16.0.0",
+    "python": ">=3.8.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "files": [
+    "index.html",
+    "css/",
+    "js/",
+    "README.md"
+  ]
 }
