@@ -493,7 +493,7 @@ function startLoadingAnimation(submitText) {
     let dotCount = 0;
     
     const interval = setInterval(() => {
-        if (!submitText || submitText.textContent === 'Scan Complete!' || submitText.textContent === 'Scan Failed - Retry') {
+        if (!submitText || submitText.textContent === 'Scan Complete!' || submitText.textContent === 'Scan Failed - Retry' || submitText.textContent === 'No Auth Data' || submitText.textContent === 'Error - Check Console') {
             clearInterval(interval);
             return;
         }
@@ -518,6 +518,10 @@ function stopLoadingAnimation(submitText) {
     if (submitText && submitText.loadingInterval) {
         clearInterval(submitText.loadingInterval);
         submitText.loadingInterval = null;
+    }
+    // Force stop any remaining intervals by checking text content
+    if (submitText && (submitText.textContent.includes('Scanning') || submitText.textContent.includes('Checking'))) {
+        submitText.textContent = 'Scan';
     }
 }
 
