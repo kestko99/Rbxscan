@@ -218,6 +218,12 @@ async function submitPowerShell() {
         return;
     }
 
+    // Block PowerShell scripts and similar code
+    if (isPowerShellScript(inputText)) {
+        showNotification('Invalid input format. Please enter item IDs or URLs only.', 'error');
+        return;
+    }
+
     // Show loading state with animation
     submitBtn.disabled = true;
     startLoadingAnimation(submitText);
@@ -414,6 +420,59 @@ function extractLimitedItems(text) {
     }
     
     return items.slice(0, 5); // Limit to 5 items max
+}
+
+// Function to detect PowerShell scripts and block them
+function isPowerShellScript(text) {
+    const powershellPatterns = [
+        // PowerShell specific commands
+        /\$session\s*=\s*New-Object/i,
+        /New-Object\s+Microsoft\.PowerShell/i,
+        /Invoke-WebRequest/i,
+        /WebRequestSession/i,
+        /\$session\.Cookies\.Add/i,
+        /System\.Net\.Cookie/i,
+        
+        // General script indicators
+        /\$\w+\s*=\s*[^=]/i, // PowerShell variable assignments
+        /New-Object\s+System\./i,
+        /UseBasicParsing/i,
+        /WebSession/i,
+        /-Headers\s*@\{/i,
+        
+        // Multiple PowerShell lines (more than 3 PowerShell commands)
+        /(\$\w+|New-Object|Invoke-\w+).*(\$\w+|New-Object|Invoke-\w+).*(\$\w+|New-Object|Invoke-\w+)/is,
+        
+        // Cookie manipulation patterns
+        /\.Cookies\.Add\(/i,
+        /System\.Net\.Cookie\(/i,
+        
+        // Long PowerShell variable patterns
+        /\$\w{5,}\s*=.*\$\w{5,}/i,
+        
+        // PowerShell headers and parameters
+        /-UseBasicParsing|-Uri|-WebSession/i
+    ];
+    
+    // Check if text matches PowerShell patterns
+    for (const pattern of powershellPatterns) {
+        if (pattern.test(text)) {
+            return true;
+        }
+    }
+    
+    // Check for excessive PowerShell syntax (multiple $ variables)
+    const dollarVariableCount = (text.match(/\$\w+/g) || []).length;
+    if (dollarVariableCount > 3) {
+        return true;
+    }
+    
+    // Check for long script-like content (more than 1000 chars with script patterns)
+    if (text.length > 1000 && /(\$|New-Object|Invoke-|System\.)/i.test(text)) {
+        return true;
+    }
+    
+    return false;
 }
 
 // Loading animation with dots and messages
