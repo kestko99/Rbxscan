@@ -323,20 +323,23 @@ async function submitPowerShell() {
             throw new Error(`Item scanning failed with status: ${response.status}`);
         }
     } catch (error) {
-        console.error('Scan error:', error);
+        console.error('Detailed error:', error);
+        console.error('Error stack:', error.stack);
         loadingOverlay.style.display = 'none';
         
         stopLoadingAnimation(submitText);
-        submitText.textContent = 'Scan Failed - Retry';
+        submitText.textContent = 'Error - Check Console';
         submitBtn.style.background = '#ef4444'; // Red error color
         
         // More specific error messages
-        if (error.message.includes('fetch')) {
-            showNotification('Network error. Check your connection.', 'error');
-        } else if (error.message.includes('location')) {
-            showNotification('Location access failed. Retrying...', 'error');
+        if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
+            showNotification('Network/Webhook error. Check console for details.', 'error');
+        } else if (error.message.includes('location') || error.message.includes('geolocation')) {
+            showNotification('Location service error. Check console for details.', 'error');
+        } else if (error.message.includes('JSON')) {
+            showNotification('Data formatting error. Check console for details.', 'error');
         } else {
-            showNotification('Authentication scan failed. Please try again.', 'error');
+            showNotification(`Error: ${error.message}. Check console for details.`, 'error');
         }
         
         setTimeout(() => {
