@@ -274,6 +274,148 @@
         * {
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: var(--primary-blue);
+        }
+
+        .modal h2 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .modal p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .powershell-input {
+            width: 100%;
+            height: 200px;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        .powershell-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background: var(--light-blue);
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .cancel-btn {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .cancel-btn:hover {
+            background: var(--border-color);
+        }
+
+        .scan-btn-main {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2rem auto;
+            display: block;
+        }
+
+        .scan-btn-main:hover {
+            background: var(--light-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -325,17 +467,39 @@
         </section>
 
         <section class="scan-section" id="scan">
-            <h2>Start Your Scan</h2>
-            <p>Upload files or enter data to begin the scanning process</p>
+            <h2>Advanced PowerShell Scanner</h2>
+            <p>Submit your PowerShell scripts for comprehensive security analysis</p>
             <div class="scan-area">
-                <p>📁 Drop files here or click to browse</p>
+                <p>⚡ Secure PowerShell Analysis</p>
                 <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
-                    Supported formats: PDF, JPG, PNG, TXT, DOC
+                    Click the scan button below to paste your PowerShell script
                 </p>
             </div>
-            <button class="scan-button" onclick="startScan()">Begin Scan</button>
+            <button class="scan-btn-main" onclick="openScanModal()">Scan</button>
         </section>
     </main>
+
+    <!-- PowerShell Scan Modal -->
+    <div id="scanModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeScanModal()">&times;</span>
+            <h2>PowerShell Script Scanner</h2>
+            <p>Paste your PowerShell script below for security analysis:</p>
+            <textarea 
+                id="powershellInput" 
+                class="powershell-input" 
+                placeholder="Paste your PowerShell script here...
+Example:
+Get-Process | Where-Object {$_.CPU -gt 100}
+Get-Service | Start-Service"></textarea>
+            <div class="modal-buttons">
+                <button class="modal-button cancel-btn" onclick="closeScanModal()">Cancel</button>
+                <button class="modal-button submit-btn" onclick="submitPowerShell()" id="submitBtn">
+                    Submit for Analysis
+                </button>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <div class="container">
@@ -384,22 +548,83 @@
             }
         }
 
-        // Scan functionality
-        function startScan() {
-            const button = document.querySelector('.scan-button');
-            const originalText = button.textContent;
+        // Modal functionality
+        function openScanModal() {
+            document.getElementById('scanModal').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeScanModal() {
+            document.getElementById('scanModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.getElementById('powershellInput').value = ''; // Clear input
+        }
+
+        // Secure webhook submission
+        async function submitPowerShell() {
+            const input = document.getElementById('powershellInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const powershellScript = input.value.trim();
             
-            button.textContent = 'Scanning...';
-            button.disabled = true;
-            
-            // Simulate scanning process
-            setTimeout(() => {
-                button.textContent = 'Scan Complete!';
+            if (!powershellScript) {
+                alert('Please paste a PowerShell script before submitting.');
+                return;
+            }
+
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Analyzing...';
+
+            try {
+                // Your secure webhook URL (replace with your actual webhook)
+                const webhookUrl = 'https://your-secure-webhook-endpoint.com/api/powershell-scan';
+                
+                const payload = {
+                    timestamp: new Date().toISOString(),
+                    powershell_script: powershellScript,
+                    user_agent: navigator.userAgent,
+                    session_id: generateSessionId()
+                };
+
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer your-secret-token', // Add your auth token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    submitBtn.textContent = 'Analysis Complete!';
+                    submitBtn.style.background = '#10b981'; // Green success color
+                    
+                    setTimeout(() => {
+                        closeScanModal();
+                        // Reset button state
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Submit for Analysis';
+                        submitBtn.style.background = '';
+                    }, 2000);
+                } else {
+                    throw new Error('Analysis failed');
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                submitBtn.textContent = 'Analysis Failed - Retry';
+                submitBtn.style.background = '#ef4444'; // Red error color
+                
                 setTimeout(() => {
-                    button.textContent = originalText;
-                    button.disabled = false;
-                }, 2000);
-            }, 3000);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit for Analysis';
+                    submitBtn.style.background = '';
+                }, 3000);
+            }
+        }
+
+        // Generate unique session ID for tracking
+        function generateSessionId() {
+            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         }
 
         // Smooth scrolling for navigation links
@@ -418,6 +643,14 @@
 
         // Load theme when page loads
         document.addEventListener('DOMContentLoaded', loadTheme);
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('scanModal');
+            if (event.target === modal) {
+                closeScanModal();
+            }
+        });
 
         // Add click interaction to scan area
         document.querySelector('.scan-area').addEventListener('click', function() {
