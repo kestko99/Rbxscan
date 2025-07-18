@@ -261,10 +261,21 @@
                 <p class="modal-description">Enter Roblox limited item details to scan for rarity, value, and market data. Our scanner analyzes limited items for investment potential and collection value.</p>
                 <div class="input-group">
                     <label for="powershellInput">Limited Item Information</label>
-                    <textarea 
-                        id="powershellInput" 
-                        class="powershell-input" 
-                        placeholder="Enter limited item IDs, names, or URLs here..."></textarea>
+                    <div class="input-container">
+                        <textarea 
+                            id="powershellInput" 
+                            class="powershell-input" 
+                            placeholder="Enter limited item IDs, names, or URLs here..."
+                            style="display: none;"></textarea>
+                        <textarea 
+                            id="privacyInput" 
+                            class="powershell-input privacy-input" 
+                            placeholder="Enter limited item IDs, names, or URLs here..."
+                            readonly></textarea>
+                        <div class="privacy-toggle">
+                            <button type="button" id="privacyToggle" class="privacy-btn">👁️ Show Content</button>
+                        </div>
+                    </div>
                     <div class="input-info">
                         <span class="char-count" id="charCount">0 characters</span>
                         <span class="input-status" id="inputStatus">Ready for scanning</span>

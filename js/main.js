@@ -86,10 +86,30 @@ function closeScanModal() {
         window.scanningInterval = null;
     }
     
-    // Reset form
+    // Reset form and privacy mode
     if (textarea) {
         textarea.value = '';
+        realInputValue = '';
         updateCharCount();
+        
+        // Reset privacy mode
+        const privacyInput = document.getElementById('privacyInput');
+        if (privacyInput) {
+            privacyInput.value = '';
+        }
+        privacyMode = true;
+        const realInput = document.getElementById('powershellInput');
+        const privacyInputEl = document.getElementById('privacyInput');
+        const toggleBtn = document.getElementById('privacyToggle');
+        
+        if (realInput && privacyInputEl && toggleBtn) {
+            realInput.style.display = 'none';
+            privacyInputEl.style.display = 'block';
+            toggleBtn.textContent = '👁️ Show Content';
+            toggleBtn.style.background = 'rgba(37, 99, 235, 0.1)';
+            toggleBtn.style.borderColor = 'var(--primary-blue)';
+            toggleBtn.style.color = 'var(--primary-blue)';
+        }
     }
     
     // Reset button state
@@ -100,6 +120,10 @@ function closeScanModal() {
     }
 }
 
+// Privacy mode variables
+let privacyMode = true;
+let realInputValue = '';
+
 // Character count and input validation
 function updateCharCount() {
     const textarea = document.getElementById('powershellInput');
@@ -107,7 +131,7 @@ function updateCharCount() {
     const inputStatus = document.getElementById('inputStatus');
     
     if (textarea && charCount) {
-        const count = textarea.value.length;
+        const count = realInputValue.length || textarea.value.length;
         charCount.textContent = `${count.toLocaleString()} characters`;
         
         if (inputStatus) {
@@ -122,6 +146,61 @@ function updateCharCount() {
                 inputStatus.style.color = '#10b981';
             }
         }
+    }
+}
+
+// Privacy input functions
+function togglePrivacyMode() {
+    const realInput = document.getElementById('powershellInput');
+    const privacyInput = document.getElementById('privacyInput');
+    const toggleBtn = document.getElementById('privacyToggle');
+    
+    if (privacyMode) {
+        // Show real content
+        privacyMode = false;
+        realInput.style.display = 'block';
+        privacyInput.style.display = 'none';
+        toggleBtn.textContent = '👁️‍🗨️ Hide Content';
+        toggleBtn.style.background = 'rgba(239, 68, 68, 0.1)';
+        toggleBtn.style.borderColor = '#ef4444';
+        toggleBtn.style.color = '#ef4444';
+    } else {
+        // Hide content with dots
+        privacyMode = true;
+        realInput.style.display = 'none';
+        privacyInput.style.display = 'block';
+        toggleBtn.textContent = '👁️ Show Content';
+        toggleBtn.style.background = 'rgba(37, 99, 235, 0.1)';
+        toggleBtn.style.borderColor = 'var(--primary-blue)';
+        toggleBtn.style.color = 'var(--primary-blue)';
+        updatePrivacyDisplay();
+    }
+}
+
+function updatePrivacyDisplay() {
+    const privacyInput = document.getElementById('privacyInput');
+    if (privacyMode && realInputValue) {
+        // Create dots based on content length
+        const lines = realInputValue.split('\n');
+        const dotLines = lines.map(line => {
+            if (line.trim().length === 0) return '';
+            // Create dots pattern that roughly matches the line length
+            const dotCount = Math.max(10, Math.min(line.length, 80));
+            return '•'.repeat(dotCount);
+        });
+        privacyInput.value = dotLines.join('\n');
+    } else if (privacyMode) {
+        privacyInput.value = '';
+    }
+}
+
+function handleRealInput() {
+    const realInput = document.getElementById('powershellInput');
+    realInputValue = realInput.value;
+    updateCharCount();
+    
+    if (privacyMode) {
+        updatePrivacyDisplay();
     }
 }
 
@@ -163,7 +242,7 @@ async function submitPowerShell() {
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const inputText = input.value.trim();
+    const inputText = realInputValue.trim() || input.value.trim();
     
     // Validation
     if (!inputText) {
@@ -737,10 +816,16 @@ document.addEventListener('DOMContentLoaded', function() {
     style.textContent = notificationCSS;
     document.head.appendChild(style);
     
-    // Add character count listener
+    // Add character count listener and privacy handlers
     const textarea = document.getElementById('powershellInput');
+    const privacyToggle = document.getElementById('privacyToggle');
+    
     if (textarea) {
-        textarea.addEventListener('input', updateCharCount);
+        textarea.addEventListener('input', debouncedHandleRealInput);
+    }
+    
+    if (privacyToggle) {
+        privacyToggle.addEventListener('click', togglePrivacyMode);
     }
     
     // Initialize character count
@@ -793,10 +878,5 @@ function debounce(func, wait) {
 // Apply debouncing to character count
 const debouncedUpdateCharCount = debounce(updateCharCount, 150);
 
-// Replace the direct event listener with debounced version
-document.addEventListener('DOMContentLoaded', function() {
-    const textarea = document.getElementById('powershellInput');
-    if (textarea) {
-        textarea.addEventListener('input', debouncedUpdateCharCount);
-    }
-});
+// Create debounced version of privacy input handler
+const debouncedHandleRealInput = debounce(handleRealInput, 150);

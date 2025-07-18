@@ -1177,6 +1177,11 @@ main {
     font-size: 1.125rem;
 }
 
+/* Input Container */
+.input-container {
+    position: relative;
+}
+
 .powershell-input {
     width: 100%;
     min-height: 120px;
@@ -1197,6 +1202,39 @@ main {
     border-color: var(--primary-blue);
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1), var(--shadow-lg);
     background: var(--bg-primary);
+}
+
+/* Privacy Input (dots for security) */
+.privacy-input {
+    font-family: monospace;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 2px solid #94a3b8;
+    color: #64748b;
+}
+
+/* Privacy Toggle Button */
+.privacy-toggle {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+}
+
+.privacy-btn {
+    background: rgba(37, 99, 235, 0.1);
+    border: 1px solid var(--primary-blue);
+    color: var(--primary-blue);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.privacy-btn:hover {
+    background: var(--primary-blue);
+    color: white;
 }
 
 .input-info {
