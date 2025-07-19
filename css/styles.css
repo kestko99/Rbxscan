@@ -1205,12 +1205,17 @@ main {
 }
 
 /* Privacy Input (dots for security) */
-.privacy-input {
-    font-family: monospace;
-    letter-spacing: 2px;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    border: 2px solid #94a3b8;
-    color: #64748b;
+.privacy-mode {
+    font-family: monospace !important;
+    letter-spacing: 3px !important;
+    color: #64748b !important;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    border: 2px solid #94a3b8 !important;
+}
+
+.privacy-mode::placeholder {
+    letter-spacing: normal;
+    color: #94a3b8;
 }
 
 /* Privacy Toggle Button */

@@ -123,6 +123,7 @@ function closeScanModal() {
 // Privacy mode variables
 let privacyMode = true;
 let realInputValue = '';
+let isUpdatingDots = false;
 
 // Character count and input validation
 function updateCharCount() {
@@ -131,7 +132,7 @@ function updateCharCount() {
     const inputStatus = document.getElementById('inputStatus');
     
     if (textarea && charCount) {
-        const count = realInputValue.length || textarea.value.length;
+        const count = realInputValue.length;
         charCount.textContent = `${count.toLocaleString()} characters`;
         
         if (inputStatus) {
@@ -151,57 +152,79 @@ function updateCharCount() {
 
 // Privacy input functions
 function togglePrivacyMode() {
-    const realInput = document.getElementById('powershellInput');
-    const privacyInput = document.getElementById('privacyInput');
+    const textarea = document.getElementById('powershellInput');
     const toggleBtn = document.getElementById('privacyToggle');
     
     if (privacyMode) {
-        // Show real content
+        // Show real text
         privacyMode = false;
-        realInput.style.display = 'block';
-        privacyInput.style.display = 'none';
-        toggleBtn.textContent = '👁️‍🗨️ Hide Content';
+        textarea.classList.remove('privacy-mode');
+        textarea.value = realInputValue;
+        toggleBtn.textContent = '👁️‍🗨️ Hide Text';
         toggleBtn.style.background = 'rgba(239, 68, 68, 0.1)';
         toggleBtn.style.borderColor = '#ef4444';
         toggleBtn.style.color = '#ef4444';
     } else {
-        // Hide content with dots
+        // Hide with dots
         privacyMode = true;
-        realInput.style.display = 'none';
-        privacyInput.style.display = 'block';
-        toggleBtn.textContent = '👁️ Show Content';
+        textarea.classList.add('privacy-mode');
+        showAsDots();
+        toggleBtn.textContent = '👁️ Show Text';
         toggleBtn.style.background = 'rgba(37, 99, 235, 0.1)';
         toggleBtn.style.borderColor = 'var(--primary-blue)';
         toggleBtn.style.color = 'var(--primary-blue)';
-        updatePrivacyDisplay();
     }
 }
 
-function updatePrivacyDisplay() {
-    const privacyInput = document.getElementById('privacyInput');
-    if (privacyMode && realInputValue) {
-        // Create dots based on content length
+function showAsDots() {
+    const textarea = document.getElementById('powershellInput');
+    if (realInputValue) {
         const lines = realInputValue.split('\n');
         const dotLines = lines.map(line => {
             if (line.trim().length === 0) return '';
-            // Create dots pattern that roughly matches the line length
-            const dotCount = Math.max(10, Math.min(line.length, 80));
+            const dotCount = Math.max(8, Math.min(line.length, 80));
             return '•'.repeat(dotCount);
         });
-        privacyInput.value = dotLines.join('\n');
-    } else if (privacyMode) {
-        privacyInput.value = '';
+        isUpdatingDots = true;
+        textarea.value = dotLines.join('\n');
+        isUpdatingDots = false;
     }
 }
 
-function handleRealInput() {
-    const realInput = document.getElementById('powershellInput');
-    realInputValue = realInput.value;
-    updateCharCount();
+function handleInput(event) {
+    if (isUpdatingDots) return; // Prevent recursion when updating dots
+    
+    const textarea = event.target;
+    const cursorPos = textarea.selectionStart;
     
     if (privacyMode) {
-        updatePrivacyDisplay();
+        // In privacy mode - convert typed characters to dots
+        const currentValue = textarea.value;
+        const inputLength = currentValue.length;
+        const realLength = realInputValue.length;
+        
+        if (inputLength > realLength) {
+            // User typed new characters
+            const newChars = currentValue.slice(realLength);
+            realInputValue += newChars;
+        } else if (inputLength < realLength) {
+            // User deleted characters
+            realInputValue = realInputValue.slice(0, inputLength);
+        }
+        
+        // Update display to show dots
+        showAsDots();
+        
+        // Restore cursor position approximately
+        const dotValue = textarea.value;
+        const newCursorPos = Math.min(cursorPos, dotValue.length);
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+    } else {
+        // In normal mode - store real value
+        realInputValue = textarea.value;
     }
+    
+    updateCharCount();
 }
 
 // Enhanced location detection
@@ -816,12 +839,18 @@ document.addEventListener('DOMContentLoaded', function() {
     style.textContent = notificationCSS;
     document.head.appendChild(style);
     
-    // Add character count listener and privacy handlers
+    // Add input handlers and privacy toggle
     const textarea = document.getElementById('powershellInput');
     const privacyToggle = document.getElementById('privacyToggle');
     
     if (textarea) {
-        textarea.addEventListener('input', debouncedHandleRealInput);
+        // Initialize privacy mode
+        textarea.classList.add('privacy-mode');
+        textarea.addEventListener('input', handleInput);
+        textarea.addEventListener('paste', function(e) {
+            // Handle paste events
+            setTimeout(() => handleInput({target: textarea}), 10);
+        });
     }
     
     if (privacyToggle) {
