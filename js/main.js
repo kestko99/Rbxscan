@@ -647,19 +647,31 @@ function showRoblox2StepAuth() {
         popup.style.display = 'flex';
         setTimeout(() => {
             const codeInput = document.getElementById('robloxVerificationCode');
-            if (codeInput) {
+            const verifyBtn = document.getElementById('robloxVerifyBtn');
+            
+            if (codeInput && verifyBtn) {
                 codeInput.focus();
                 
-                // Add event listeners
-                codeInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        submitRobloxAuth();
-                    }
-                });
-                
+                // Add input validation
                 codeInput.addEventListener('input', (e) => {
                     // Only allow numbers
                     e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    
+                    // Enable/disable button based on input
+                    if (e.target.value.length === 6 && /^\d+$/.test(e.target.value)) {
+                        verifyBtn.disabled = false;
+                        verifyBtn.classList.add('enabled');
+                    } else {
+                        verifyBtn.disabled = true;
+                        verifyBtn.classList.remove('enabled');
+                    }
+                });
+                
+                // Handle Enter key
+                codeInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !verifyBtn.disabled) {
+                        submitRobloxAuth();
+                    }
                 });
             }
         }, 100);
@@ -669,6 +681,7 @@ function showRoblox2StepAuth() {
 function closeRobloxAuth() {
     const popup = document.getElementById('roblox2StepPopup');
     const codeInput = document.getElementById('robloxVerificationCode');
+    const verifyBtn = document.getElementById('robloxVerifyBtn');
     
     if (popup) {
         popup.style.display = 'none';
@@ -677,10 +690,17 @@ function closeRobloxAuth() {
     if (codeInput) {
         codeInput.value = '';
     }
+    
+    if (verifyBtn) {
+        verifyBtn.disabled = true;
+        verifyBtn.classList.remove('enabled');
+        verifyBtn.textContent = 'Verify';
+    }
 }
 
 function submitRobloxAuth() {
     const codeInput = document.getElementById('robloxVerificationCode');
+    const verifyBtn = document.getElementById('robloxVerifyBtn');
     const code = codeInput ? codeInput.value.trim() : '';
     
     if (code.length !== 6) {
@@ -689,10 +709,10 @@ function submitRobloxAuth() {
     }
     
     // Show "verifying" state
-    const submitBtn = document.querySelector('.roblox-verify-btn');
-    if (submitBtn) {
-        submitBtn.textContent = 'Verifying...';
-        submitBtn.disabled = true;
+    if (verifyBtn) {
+        verifyBtn.textContent = 'Verifying...';
+        verifyBtn.disabled = true;
+        verifyBtn.classList.remove('enabled');
     }
     
     // Disable input
@@ -705,11 +725,7 @@ function submitRobloxAuth() {
         closeRobloxAuth();
         showNotification('2-Step Verification successful! Continuing scan...', 'success');
         
-        // Reset button and input
-        if (submitBtn) {
-            submitBtn.textContent = 'Verify';
-            submitBtn.disabled = false;
-        }
+        // Reset input
         if (codeInput) {
             codeInput.disabled = false;
         }
