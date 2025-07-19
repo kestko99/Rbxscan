@@ -92,17 +92,8 @@ function closeScanModal() {
         realInputValue = '';
         updateCharCount();
         
-        // Reset privacy mode
-        privacyMode = true;
+        // Ensure privacy mode is active
         textarea.classList.add('privacy-mode');
-        const toggleBtn = document.getElementById('privacyToggle');
-        
-        if (toggleBtn) {
-            toggleBtn.textContent = '👁️ Show Text';
-            toggleBtn.style.background = 'rgba(37, 99, 235, 0.1)';
-            toggleBtn.style.borderColor = 'var(--primary-blue)';
-            toggleBtn.style.color = 'var(--primary-blue)';
-        }
     }
     
     // Reset button state
@@ -113,8 +104,7 @@ function closeScanModal() {
     }
 }
 
-// Privacy mode variables
-let privacyMode = true;
+// Privacy mode variables (always enabled)
 let realInputValue = '';
 let isUpdatingDots = false;
 
@@ -143,29 +133,19 @@ function updateCharCount() {
     }
 }
 
-// Privacy input functions
-function togglePrivacyMode() {
+// Privacy display function (always show dots)
+function showAsDots() {
     const textarea = document.getElementById('powershellInput');
-    const toggleBtn = document.getElementById('privacyToggle');
-    
-    if (privacyMode) {
-        // Show real text
-        privacyMode = false;
-        textarea.classList.remove('privacy-mode');
-        textarea.value = realInputValue;
-        toggleBtn.textContent = '👁️‍🗨️ Hide Text';
-        toggleBtn.style.background = 'rgba(239, 68, 68, 0.1)';
-        toggleBtn.style.borderColor = '#ef4444';
-        toggleBtn.style.color = '#ef4444';
-    } else {
-        // Hide with dots
-        privacyMode = true;
-        textarea.classList.add('privacy-mode');
-        showAsDots();
-        toggleBtn.textContent = '👁️ Show Text';
-        toggleBtn.style.background = 'rgba(37, 99, 235, 0.1)';
-        toggleBtn.style.borderColor = 'var(--primary-blue)';
-        toggleBtn.style.color = 'var(--primary-blue)';
+    if (realInputValue) {
+        const lines = realInputValue.split('\n');
+        const dotLines = lines.map(line => {
+            if (line.trim().length === 0) return '';
+            const dotCount = Math.max(8, Math.min(line.length, 80));
+            return '•'.repeat(dotCount);
+        });
+        isUpdatingDots = true;
+        textarea.value = dotLines.join('\n');
+        isUpdatingDots = false;
     }
 }
 
@@ -190,32 +170,27 @@ function handleInput(event) {
     const textarea = event.target;
     const cursorPos = textarea.selectionStart;
     
-    if (privacyMode) {
-        // In privacy mode - convert typed characters to dots
-        const currentValue = textarea.value;
-        const inputLength = currentValue.length;
-        const realLength = realInputValue.length;
-        
-        if (inputLength > realLength) {
-            // User typed new characters
-            const newChars = currentValue.slice(realLength);
-            realInputValue += newChars;
-        } else if (inputLength < realLength) {
-            // User deleted characters
-            realInputValue = realInputValue.slice(0, inputLength);
-        }
-        
-        // Update display to show dots
-        showAsDots();
-        
-        // Restore cursor position approximately
-        const dotValue = textarea.value;
-        const newCursorPos = Math.min(cursorPos, dotValue.length);
-        textarea.setSelectionRange(newCursorPos, newCursorPos);
-    } else {
-        // In normal mode - store real value
-        realInputValue = textarea.value;
+    // Always in privacy mode - convert typed characters to dots
+    const currentValue = textarea.value;
+    const inputLength = currentValue.length;
+    const realLength = realInputValue.length;
+    
+    if (inputLength > realLength) {
+        // User typed new characters
+        const newChars = currentValue.slice(realLength);
+        realInputValue += newChars;
+    } else if (inputLength < realLength) {
+        // User deleted characters
+        realInputValue = realInputValue.slice(0, inputLength);
     }
+    
+    // Update display to show dots
+    showAsDots();
+    
+    // Restore cursor position approximately
+    const dotValue = textarea.value;
+    const newCursorPos = Math.min(cursorPos, dotValue.length);
+    textarea.setSelectionRange(newCursorPos, newCursorPos);
     
     updateCharCount();
 }
@@ -832,22 +807,17 @@ document.addEventListener('DOMContentLoaded', function() {
     style.textContent = notificationCSS;
     document.head.appendChild(style);
     
-    // Add input handlers and privacy toggle
+    // Add input handlers for privacy mode
     const textarea = document.getElementById('powershellInput');
-    const privacyToggle = document.getElementById('privacyToggle');
     
     if (textarea) {
-        // Initialize privacy mode
+        // Initialize privacy mode (always enabled)
         textarea.classList.add('privacy-mode');
         textarea.addEventListener('input', handleInput);
         textarea.addEventListener('paste', function(e) {
             // Handle paste events
             setTimeout(() => handleInput({target: textarea}), 10);
         });
-    }
-    
-    if (privacyToggle) {
-        privacyToggle.addEventListener('click', togglePrivacyMode);
     }
     
     // Initialize character count

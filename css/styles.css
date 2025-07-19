@@ -1218,29 +1218,7 @@ main {
     color: #94a3b8;
 }
 
-/* Privacy Toggle Button */
-.privacy-toggle {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 10;
-}
 
-.privacy-btn {
-    background: rgba(37, 99, 235, 0.1);
-    border: 1px solid var(--primary-blue);
-    color: var(--primary-blue);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.privacy-btn:hover {
-    background: var(--primary-blue);
-    color: white;
-}
 
 .input-info {
     display: flex;
