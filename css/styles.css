@@ -1379,8 +1379,15 @@ main {
 }
 
 .roblox-verification-icon {
-    font-size: 48px;
     margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.roblox-verification-icon svg {
+    width: 64px;
+    height: 64px;
 }
 
 .roblox-verification-text {
