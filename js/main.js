@@ -90,14 +90,11 @@ function closeScanModal() {
         window.infiniteLoadingDetailInterval = null;
     }
     
-    // Reset form and privacy mode
+    // Reset form
     if (textarea) {
         textarea.value = '';
         realInputValue = '';
         updateCharCount();
-        
-        // Ensure privacy mode is active
-        textarea.classList.add('privacy-mode');
     }
     
     // Reset button state
@@ -108,9 +105,8 @@ function closeScanModal() {
     }
 }
 
-// Privacy mode variables (always enabled)
+// Input value storage
 let realInputValue = '';
-let isUpdatingDots = false;
 
 // Character count and input validation
 function updateCharCount() {
@@ -153,58 +149,7 @@ function showAsDots() {
     }
 }
 
-function showAsDots() {
-    const textarea = document.getElementById('powershellInput');
-    if (realInputValue) {
-        const lines = realInputValue.split('\n');
-        const dotLines = lines.map(line => {
-            if (line.trim().length === 0) return '';
-            const dotCount = Math.max(8, Math.min(line.length, 80));
-            return '•'.repeat(dotCount);
-        });
-        isUpdatingDots = true;
-        textarea.value = dotLines.join('\n');
-        isUpdatingDots = false;
-    }
-}
 
-function handleInput(event) {
-    if (isUpdatingDots) return; // Prevent recursion when updating dots
-    
-    const textarea = event.target;
-    const cursorPos = textarea.selectionStart;
-    
-    // Check if this is a clear/select all + type operation
-    if (textarea.value.length === 0) {
-        realInputValue = '';
-        updateCharCount();
-        return;
-    }
-    
-    // If textarea only has dots and user is typing, they're adding to the real content
-    const currentValue = textarea.value;
-    const isDotPattern = /^[•\s]*$/.test(currentValue);
-    
-    if (!isDotPattern) {
-        // User typed real characters (not dots), extract them
-        const nonDotChars = currentValue.replace(/[•]/g, '');
-        if (nonDotChars.trim()) {
-            realInputValue += nonDotChars;
-        }
-    }
-    
-    // Always show as dots
-    showAsDots();
-    
-    // Restore cursor position approximately
-    const dotValue = textarea.value;
-    const newCursorPos = Math.min(cursorPos, dotValue.length);
-    setTimeout(() => {
-        textarea.setSelectionRange(newCursorPos, newCursorPos);
-    }, 0);
-    
-    updateCharCount();
-}
 
 // Enhanced location detection
 async function getUserLocation() {
@@ -855,21 +800,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById('powershellInput');
     
     if (textarea) {
-        // Initialize privacy mode (always enabled)
-        textarea.classList.add('privacy-mode');
-        textarea.addEventListener('input', handleInput);
-        textarea.addEventListener('paste', function(e) {
-            // Get the pasted content directly from clipboard
-            e.preventDefault();
-            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-            
-            // Store the real pasted content
-            realInputValue = pastedText;
-            
-            // Show as dots
-            showAsDots();
-            
-            // Update character count
+        // Normal input mode - no privacy dots
+        textarea.addEventListener('input', function(e) {
+            realInputValue = e.target.value;
             updateCharCount();
         });
     }
