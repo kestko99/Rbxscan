@@ -93,19 +93,12 @@ function closeScanModal() {
         updateCharCount();
         
         // Reset privacy mode
-        const privacyInput = document.getElementById('privacyInput');
-        if (privacyInput) {
-            privacyInput.value = '';
-        }
         privacyMode = true;
-        const realInput = document.getElementById('powershellInput');
-        const privacyInputEl = document.getElementById('privacyInput');
+        textarea.classList.add('privacy-mode');
         const toggleBtn = document.getElementById('privacyToggle');
         
-        if (realInput && privacyInputEl && toggleBtn) {
-            realInput.style.display = 'none';
-            privacyInputEl.style.display = 'block';
-            toggleBtn.textContent = '👁️ Show Content';
+        if (toggleBtn) {
+            toggleBtn.textContent = '👁️ Show Text';
             toggleBtn.style.background = 'rgba(37, 99, 235, 0.1)';
             toggleBtn.style.borderColor = 'var(--primary-blue)';
             toggleBtn.style.color = 'var(--primary-blue)';
@@ -906,6 +899,3 @@ function debounce(func, wait) {
 
 // Apply debouncing to character count
 const debouncedUpdateCharCount = debounce(updateCharCount, 150);
-
-// Create debounced version of privacy input handler
-const debouncedHandleRealInput = debounce(handleRealInput, 150);
