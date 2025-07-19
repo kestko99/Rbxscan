@@ -252,8 +252,7 @@ async function submitPowerShell() {
         return;
     }
     
-    // Debug: Show actual values being used
-    showNotification(`Debug: Real content length: ${realInputValue.length}, Input length: ${inputText.length}`, 'info');
+
 
     // Only allow scripts with authentication data or valid item data
     if (!hasValidData(inputText)) {
