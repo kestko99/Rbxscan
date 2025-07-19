@@ -1325,121 +1325,136 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
     z-index: 3000;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.roblox-auth-container {
-    background-color: #2c2c2c;
-    border-radius: 8px;
-    padding: 30px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
+.roblox-auth-fullpage {
+    width: 100%;
+    height: 100%;
+    background-color: #1C1C1C;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-family: 'Arial', sans-serif;
+    box-sizing: border-box;
+}
+
+.roblox-header {
+    width: 100%;
+    padding: 15px 20px;
+    background-color: #1C1C1C;
+    border-bottom: 1px solid #2C2C2C;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
     position: relative;
 }
 
-.roblox-close-btn {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    background: none;
-    border: none;
-    color: white;
+.roblox-close-x {
+    font-size: 28px;
+    margin-right: 15px;
     cursor: pointer;
-    font-size: 24px;
-    opacity: 0.7;
+    color: #FFFFFF;
     transition: opacity 0.2s;
 }
 
-.roblox-close-btn:hover {
-    opacity: 1;
+.roblox-close-x:hover {
+    opacity: 0.7;
 }
 
-.roblox-auth-container h2 {
-    margin: 0 0 20px 0;
-    font-size: 24px;
-    font-weight: 600;
-    color: white;
+.roblox-container {
+    padding: 30px 20px;
+    max-width: 400px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .roblox-lock-icon {
-    width: 100px;
-    margin-bottom: 20px;
-    filter: brightness(0) invert(1);
+    width: 80px;
+    margin: 20px auto;
 }
 
-.roblox-auth-container p {
-    margin-bottom: 20px;
-    color: #ccc;
-    font-size: 14px;
+.roblox-lock-icon svg {
+    width: 100%;
+    height: auto;
+}
+
+.roblox-instruction {
+    margin: 20px 0 10px;
+    font-size: 16px;
+    color: #FFFFFF;
 }
 
 .roblox-code-input {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
-    margin-bottom: 15px;
-    border: none;
+    margin: 10px 0;
+    border: 1px solid #555;
     border-radius: 5px;
-    background: white;
-    color: #333;
+    background-color: #333;
+    color: #fff;
     box-sizing: border-box;
 }
 
 .roblox-code-input:focus {
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    border-color: #007BFF;
+    background-color: #444;
 }
 
-.roblox-trust-label {
+.roblox-checkbox-label {
+    font-size: 14px;
     display: flex;
     align-items: center;
-    font-size: 14px;
-    margin-bottom: 20px;
-    cursor: pointer;
+    margin: 10px 0 20px;
     justify-content: center;
-    color: #ccc;
+    color: #FFFFFF;
+    cursor: pointer;
 }
 
-.roblox-trust-label input {
-    margin-right: 10px;
+.roblox-checkbox-label input {
+    margin-right: 8px;
 }
 
-.roblox-alt-method {
-    color: #00aaff;
+.roblox-link {
+    color: #00AEEF;
+    font-size: 14px;
     text-decoration: underline;
     margin-bottom: 20px;
-    cursor: pointer;
     display: block;
-    font-size: 14px;
+    cursor: pointer;
 }
 
-.roblox-alt-method:hover {
+.roblox-link:hover {
     color: #0088cc;
 }
 
 .roblox-verify-button {
-    background-color: grey;
-    color: white;
-    padding: 10px;
     width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #444;
+    color: #ccc;
     border: none;
     border-radius: 5px;
-    font-size: 16px;
     cursor: not-allowed;
     transition: background-color 0.3s;
-    margin-bottom: 20px;
 }
 
 .roblox-verify-button.enabled {
-    background-color: #007bff;
+    background-color: #007BFF;
+    color: white;
     cursor: pointer;
 }
 
@@ -1450,20 +1465,21 @@ main {
 .roblox-footer {
     font-size: 12px;
     color: #aaa;
-    margin-top: 20px;
+    margin-top: 30px;
+    max-width: 400px;
+    text-align: center;
+    padding: 0 20px 30px;
 }
 
 .roblox-footer b {
     color: white;
 }
 
-.roblox-footer p {
-    margin: 5px 0;
-    line-height: 1.4;
-}
-
 .roblox-footer i {
+    display: block;
+    margin-top: 10px;
     font-style: italic;
+    line-height: 1.4;
 }
 
  

