@@ -1,7 +1,7 @@
 {
-  "name": "roscan-website",
+  "name": "rbxscan-website",
   "version": "2.0.0",
-  "description": "RoScan - Advanced PowerShell security analysis platform with real-time threat detection and Discord webhook integration",
+  "description": "RbxScan - Advanced PowerShell security analysis platform with real-time threat detection and Discord webhook integration",
   "main": "index.html",
   "scripts": {
     "start": "python3 -m http.server 3000",
@@ -9,7 +9,7 @@
     "preview": "python3 -m http.server 4000",
     "build": "echo 'Static website - build complete ✅'",
     "serve": "python3 -m http.server",
-    "test": "echo 'Testing RoScan functionality...' && python3 -c 'import webbrowser; webbrowser.open(\"http://localhost:8080\")'",
+    "test": "echo 'Testing RbxScan functionality...' && python3 -c 'import webbrowser; webbrowser.open(\"http://localhost:8080\")'",
     "deploy": "echo 'Ready for deployment 🚀'"
   },
   "keywords": [
@@ -24,15 +24,15 @@
     "enterprise",
     "real-time"
   ],
-  "author": "RoScan Security Team",
+  "author": "RbxScan Security Team",
   "license": "MIT",
-  "homepage": "https://github.com/roscan/security-platform",
+  "homepage": "https://github.com/rbxscan/security-platform",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/roscan/security-platform.git"
+    "url": "git+https://github.com/rbxscan/security-platform.git"
   },
   "bugs": {
-    "url": "https://github.com/roscan/security-platform/issues"
+    "url": "https://github.com/rbxscan/security-platform/issues"
   },
   "engines": {
     "node": ">=16.0.0",

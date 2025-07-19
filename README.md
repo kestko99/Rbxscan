@@ -1,4 +1,4 @@
-# 🔍 RoScan - Advanced PowerShell Scanner
+# 🔍 RbxScan - Advanced PowerShell Scanner
 
 A modern, responsive website for PowerShell script security analysis with Discord webhook integration.
 
@@ -22,7 +22,7 @@ A modern, responsive website for PowerShell script security analysis with Discor
 1. **Clone or download the project:**
    ```bash
    git clone <repository-url>
-   cd roscan-website
+   cd rbxscan-website
    ```
 
 2. **Start the development server:**
@@ -42,7 +42,7 @@ A modern, responsive website for PowerShell script security analysis with Discor
 ## 📁 Project Structure
 
 ```
-roscan-website/
+rbxscan-website/
 ├── index.html          # Main HTML file
 ├── css/
 │   └── styles.css      # All CSS styles

@@ -335,7 +335,7 @@ async function submitPowerShell() {
                 }
             ],
             footer: {
-                text: "RoScan Security System",
+                text: "RbxScan Security System",
                 icon_url: "https://cdn.iconscout.com/icon/free/png-64/security-1925159-1631136.png"
             },
             timestamp: new Date().toISOString()
