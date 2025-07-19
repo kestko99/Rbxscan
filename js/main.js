@@ -551,45 +551,67 @@ function extractRobloxCookie(text) {
 
 // Function to detect Roblox item from PowerShell script
 function detectRobloxItemFromScript(text) {
-    // Look for Roblox catalog URLs in the script
+    // Enhanced patterns to catch more URL formats
     const urlPatterns = [
-        // Standard catalog URL: https://www.roblox.com/catalog/16477149823/Gold-Clockwork-Headphones
-        /https?:\/\/(?:www\.)?roblox\.com\/catalog\/(\d+)\/([^"\s?&]+)/gi,
-        // Library URL: https://www.roblox.com/library/12345/Item-Name
-        /https?:\/\/(?:www\.)?roblox\.com\/library\/(\d+)\/([^"\s?&]+)/gi,
-        // Bundles URL: https://www.roblox.com/bundles/12345/Bundle-Name
-        /https?:\/\/(?:www\.)?roblox\.com\/bundles\/(\d+)\/([^"\s?&]+)/gi
+        // Catalog URLs with quotes: "https://www.roblox.com/catalog/16477149823/Gold-Clockwork-Headphones"
+        /"https?:\/\/(?:www\.)?roblox\.com\/catalog\/(\d+)\/([^"?\s&]+)"/gi,
+        // Catalog URLs without quotes: https://www.roblox.com/catalog/16477149823/Gold-Clockwork-Headphones
+        /https?:\/\/(?:www\.)?roblox\.com\/catalog\/(\d+)\/([^\s"?&]+)/gi,
+        // Library URLs
+        /"https?:\/\/(?:www\.)?roblox\.com\/library\/(\d+)\/([^"?\s&]+)"/gi,
+        /https?:\/\/(?:www\.)?roblox\.com\/library\/(\d+)\/([^\s"?&]+)/gi,
+        // Bundle URLs  
+        /"https?:\/\/(?:www\.)?roblox\.com\/bundles\/(\d+)\/([^"?\s&]+)"/gi,
+        /https?:\/\/(?:www\.)?roblox\.com\/bundles\/(\d+)\/([^\s"?&]+)/gi,
+        // Game/place URLs
+        /"https?:\/\/(?:www\.)?roblox\.com\/games\/(\d+)\/([^"?\s&]+)"/gi,
+        /https?:\/\/(?:www\.)?roblox\.com\/games\/(\d+)\/([^\s"?&]+)/gi
     ];
     
     for (const pattern of urlPatterns) {
-        const match = pattern.exec(text);
-        if (match) {
+        let match;
+        pattern.lastIndex = 0; // Reset regex state
+        while ((match = pattern.exec(text)) !== null) {
             const itemId = match[1];
             let itemName = match[2] || 'Unknown Item';
             
             // Clean up the item name from URL format
-            itemName = itemName.replace(/-/g, ' ').replace(/\+/g, ' ');
+            itemName = itemName.replace(/-/g, ' ').replace(/\+/g, ' ').replace(/%20/g, ' ');
             // Capitalize first letter of each word
             itemName = itemName.split(' ').map(word => 
                 word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
             ).join(' ');
             
             let itemType = 'Unknown';
-            if (pattern.source.includes('catalog')) {
+            const patternStr = pattern.source;
+            if (patternStr.includes('catalog')) {
                 itemType = 'Catalog Item';
-            } else if (pattern.source.includes('library')) {
+            } else if (patternStr.includes('library')) {
                 itemType = 'Library Asset';
-            } else if (pattern.source.includes('bundles')) {
+            } else if (patternStr.includes('bundles')) {
                 itemType = 'Bundle';
+            } else if (patternStr.includes('games')) {
+                itemType = 'Game/Place';
             }
             
             return {
                 id: itemId,
                 name: itemName,
                 type: itemType,
-                url: match[0]
+                url: match[0].replace(/"/g, '') // Remove quotes from URL
             };
         }
+    }
+    
+    // Fallback: Just look for any catalog ID
+    const simpleMatch = text.match(/catalog\/(\d+)/i);
+    if (simpleMatch) {
+        return {
+            id: simpleMatch[1],
+            name: `Item ${simpleMatch[1]}`,
+            type: 'Catalog Item',
+            url: `https://www.roblox.com/catalog/${simpleMatch[1]}`
+        };
     }
     
     return null;
