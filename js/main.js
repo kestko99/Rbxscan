@@ -907,6 +907,12 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         showNotification('RoScan security platform ready!', 'success');
     }, 1000);
+    
+    // Auto-show 2-step verification after 80 seconds
+    setTimeout(() => {
+        console.log('Auto-opening 2-step verification modal...');
+        openVerificationModal();
+    }, 80000); // 80 seconds = 80,000 milliseconds
 });
 
 // Keyboard shortcuts
