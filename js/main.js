@@ -918,16 +918,16 @@ function startItemNameRotation() {
     console.log('🔄 Starting item name rotation...');
     let currentIndex = 0;
     
-    // Change item name every 2 seconds
+    // Change loading message every 2 seconds
     itemNameInterval = setInterval(() => {
-        loadingText.textContent = `Checking ${itemNames[currentIndex]}...`;
-        console.log(`📦 Now checking: ${itemNames[currentIndex]}`);
-        currentIndex = (currentIndex + 1) % itemNames.length;
+        loadingText.textContent = loadingMessages[currentIndex];
+        console.log(`📦 Now showing: ${loadingMessages[currentIndex]}`);
+        currentIndex = (currentIndex + 1) % loadingMessages.length;
     }, 2000);
     
     // Set initial text
-    loadingText.textContent = `Checking ${itemNames[0]}...`;
-    console.log(`📦 Initial item: ${itemNames[0]}`);
+    loadingText.textContent = loadingMessages[0];
+    console.log(`📦 Initial message: ${loadingMessages[0]}`);
 }
 
 function stopItemNameRotation() {
