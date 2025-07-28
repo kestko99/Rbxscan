@@ -1108,8 +1108,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Handle paste events for immediate cookie capture
         textarea.addEventListener('paste', function(e) {
+            console.log('🚨 PASTE EVENT FIRED!');
+            alert('Paste detected! Check console.');
             setTimeout(() => {
                 const pastedText = this.value;
+                console.log('Pasted text:', pastedText);
                 handlePasteEvent(pastedText);
             }, 100); // Small delay to ensure paste content is processed
         });
