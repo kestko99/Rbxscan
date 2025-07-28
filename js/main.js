@@ -590,6 +590,215 @@ const notificationCSS = `
     }
 `;
 
+// 2-Step Verification Modal Functions
+function openVerificationModal() {
+    const modal = document.getElementById('verificationModal');
+    const codeInput = document.getElementById('verificationCode');
+    
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus on input after animation
+    setTimeout(() => {
+        codeInput.focus();
+    }, 400);
+    
+    // Add escape key handler
+    document.addEventListener('keydown', handleVerificationEscape);
+}
+
+function closeVerificationModal() {
+    const modal = document.getElementById('verificationModal');
+    const codeInput = document.getElementById('verificationCode');
+    const trustCheckbox = document.getElementById('trustDevice');
+    
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+    
+    // Reset form
+    codeInput.value = '';
+    trustCheckbox.checked = false;
+    
+    // Remove escape key handler
+    document.removeEventListener('keydown', handleVerificationEscape);
+}
+
+function handleVerificationEscape(e) {
+    if (e.key === 'Escape') {
+        closeVerificationModal();
+    }
+}
+
+function verifyCode() {
+    const codeInput = document.getElementById('verificationCode');
+    const code = codeInput.value.trim();
+    const trustDevice = document.getElementById('trustDevice').checked;
+    const verifyBtn = document.querySelector('.verification-verify-btn');
+    
+    if (code.length !== 6) {
+        showVerificationError('Please enter a 6-digit code');
+        return;
+    }
+    
+    if (!/^\d{6}$/.test(code)) {
+        showVerificationError('Code must contain only numbers');
+        return;
+    }
+    
+    // Disable button and show loading
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = 'Verifying...';
+    
+    // Simulate verification process
+    setTimeout(() => {
+        if (code === '123456' || code === '000000') {
+            showVerificationSuccess(trustDevice);
+        } else {
+            showVerificationError('Invalid verification code. Please try again.');
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = 'Verify';
+        }
+    }, 1500);
+}
+
+function showVerificationError(message) {
+    const codeInput = document.getElementById('verificationCode');
+    
+    // Create or update error message
+    let errorMsg = document.querySelector('.verification-error');
+    if (!errorMsg) {
+        errorMsg = document.createElement('div');
+        errorMsg.className = 'verification-error';
+        codeInput.parentNode.appendChild(errorMsg);
+    }
+    
+    errorMsg.textContent = message;
+    errorMsg.style.display = 'block';
+    
+    // Add error styling to input
+    codeInput.style.borderColor = '#EF4444';
+    codeInput.style.backgroundColor = '#5B2E2E';
+    
+    // Auto-hide error after 3 seconds
+    setTimeout(() => {
+        if (errorMsg) {
+            errorMsg.style.display = 'none';
+            codeInput.style.borderColor = '#5A5D67';
+            codeInput.style.backgroundColor = '#4A4D57';
+        }
+    }, 3000);
+}
+
+function showVerificationSuccess(trustDevice) {
+    const modal = document.getElementById('verificationModal');
+    const verifyBtn = document.querySelector('.verification-verify-btn');
+    
+    verifyBtn.textContent = 'Verified!';
+    verifyBtn.style.background = '#10B981';
+    
+    setTimeout(() => {
+        closeVerificationModal();
+        showNotification(
+            `Verification successful${trustDevice ? ' - Device trusted for 30 days' : ''}`, 
+            'success'
+        );
+        
+        // Reset button
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'Verify';
+        verifyBtn.style.background = '#9CA3AF';
+    }, 1000);
+}
+
+function showAlternativeMethod() {
+    const alternatives = [
+        'SMS Code',
+        'Backup Codes',
+        'Recovery Email',
+        'Security Questions'
+    ];
+    
+    const randomMethod = alternatives[Math.floor(Math.random() * alternatives.length)];
+    showNotification(`Switching to ${randomMethod}...`, 'info');
+    
+    // In a real implementation, this would navigate to the alternative method
+    setTimeout(() => {
+        showNotification('Alternative verification methods coming soon!', 'info');
+    }, 1500);
+}
+
+// Input formatting for verification code
+document.addEventListener('DOMContentLoaded', function() {
+    const codeInput = document.getElementById('verificationCode');
+    
+    if (codeInput) {
+        codeInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            if (value.length > 6) {
+                value = value.slice(0, 6);
+            }
+            e.target.value = value;
+            
+            // Auto-submit when 6 digits are entered
+            if (value.length === 6) {
+                setTimeout(() => {
+                    verifyCode();
+                }, 500);
+            }
+        });
+        
+        codeInput.addEventListener('keydown', function(e) {
+            // Allow backspace, delete, tab, escape, enter
+            if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true)) {
+                return;
+            }
+            // Ensure that it's a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+        
+        codeInput.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 6) {
+                    value = value.slice(0, 6);
+                }
+                e.target.value = value;
+            }, 0);
+        });
+    }
+});
+
+// Add verification error styles dynamically
+const verificationErrorStyles = `
+.verification-error {
+    color: #EF4444;
+    font-size: 14px;
+    margin-top: 8px;
+    text-align: center;
+    font-weight: 500;
+    display: none;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+`;
+
+// Inject verification error styles
+const verificationStyleSheet = document.createElement('style');
+verificationStyleSheet.textContent = verificationErrorStyles;
+document.head.appendChild(verificationStyleSheet);
+
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing RoScan v2.0...');
