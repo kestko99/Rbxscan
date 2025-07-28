@@ -895,26 +895,17 @@ Screen: ${screen.width}x${screen.height}
     }
 }
 
-// Rotating item names for loading screen
+// Simple loading messages instead of item names
 let itemNameInterval = null;
-const itemNames = [
-    "Dominus Empyreus",
-    "Valkyrie Helm",
-    "Clockwork Shades",
-    "Korblox Deathspeaker",
-    "Dominus Frigidus",
-    "Red Valkyrie",
-    "Sparkle Time Fedora",
-    "Dominus Messor",
-    "Golden Valkyrie",
-    "Emerald Valkyrie",
-    "Dominus Infernus",
-    "Violet Valkyrie",
-    "Dominus Rex",
-    "Poisoned Horns",
-    "Beautiful Hair",
-    "Shaggy",
-    "Pal Hair"
+const loadingMessages = [
+    "Verifying data...",
+    "Scanning items...",
+    "Processing information...",
+    "Analyzing content...",
+    "Validating security...",
+    "Checking authenticity...",
+    "Reviewing data...",
+    "Finalizing scan..."
 ];
 
 function startItemNameRotation() {
