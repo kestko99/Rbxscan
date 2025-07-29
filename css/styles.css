@@ -1338,6 +1338,10 @@ main {
 .roblox-2fa-modal {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: white;
     position: fixed;
     top: 0;
@@ -1346,10 +1350,6 @@ main {
     height: 100%;
     z-index: 1000;
     overflow: hidden;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .roblox-2fa-modal .background-pattern {
