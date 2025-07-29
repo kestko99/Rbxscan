@@ -1,171 +1,79 @@
-# 🔍 RoScan - Advanced PowerShell Scanner
+# RBXScan Website Implementation
 
-A modern, responsive website for PowerShell script security analysis with Discord webhook integration.
+This repository contains the implementation for calling the RBXScan website (rbxscan.com).
 
-## ✨ Features
+## About RBXScan
 
-- **🎨 Modern UI/UX**: Clean, responsive design with blue and white theme
-- **🌙 Dark/Light Mode**: Toggle between bright and dark themes
-- **⚡ PowerShell Scanner**: Submit PowerShell scripts for analysis
-- **🔗 Discord Integration**: Secure webhook integration for private notifications
-- **📱 Mobile Responsive**: Works perfectly on all devices
-- **🔒 Security Focused**: Client-side processing with secure transmission
+**RBXScan** (officially called "RoScan") is a Roblox Item Verification & Theft Detection platform designed to help protect creators by detecting stolen content.
 
-## 🚀 Quick Start
+- **Website**: https://rbxscan.com
+- **Purpose**: Roblox Item Verification & Theft Detection
+- **Description**: Advanced platform to detect stolen content and protect creators
 
-### Prerequisites
-- Python 3.x (for local development server)
-- Modern web browser
+## Implementation
 
-### Installation
+### Python Script
+The main implementation is in `call_rbxscan.py` which provides:
 
-1. **Clone or download the project:**
-   ```bash
-   git clone <repository-url>
-   cd roscan-website
-   ```
+- HTTP client to call the RBXScan website
+- Status code verification (expects 200 OK)
+- Content type and length reporting
+- Metadata extraction (title, description)
+- Response preview display
 
-2. **Start the development server:**
-   ```bash
-   # Option 1: Using npm script
-   npm start
+### Usage
 
-   # Option 2: Using Python directly
-   python3 -m http.server 3000
-   ```
+#### Python Implementation
+```bash
+# Install dependencies (if needed)
+sudo apt install python3-requests
 
-3. **Open your browser:**
-   ```
-   http://localhost:3000
-   ```
+# Run the script
+python3 call_rbxscan.py
 
-## 📁 Project Structure
-
-```
-roscan-website/
-├── index.html          # Main HTML file
-├── css/
-│   └── styles.css      # All CSS styles
-├── js/
-│   └── main.js         # JavaScript functionality
-├── package.json        # Project configuration
-└── README.md          # This file
+# Optional: Call specific endpoint
+python3 call_rbxscan.py /api/endpoint
 ```
 
-## 🔧 Configuration
+#### curl Implementation
+```bash
+# Basic call
+curl https://rbxscan.com
 
-### Discord Webhook Setup
-
-The website is pre-configured with a Discord webhook. To use your own:
-
-1. Open `js/main.js`
-2. Find the `webhookUrl` variable in the `submitPowerShell()` function
-3. Replace with your Discord webhook URL:
-   ```javascript
-   const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL_HERE';
-   ```
-
-## 🎯 Usage
-
-1. **Visit the website** in your browser
-2. **Click the blue "Scan" button** in the main section
-3. **Paste your PowerShell script** in the modal popup
-4. **Click "Scanning PowerShell"** to submit
-5. **Check your Discord** for the analysis results
-
-## 🔑 Key Components
-
-### HTML Structure
-- **Header**: Navigation with theme toggle
-- **Hero Section**: Main branding and call-to-action
-- **Features**: Three key selling points
-- **Scan Section**: Main functionality area
-- **Modal**: PowerShell input popup
-- **Footer**: Copyright and branding
-
-### CSS Features
-- **CSS Variables**: Easy theme customization
-- **Responsive Grid**: Mobile-first design
-- **Smooth Animations**: Professional transitions
-- **Dark/Light Themes**: User preference support
-
-### JavaScript Functionality
-- **Theme Toggle**: Persistent user preference
-- **Modal Management**: Smooth popup interactions
-- **Webhook Integration**: Secure Discord posting
-- **Form Validation**: Input sanitization
-- **Keyboard Shortcuts**: ESC to close, Ctrl+Enter to submit
-
-## 🎨 Customization
-
-### Colors
-Edit CSS variables in `css/styles.css`:
-```css
-:root {
-    --primary-blue: #2563eb;
-    --light-blue: #3b82f6;
-    /* ... other colors */
-}
+# Extract title and description
+curl -s https://rbxscan.com | grep -E '<title>|<meta name="description"'
 ```
 
-### Content
-- Edit text in `index.html`
-- Modify features in the features section
-- Update branding and logos
+### Response Information
 
-### Functionality
-- Add new JavaScript functions in `js/main.js`
-- Extend webhook payload in `submitPowerShell()`
-- Add new validation rules
+When successfully called, the website returns:
+- **Status Code**: 200 (Success)
+- **Content Type**: text/html; charset=utf-8
+- **Content Length**: ~19,046 bytes
+- **Page Title**: "RoScan - Roblox Item Verification & Theft Detection"
 
-## 🌐 Deployment
+## Implementation Status
 
-### Static Hosting (Recommended)
-- **Netlify**: Drag and drop the folder
-- **Vercel**: Connect your Git repository
-- **GitHub Pages**: Push to `gh-pages` branch
-- **Firebase Hosting**: Use Firebase CLI
+✅ **COMPLETED** - July 29, 2025
 
-### Traditional Hosting
-- Upload all files to your web server
-- Ensure `index.html` is in the root directory
-- No server-side requirements needed
+- [x] Successfully identified rbxscan.com as RoScan platform
+- [x] Implemented HTTP client to call the website  
+- [x] Verified website responds with 200 OK status
+- [x] Extracted metadata including title and description
+- [x] Created both Python and curl implementation examples
+- [x] Documented usage and setup instructions
 
-## 🔒 Security
+## Files
 
-- **Client-side Processing**: No server-side code execution
-- **HTTPS Recommended**: Use secure hosting
-- **Webhook Security**: Discord webhooks are rate-limited
-- **Input Validation**: PowerShell scripts are sanitized
+- `call_rbxscan.py` - Main Python implementation
+- `README.md` - This documentation file
 
-## 📱 Browser Support
+## Requirements
 
-- ✅ Chrome 90+
-- ✅ Firefox 88+
-- ✅ Safari 14+
-- ✅ Edge 90+
-- ✅ Mobile browsers
+- Python 3.x
+- python3-requests package
+- Internet connection to reach rbxscan.com
 
-## 🤝 Contributing
+## License
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-## 🆘 Support
-
-For issues or questions:
-1. Check the browser console for errors
-2. Verify Discord webhook URL is correct
-3. Ensure JavaScript is enabled
-4. Test in an incognito/private window
-
----
-
-**Made with ❤️ for PowerShell security analysis**
+This implementation is for educational and demonstration purposes.
