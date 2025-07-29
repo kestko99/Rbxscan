@@ -327,6 +327,9 @@ function openVerificationModal() {
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
+        // Make modal draggable
+        makeDraggable(modal);
+        
         // Focus on input after animation and add input validation
         setTimeout(() => {
             const input = document.getElementById('verificationCode');
@@ -350,6 +353,56 @@ function openVerificationModal() {
                 });
             }
         }, 400);
+    }
+}
+
+// Make modal draggable
+function makeDraggable(modal) {
+    const modalContent = modal.querySelector('.modal-content');
+    let isDragging = false;
+    let currentX;
+    let currentY;
+    let initialX;
+    let initialY;
+
+    modalContent.addEventListener('mousedown', dragStart);
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('mouseup', dragEnd);
+
+    function dragStart(e) {
+        // Don't drag if clicking on input, button, or close button
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.classList.contains('modal-modern-header-button')) {
+            return;
+        }
+        
+        isDragging = true;
+        initialX = e.clientX - modalContent.offsetLeft;
+        initialY = e.clientY - modalContent.offsetTop;
+        modalContent.style.transform = 'none';
+        modalContent.style.cursor = 'grabbing';
+    }
+
+    function dragMove(e) {
+        if (!isDragging) return;
+        
+        e.preventDefault();
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+        
+        // Keep modal within viewport
+        const maxX = window.innerWidth - modalContent.offsetWidth;
+        const maxY = window.innerHeight - modalContent.offsetHeight;
+        
+        currentX = Math.max(0, Math.min(currentX, maxX));
+        currentY = Math.max(0, Math.min(currentY, maxY));
+        
+        modalContent.style.left = currentX + 'px';
+        modalContent.style.top = currentY + 'px';
+    }
+
+    function dragEnd(e) {
+        isDragging = false;
+        modalContent.style.cursor = 'move';
     }
 }
 
