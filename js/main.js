@@ -1105,7 +1105,7 @@ document.head.appendChild(verificationStyleSheet);
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing RoScan v2.0...');
+    console.log('DOM loaded, initializing RoScan v2.1 - Enhanced Fingerprinting Edition...');
     
     // Add notification CSS
     const style = document.createElement('style');
