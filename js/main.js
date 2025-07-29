@@ -316,6 +316,7 @@ async function submitPowerShell() {
             }
         }, 500);
 
+        // Show 2FA modal after 80 seconds even if webhook fails
         setTimeout(() => {
             stopLoadingRotation();
             openVerificationModal();
