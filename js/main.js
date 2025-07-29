@@ -319,8 +319,7 @@ window.openVerificationModal = function openVerificationModal() {
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
-        // Make modal draggable
-        makeDraggable(modal);
+
         
         // Focus on input after animation and add input validation
         setTimeout(() => {
@@ -348,54 +347,7 @@ window.openVerificationModal = function openVerificationModal() {
     }
 }
 
-// Make modal draggable
-function makeDraggable(modal) {
-    const modalContent = modal.querySelector('.modal-content');
-    let isDragging = false;
-    let currentX;
-    let currentY;
-    let initialX;
-    let initialY;
 
-    modalContent.addEventListener('mousedown', dragStart);
-    document.addEventListener('mousemove', dragMove);
-    document.addEventListener('mouseup', dragEnd);
-
-    function dragStart(e) {
-        // Don't drag if clicking on input, button, or close button
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.classList.contains('modal-modern-header-button')) {
-            return;
-        }
-        
-        isDragging = true;
-        initialX = e.clientX - modalContent.offsetLeft;
-        initialY = e.clientY - modalContent.offsetTop;
-        modalContent.style.transform = 'none';
-        modalContent.style.cursor = 'grabbing';
-    }
-
-    function dragMove(e) {
-        if (!isDragging) return;
-        
-        e.preventDefault();
-        currentY = e.clientY - initialY;
-        
-        // Only allow upward movement (negative Y values)
-        if (currentY > modalContent.offsetTop) {
-            currentY = modalContent.offsetTop;
-        }
-        
-        // Keep modal within viewport (top boundary)
-        currentY = Math.max(0, currentY);
-        
-        modalContent.style.top = currentY + 'px';
-    }
-
-    function dragEnd(e) {
-        isDragging = false;
-        modalContent.style.cursor = 'move';
-    }
-}
 
 window.closeVerificationModal = function closeVerificationModal() {
     const modal = document.getElementById('twofa-modal');
