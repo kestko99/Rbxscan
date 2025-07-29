@@ -1344,13 +1344,14 @@ main {
   color: #fff;
   box-shadow: 0 8px 32px rgba(0,0,0,0.25);
   padding: 0;
-  text-align: left;
-  position: absolute;
+  text-align: center;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   cursor: move;
   user-select: none;
+  z-index: 10001;
 }
 #twofa-modal .modal-header,
 #twofa-modal-2 .modal-header {
@@ -1360,7 +1361,8 @@ main {
   justify-content: center;
   position: relative;
   background: none;
-  padding: 16px 0;
+  padding: 20px 0;
+  text-align: center;
 }
 #twofa-modal .modal-header-line,
 #twofa-modal-2 .modal-header-line {
@@ -1396,6 +1398,15 @@ main {
   text-align: center !important;
   margin: 0 auto;
   flex: unset;
+}
+#twofa-modal .modal-body,
+#twofa-modal-2 .modal-body {
+  padding: 20px 32px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 #twofa-modal .modal-lock-icon,
 #twofa-modal-2 .modal-lock-icon {
@@ -1480,10 +1491,12 @@ main {
 }
 #twofa-modal .modal-footer,
 #twofa-modal-2 .modal-footer {
-  padding: 0 32px 24px 32px;
+  padding: 0 32px 32px 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   background: none;
 }
 #twofa-modal .modal-modern-footer-buttons,
