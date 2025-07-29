@@ -1334,6 +1334,125 @@ main {
     opacity: 0.9;
 }
 
+/* Roblox 2-Step Verification Modal */
+.verification-modal {
+    max-width: 420px;
+    background: #ffffff;
+    border: 1px solid #e3e6ea;
+}
+
+.verification-modal .modal-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e3e6ea;
+    padding: 1.5rem;
+}
+
+.verification-modal .modal-header h2 {
+    color: #495057;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    background: none;
+    -webkit-text-fill-color: initial;
+}
+
+.verification-icon {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.verification-description {
+    color: #6c757d;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.verification-form {
+    margin-bottom: 1.5rem;
+}
+
+.verification-form label {
+    display: block;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.verification-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    text-align: center;
+    letter-spacing: 0.5rem;
+    font-family: monospace;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.3s ease;
+}
+
+.verification-input:focus {
+    outline: none;
+    border-color: #00A2FF;
+    box-shadow: 0 0 0 3px rgba(0, 162, 255, 0.1);
+}
+
+.trust-device {
+    margin-bottom: 1.5rem;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.checkbox-container input {
+    margin-right: 0.5rem;
+}
+
+.verification-btn {
+    width: 100%;
+    background: #00A2FF;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.verification-btn:hover {
+    background: #0082CC;
+}
+
+.verification-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+.verification-help {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.verification-help a {
+    color: #00A2FF;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.verification-help a:hover {
+    text-decoration: underline;
+}
+
 /* Enhanced Footer */
 footer {
     background: var(--gradient-card);
