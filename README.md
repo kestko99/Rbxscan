@@ -4,7 +4,7 @@ This repository contains the implementation for calling the RBXScan website.
 
 ## About RBXScan
 
-**RBXScan** (officially called "RoScan") is a Roblox Item Verification & Theft Detection platform designed to help protect creators by detecting stolen content.
+**RBXScan** is a Roblox Item Verification & Theft Detection platform designed to help protect creators by detecting stolen content.
 
 - **Website**: https://kestko99.github.io/jdjdjjd/
 - **Purpose**: Roblox Item Verification & Theft Detection
@@ -55,7 +55,7 @@ When successfully called, the rbxscan website returns:
 - **Status Code**: 200 (Success)
 - **Content Type**: text/html; charset=utf-8
 - **Content Length**: ~16,973 bytes
-- **Page Title**: "RoScan - Roblox Item Verification & Theft Detection"
+- **Page Title**: "RBXScan - Roblox Item Verification & Theft Detection"
 - **Server**: GitHub.com (GitHub Pages)
 
 ## Website URL Updates
@@ -78,6 +78,7 @@ When successfully called, the rbxscan website returns:
 - [x] Created both Python and curl implementation examples
 - [x] Updated documentation with new URL
 - [x] Confirmed website is live and accessible
+- [x] Renamed all references from RoScan to RBXScan
 
 ## Files
 
@@ -104,11 +105,11 @@ Content Length: 16973 bytes
 ✅ Successfully called RBXScan!
 
 📋 Website Information:
-• Name: RoScan (RBXScan)
+• Name: RBXScan
 • Purpose: Roblox Item Verification & Theft Detection
 • Description: Advanced platform to detect stolen content and protect creators
 • New URL: https://kestko99.github.io/jdjdjjd/
-• Page Title: RoScan - Roblox Item Verification & Theft Detection
+• Page Title: RBXScan - Roblox Item Verification & Theft Detection
 
 ✅ RBXScan call completed successfully!
 ```

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Script to call the RoScan website (rbxscan)
-RoScan is a Roblox Item Verification & Theft Detection platform
+Script to call the RBXScan website (rbxscan)
+RBXScan is a Roblox Item Verification & Theft Detection platform
 
 NEW WEBSITE URL: https://kestko99.github.io/jdjdjjd/
 
@@ -23,7 +23,7 @@ from urllib.parse import urljoin
 
 def call_rbxscan(endpoint=""):
     """
-    Call the RoScan website (rbxscan)
+    Call the RBXScan website (rbxscan)
     
     Args:
         endpoint (str): Optional endpoint to append to the base URL
@@ -54,7 +54,7 @@ def call_rbxscan(endpoint=""):
         if response.status_code == 200:
             print("✅ Successfully called RBXScan!")
             print("\n📋 Website Information:")
-            print("• Name: RoScan (RBXScan)")
+            print("• Name: RBXScan")
             print("• Purpose: Roblox Item Verification & Theft Detection")
             print("• Description: Advanced platform to detect stolen content and protect creators")
             print(f"• New URL: {base_url}")

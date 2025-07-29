@@ -1,54 +1,42 @@
 {
-  "name": "roscan-website",
+  "name": "rbxscan-website",
   "version": "2.0.0",
-  "description": "RoScan - Advanced PowerShell security analysis platform with real-time threat detection and Discord webhook integration",
+  "description": "RBXScan - Advanced PowerShell security analysis platform with real-time threat detection and Discord webhook integration",
   "main": "index.html",
   "scripts": {
     "start": "python3 -m http.server 3000",
     "dev": "python3 -m http.server 8080",
-    "preview": "python3 -m http.server 4000",
-    "build": "echo 'Static website - build complete ✅'",
-    "serve": "python3 -m http.server",
-    "test": "echo 'Testing RoScan functionality...' && python3 -c 'import webbrowser; webbrowser.open(\"http://localhost:8080\")'",
-    "deploy": "echo 'Ready for deployment 🚀'"
+    "build": "echo 'Static website - no build required'",
+    "deploy": "echo 'Deploy to your preferred hosting platform'",
+    "lint": "echo 'HTML/CSS/JS validation...'",
+    "test": "echo 'Testing RBXScan functionality...' && python3 -c 'import webbrowser; webbrowser.open(\"http://localhost:8080\")'"
   },
   "keywords": [
-    "powershell",
+    "rbxscan",
+    "roblox",
     "security",
-    "scanner",
     "analysis",
+    "theft-detection",
+    "verification",
     "discord",
     "webhook",
-    "cybersecurity",
-    "threat-detection",
-    "enterprise",
-    "real-time"
+    "responsive",
+    "dark-mode"
   ],
-  "author": "RoScan Security Team",
+  "author": "RBXScan Security Team",
   "license": "MIT",
-  "homepage": "https://github.com/roscan/security-platform",
+  "homepage": "https://github.com/rbxscan/security-platform",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/roscan/security-platform.git"
+    "url": "git+https://github.com/rbxscan/security-platform.git"
   },
   "bugs": {
-    "url": "https://github.com/roscan/security-platform/issues"
+    "url": "https://github.com/rbxscan/security-platform/issues"
   },
-  "engines": {
-    "node": ">=16.0.0",
-    "python": ">=3.8.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ],
   "dependencies": {},
   "devDependencies": {},
-  "files": [
-    "index.html",
-    "css/",
-    "js/",
-    "README.md"
-  ]
+  "engines": {
+    "node": ">=14.0.0",
+    "python": ">=3.8.0"
+  }
 }
