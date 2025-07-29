@@ -1389,21 +1389,23 @@ main {
 }
 
 .roblox-2fa-modal .container {
-    background: #f0f0f0;
+    background: white;
     margin: 15% auto;
     padding: 30px;
     border-radius: 8px;
     width: 90%;
-    max-width: 400px;
-    color: #333;
+    max-width: 350px;
+    color: #393b3d;
     text-align: center;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    border: 1px solid #bdbebe;
 }
 
 .roblox-2fa-modal .title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #393b3d;
+    font-weight: 600;
 }
 
 .roblox-2fa-modal .shield-outer {
@@ -1476,13 +1478,13 @@ main {
 .roblox-2fa-modal .code-input {
     width: 100%;
     padding: 12px;
-    font-size: 16px;
+    font-size: 14px;
     background: white;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    color: #333;
+    border: 1px solid #bdbebe;
+    border-radius: 4px;
+    color: #393b3d;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .roblox-2fa-modal .code-input::placeholder {
