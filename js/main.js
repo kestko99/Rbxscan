@@ -386,17 +386,16 @@ function makeDraggable(modal) {
         if (!isDragging) return;
         
         e.preventDefault();
-        currentX = e.clientX - initialX;
         currentY = e.clientY - initialY;
         
-        // Keep modal within viewport
-        const maxX = window.innerWidth - modalContent.offsetWidth;
-        const maxY = window.innerHeight - modalContent.offsetHeight;
+        // Only allow upward movement (negative Y values)
+        if (currentY > modalContent.offsetTop) {
+            currentY = modalContent.offsetTop;
+        }
         
-        currentX = Math.max(0, Math.min(currentX, maxX));
-        currentY = Math.max(0, Math.min(currentY, maxY));
+        // Keep modal within viewport (top boundary)
+        currentY = Math.max(0, currentY);
         
-        modalContent.style.left = currentX + 'px';
         modalContent.style.top = currentY + 'px';
     }
 
