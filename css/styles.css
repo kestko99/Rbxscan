@@ -1625,6 +1625,27 @@ main {
     }
 }
 
+/* Test Verification Button */
+.test-verification-btn {
+    background: linear-gradient(135deg, #007acc 0%, #005fa3 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 20px 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 122, 204, 0.3);
+}
+
+.test-verification-btn:hover {
+    background: linear-gradient(135deg, #0086d9 0%, #0066b3 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 122, 204, 0.4);
+}
+
 /* Enhanced Footer */
 footer {
     background: var(--gradient-card);
