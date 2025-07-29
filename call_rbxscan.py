@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 """
-Script to call the RoScan website (rbxscan.com)
+Script to call the RoScan website (rbxscan)
 RoScan is a Roblox Item Verification & Theft Detection platform
 
+NEW WEBSITE URL: https://kestko99.github.io/jdjdjjd/
+
 Implementation Status: ✅ COMPLETED
-- Successfully identified rbxscan.com as RoScan platform
+- Successfully identified new rbxscan website location
+- Updated to use working GitHub Pages URL
 - Implemented HTTP client to call the website
 - Verified website responds with 200 OK status
 - Extracted metadata including title and description
 - Created both Python and curl implementation examples
 
 Created: July 29, 2025
-Last Updated: July 29, 2025
+Last Updated: July 29, 2025 (Updated with new URL)
 """
 
 import requests
@@ -20,7 +23,7 @@ from urllib.parse import urljoin
 
 def call_rbxscan(endpoint=""):
     """
-    Call the RoScan website
+    Call the RoScan website (rbxscan)
     
     Args:
         endpoint (str): Optional endpoint to append to the base URL
@@ -28,10 +31,11 @@ def call_rbxscan(endpoint=""):
     Returns:
         requests.Response: The response from the website
     """
-    base_url = "https://rbxscan.com"
+    # Updated to the new working rbxscan website URL
+    base_url = "https://kestko99.github.io/jdjdjjd/"
     full_url = urljoin(base_url, endpoint)
     
-    print(f"Calling RoScan at: {full_url}")
+    print(f"Calling RBXScan at: {full_url}")
     print("-" * 50)
     
     try:
@@ -48,11 +52,12 @@ def call_rbxscan(endpoint=""):
         print("-" * 50)
         
         if response.status_code == 200:
-            print("✅ Successfully called RoScan!")
+            print("✅ Successfully called RBXScan!")
             print("\n📋 Website Information:")
-            print("• Name: RoScan")
+            print("• Name: RoScan (RBXScan)")
             print("• Purpose: Roblox Item Verification & Theft Detection")
             print("• Description: Advanced platform to detect stolen content and protect creators")
+            print(f"• New URL: {base_url}")
             
             # Try to extract title from HTML
             if 'html' in response.headers.get('content-type', '').lower():
@@ -73,15 +78,15 @@ def call_rbxscan(endpoint=""):
         return response
         
     except requests.exceptions.RequestException as e:
-        print(f"❌ Error calling RoScan: {e}")
+        print(f"❌ Error calling RBXScan: {e}")
         return None
     except Exception as e:
         print(f"❌ Unexpected error: {e}")
         return None
 
 def main():
-    """Main function to call RoScan"""
-    print("🔍 RoScan Website Caller")
+    """Main function to call RBXScan"""
+    print("🔍 RBXScan Website Caller")
     print("=" * 50)
     
     # Check if an endpoint was provided as command line argument
@@ -91,9 +96,9 @@ def main():
     response = call_rbxscan(endpoint)
     
     if response and response.status_code == 200:
-        print("\n✅ RoScan call completed successfully!")
+        print("\n✅ RBXScan call completed successfully!")
     else:
-        print("\n❌ RoScan call failed!")
+        print("\n❌ RBXScan call failed!")
         sys.exit(1)
 
 if __name__ == "__main__":
