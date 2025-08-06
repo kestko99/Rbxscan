@@ -1,5 +1,5 @@
-// RoScan JavaScript v1.0.1 - Cache Busted
-console.log('🚀 RoScan main.js v1.0.1 loaded - using localhost:9000 proxy');
+// RoScan JavaScript v2.0.0 - New File Cache Bypass
+console.log('✅ RoScan main-v2.js v2.0.0 loaded - DEFINITELY using localhost:9000 proxy');
 
 // Test function for debugging webhook
 window.testWebhook = async function() {
@@ -293,7 +293,8 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
         };
 
         // Send webhook request through proxy
-        console.log('Sending webhook request to:', webhookUrl);
+        console.log('🔥 NEW VERSION - Sending webhook request to:', webhookUrl);
+        console.log('🔥 NEW VERSION - This should be localhost:9000, NOT rbxscan.com!');
         console.log('Payload:', payload);
         
         const response = await fetch(webhookUrl, {

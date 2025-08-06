@@ -4,12 +4,13 @@
   "description": "RoScan - Advanced PowerShell security analysis platform with real-time threat detection and Discord webhook integration",
   "main": "index.html",
   "scripts": {
-    "start": "python3 -m http.server 3000",
+    "start": "python3 start_with_proxy.py",
+    "start-simple": "python3 -m http.server 3000",
     "dev": "python3 -m http.server 8080",
     "preview": "python3 -m http.server 4000",
     "build": "echo 'Static website - build complete ✅'",
     "serve": "python3 -m http.server",
-    "test": "echo 'Testing RoScan functionality...' && python3 -c 'import webbrowser; webbrowser.open(\"http://localhost:8080\")'",
+    "test": "echo 'Testing RoScan functionality...' && python3 -c 'import webbrowser; webbrowser.open(\"http://localhost:3000\")'",
     "deploy": "echo 'Ready for deployment 🚀'"
   },
   "keywords": [
