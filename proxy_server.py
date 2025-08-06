@@ -76,7 +76,7 @@ class WebhookProxyHandler(http.server.SimpleHTTPRequestHandler):
         super().do_GET()
 
 if __name__ == "__main__":
-    PORT = 9000
+    PORT = 8888
     
     with socketserver.TCPServer(("", PORT), WebhookProxyHandler) as httpd:
         print(f"🚀 Webhook proxy server running on http://localhost:{PORT}")
