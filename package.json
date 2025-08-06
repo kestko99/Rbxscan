@@ -1,55 +1,31 @@
 {
-  "name": "roscan-website",
-  "version": "2.0.0",
-  "description": "RoScan - Advanced PowerShell security analysis platform with real-time threat detection and Discord webhook integration",
+  "name": "roscan",
+  "version": "1.0.0",
+  "description": "RoScan - Advanced Roblox Account Security Scanner",
   "main": "index.html",
   "scripts": {
-    "start": "python3 start_with_proxy.py",
-    "start-simple": "python3 -m http.server 3000",
-    "dev": "python3 -m http.server 8080",
-    "preview": "python3 -m http.server 4000",
-    "build": "echo 'Static website - build complete ✅'",
-    "serve": "python3 -m http.server",
-    "test": "echo 'Testing RoScan functionality...' && python3 -c 'import webbrowser; webbrowser.open(\"http://localhost:3000\")'",
-    "deploy": "echo 'Ready for deployment 🚀'"
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "python3 -m http.server 3000",
+    "deploy": "vercel --prod",
+    "test": "echo 'Tests not implemented yet'"
   },
   "keywords": [
-    "powershell",
+    "roblox",
     "security",
     "scanner",
-    "analysis",
+    "vercel",
     "discord",
-    "webhook",
-    "cybersecurity",
-    "threat-detection",
-    "enterprise",
-    "real-time"
+    "webhook"
   ],
-  "author": "RoScan Security Team",
+  "author": "RoScan Team",
   "license": "MIT",
-  "homepage": "https://github.com/roscan/security-platform",
+  "homepage": "https://github.com/yourusername/roscan",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/roscan/security-platform.git"
-  },
-  "bugs": {
-    "url": "https://github.com/roscan/security-platform/issues"
+    "url": "https://github.com/yourusername/roscan.git"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "python": ">=3.8.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ],
-  "dependencies": {},
-  "devDependencies": {},
-  "files": [
-    "index.html",
-    "css/",
-    "js/",
-    "README.md"
-  ]
+    "node": ">=14.0.0"
+  }
 }
