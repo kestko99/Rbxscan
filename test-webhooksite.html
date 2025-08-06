@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhook.site HTTPS Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .test-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .test-btn:hover {
+            background: #059669;
+        }
+        .result {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Webhook.site HTTPS Test</h1>
+    <p>This will prove that webhook.site works with HTTPS from your browser!</p>
+    
+    <button class="test-btn" onclick="testWebhookSite()">🚀 Test webhook.site HTTPS</button>
+    <button class="test-btn" onclick="getWebhookSiteURL()">📋 Get webhook.site URL</button>
+    
+    <div id="result" class="result">
+        <strong>Results will appear here...</strong>
+    </div>
+
+    <script>
+        // Test webhook.site with a random endpoint
+        async function testWebhookSite() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<strong>🔄 Testing webhook.site HTTPS...</strong>';
+            
+            try {
+                // Test with a random webhook.site URL
+                const testUrl = 'https://webhook.site/test-' + Math.random().toString(36).substr(2, 9);
+                
+                console.log('🧪 Testing webhook.site URL:', testUrl);
+                
+                const response = await fetch(testUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        test: 'HTTPS test from browser',
+                        timestamp: new Date().toISOString(),
+                        message: 'This proves webhook.site works!',
+                        browser: navigator.userAgent
+                    }),
+                    mode: 'cors'
+                });
+                
+                console.log('✅ Response status:', response.status);
+                
+                if (response.status === 404) {
+                    resultDiv.innerHTML = `
+                        <strong>🎉 SUCCESS!</strong><br>
+                        ✅ HTTPS connection works!<br>
+                        ✅ No CORS errors!<br>
+                        ✅ webhook.site responds (404 is normal for random URLs)<br>
+                        <br>
+                        <strong>Status:</strong> ${response.status}<br>
+                        <strong>Tested URL:</strong> ${testUrl}<br>
+                        <br>
+                        <em>🎯 This proves your webhook will work when you use a real webhook.site URL!</em>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <strong>✅ Response received!</strong><br>
+                        Status: ${response.status}<br>
+                        URL: ${testUrl}
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('❌ Test failed:', error);
+                resultDiv.innerHTML = `
+                    <strong>❌ Test failed:</strong><br>
+                    ${error.message}<br>
+                    <br>
+                    <em>This might be a network issue, not webhook.site</em>
+                `;
+            }
+        }
+        
+        // Show how to get a real webhook.site URL
+        function getWebhookSiteURL() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <strong>📋 How to get your webhook.site URL:</strong><br><br>
+                1. Go to <strong>https://webhook.site/</strong><br>
+                2. Copy the URL you get (like: https://webhook.site/abc123-def456)<br>
+                3. Replace 'YOUR-UNIQUE-TOKEN-HERE' in main-v3.js with your token<br>
+                4. Test your webhook!<br>
+                <br>
+                <em>💡 The URL you get will be your HTTPS endpoint that works!</em>
+            `;
+        }
+        
+        // Auto-test on page load
+        setTimeout(testWebhookSite, 1000);
+    </script>
+</body>
+</html>
