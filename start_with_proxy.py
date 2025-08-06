@@ -18,8 +18,8 @@ def main():
     processes = []
     
     try:
-        # Start webhook proxy on port 8080
-        print("📡 Starting webhook proxy server on port 8080...")
+        # Start webhook proxy on port 9000
+        print("📡 Starting webhook proxy server on port 9000...")
         proxy_process = subprocess.Popen([
             sys.executable, 'proxy_server.py'
         ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -36,7 +36,7 @@ def main():
         processes.append(web_process)
         
         print("\n✅ Both servers are running!")
-        print("📡 Webhook Proxy: http://localhost:8080/webhook")
+        print("📡 Webhook Proxy: http://localhost:9000/webhook")
         print("🌐 Main Website: http://localhost:3000")
         print("\n💡 Open http://localhost:3000 in your browser")
         print("⚠️  Make sure to update the webhook URL in proxy_server.py if needed")

