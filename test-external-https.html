@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>External HTTPS Webhook Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .service-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .setup-instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .service-selector {
+            margin: 20px 0;
+        }
+        select {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 16px;
+        }
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 External HTTPS Webhook Testing</h1>
+        
+        <div class="service-info">
+            <h3>🔒 Current Service: <span id="currentService">Loading...</span></h3>
+            <p><strong>URL:</strong> <span id="currentUrl">Loading...</span></p>
+            <p><strong>Status:</strong> <span id="serviceStatus">Ready</span></p>
+        </div>
+
+        <div class="service-selector">
+            <label for="serviceSelect">Choose Webhook Service:</label>
+            <select id="serviceSelect">
+                <option value="beeceptor">Beeceptor (Free)</option>
+                <option value="webhookSite">Webhook.site (Free)</option>
+                <option value="hookdeck">Hookdeck (Professional)</option>
+                <option value="localTunnel">LocalTunnel (Free)</option>
+            </select>
+            <button class="btn" onclick="switchService()">Switch Service</button>
+        </div>
+
+        <div class="setup-instructions" id="setupInstructions">
+            <h3>📋 Setup Instructions</h3>
+            <div id="instructionContent">Loading...</div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="testExternalWebhook()">🧪 Test HTTPS Webhook</button>
+            <button class="btn" onclick="clearConsole()">🧹 Clear Console</button>
+            <button class="btn" onclick="showSetupSteps()">📖 Show Setup Steps</button>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 30px;">
+            <h3>📊 Available Services:</h3>
+            <ul>
+                <li><strong>Beeceptor</strong> - Free HTTPS endpoints, great for testing</li>
+                <li><strong>Webhook.site</strong> - Temporary webhooks, instant setup</li>
+                <li><strong>Hookdeck</strong> - Professional webhook management</li>
+                <li><strong>LocalTunnel</strong> - Expose localhost via HTTPS tunnel</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <p><strong>💡 Console Output:</strong> Check browser developer console (F12) for detailed logs</p>
+        </div>
+    </div>
+
+    <script src="js/webhook-external.js"></script>
+    <script>
+        // Update UI with current service info
+        function updateServiceInfo() {
+            const service = window.EXTERNAL_WEBHOOK.getService();
+            const url = window.EXTERNAL_WEBHOOK.getUrl();
+            
+            document.getElementById('currentService').textContent = service.name;
+            document.getElementById('currentUrl').textContent = url;
+            document.getElementById('instructionContent').innerHTML = `
+                <p><strong>Setup:</strong> ${service.setup}</p>
+                <p><strong>Current URL:</strong> <code>${url}</code></p>
+                <p><em>💡 Update the URL in webhook-external.js after setup</em></p>
+            `;
+        }
+
+        // Switch webhook service
+        function switchService() {
+            const select = document.getElementById('serviceSelect');
+            const serviceName = select.value;
+            
+            if (window.EXTERNAL_WEBHOOK.switchService(serviceName)) {
+                updateServiceInfo();
+                document.getElementById('serviceStatus').textContent = 'Service switched!';
+                console.log(`✅ Switched to ${serviceName}`);
+            } else {
+                document.getElementById('serviceStatus').textContent = 'Switch failed!';
+                console.error(`❌ Failed to switch to ${serviceName}`);
+            }
+        }
+
+        // Clear console
+        function clearConsole() {
+            console.clear();
+            console.log('🧹 Console cleared');
+        }
+
+        // Show setup steps
+        function showSetupSteps() {
+            const service = window.EXTERNAL_WEBHOOK.getService();
+            console.log(`📖 Detailed setup for ${service.name}:`);
+            
+            switch(document.getElementById('serviceSelect').value) {
+                case 'beeceptor':
+                    console.log(`
+1. Go to https://beeceptor.com/
+2. Click "Create HTTP endpoint"
+3. Choose a name (e.g., "my-webhook")
+4. Your endpoint will be: https://my-webhook.free.beeceptor.com/
+5. Update webhook-external.js with your URL
+6. Test the webhook!
+                    `);
+                    break;
+                case 'webhookSite':
+                    console.log(`
+1. Go to https://webhook.site/
+2. You'll get a unique URL instantly
+3. Copy the URL (e.g., https://webhook.site/abc123)
+4. Update webhook-external.js with your URL
+5. Test the webhook!
+                    `);
+                    break;
+                case 'hookdeck':
+                    console.log(`
+1. Sign up at https://hookdeck.com/
+2. Create a new connection
+3. Get your webhook endpoint URL
+4. Update webhook-external.js with your URL
+5. Test the webhook!
+                    `);
+                    break;
+                case 'localTunnel':
+                    console.log(`
+1. Install: npm install -g localtunnel
+2. Start local server: python3 proxy_server.py
+3. Expose via tunnel: lt --port 7777 --subdomain mywebhook
+4. Use URL: https://mywebhook.loca.lt/webhook
+5. Update webhook-external.js with your URL
+                    `);
+                    break;
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            updateServiceInfo();
+            console.log('🌐 External HTTPS Webhook Test Page Ready!');
+            console.log('💡 Use the buttons above to test different webhook services');
+        });
+    </script>
+</body>
+</html>
