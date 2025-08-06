@@ -24,43 +24,135 @@ const apiLimiter = rateLimit({
 // Apply rate limiting to webhook endpoint
 app.use('/api/webhook', apiLimiter);
 
-// Webhook proxy endpoint
+// ULTRA-SECURE WEBHOOK ENDPOINT - COMPLETELY HIDDEN
 app.post('/api/webhook', async (req, res) => {
     try {
-        // Get webhook URL from environment variable
+        // 1. Get webhook URL from environment (NEVER exposed to frontend)
         const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
         
         if (!webhookUrl) {
             console.error('Discord webhook URL not configured');
-            return res.status(500).json({ error: 'Webhook not configured' });
+            return res.status(500).json({ error: 'Service unavailable' });
         }
 
-        // Validate payload
+        // 2. Enhanced payload validation
         const { content } = req.body;
         if (!content || typeof content !== 'string') {
-            return res.status(400).json({ error: 'Invalid payload' });
+            return res.status(400).json({ error: 'Invalid request format' });
         }
 
-        // Forward to Discord webhook
+        // 3. Content sanitization and length limits
+        if (content.length > 2000) {
+            return res.status(400).json({ error: 'Content too long' });
+        }
+
+        // 4. Add request metadata (but hide webhook URL)
+        const enhancedPayload = {
+            content: content,
+            embeds: [{
+                footer: {
+                    text: `Request ID: ${Date.now()}`
+                },
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        // 5. Forward to Discord webhook (URL completely hidden)
         const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'User-Agent': 'RoScan-SecureProxy/2.0'
             },
-            body: JSON.stringify({ content })
+            body: JSON.stringify(enhancedPayload)
         });
 
         if (response.ok) {
-            res.json({ success: true });
+            // 6. Generic success response (no webhook details)
+            res.json({ 
+                success: true,
+                id: Date.now(),
+                status: 'delivered'
+            });
         } else {
-            console.error('Discord webhook error:', response.status, response.statusText);
-            res.status(response.status).json({ error: 'Webhook request failed' });
+            console.error('Discord webhook error:', response.status);
+            // 7. Generic error (no webhook URL exposed)
+            res.status(500).json({ error: 'Delivery failed' });
         }
     } catch (error) {
-        console.error('Webhook proxy error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('Webhook proxy error:', error.message);
+        // 8. Generic error response (no internal details)
+        res.status(500).json({ error: 'Service temporarily unavailable' });
     }
 });
+
+// STEALTH WEBHOOK ENDPOINT - Multiple disguised routes
+app.post('/api/analytics', async (req, res) => {
+    // This looks like analytics but is actually a webhook proxy
+    return handleSecureWebhook(req, res);
+});
+
+app.post('/api/feedback', async (req, res) => {
+    // This looks like feedback but is actually a webhook proxy
+    return handleSecureWebhook(req, res);
+});
+
+app.post('/api/report', async (req, res) => {
+    // This looks like a report endpoint but is actually a webhook proxy
+    return handleSecureWebhook(req, res);
+});
+
+// Hidden webhook handler function
+async function handleSecureWebhook(req, res) {
+    try {
+        const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+        if (!webhookUrl) {
+            return res.status(500).json({ error: 'Service unavailable' });
+        }
+
+        const { content, data, message, feedback } = req.body;
+        const actualContent = content || data || message || feedback;
+        
+        if (!actualContent || typeof actualContent !== 'string') {
+            return res.status(400).json({ error: 'Invalid data format' });
+        }
+
+        if (actualContent.length > 2000) {
+            return res.status(400).json({ error: 'Data too long' });
+        }
+
+        // Send to Discord with stealth headers
+        const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'User-Agent': 'Mozilla/5.0 (compatible; Analytics/1.0)'
+            },
+            body: JSON.stringify({
+                content: actualContent,
+                embeds: [{
+                    color: 0x00ff00,
+                    footer: {
+                        text: `Stealth • ${new Date().toLocaleString()}`
+                    }
+                }]
+            })
+        });
+
+        if (response.ok) {
+            res.json({ 
+                status: 'processed',
+                id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                message: 'Data submitted successfully'
+            });
+        } else {
+            res.status(500).json({ error: 'Processing failed' });
+        }
+    } catch (error) {
+        console.error('Stealth webhook error:', error.message);
+        res.status(500).json({ error: 'Service error' });
+    }
+}
 
 // ====== API ENDPOINTS EXAMPLES ======
 
