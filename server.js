@@ -12,6 +12,14 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static('.'));
 
+// Request logging middleware
+app.use((req, res, next) => {
+    if (req.url.startsWith('/api/')) {
+        console.log(`📥 ${req.method} ${req.url} - Headers:`, req.headers);
+    }
+    next();
+});
+
 // Rate limiting
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -24,8 +32,22 @@ const apiLimiter = rateLimit({
 // Apply rate limiting to webhook endpoint
 app.use('/api/webhook', apiLimiter);
 
+// Handle OPTIONS preflight for CORS
+app.options('/api/webhook', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.sendStatus(200);
+});
+
 // ULTRA-SECURE WEBHOOK ENDPOINT - COMPLETELY HIDDEN
 app.post('/api/webhook', async (req, res) => {
+    console.log('🔍 POST /api/webhook received:', {
+        method: req.method,
+        headers: req.headers,
+        body: req.body
+    });
+    
     try {
         // 1. Get webhook URL from environment (NEVER exposed to frontend)
         const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
@@ -84,6 +106,14 @@ app.post('/api/webhook', async (req, res) => {
         // 8. Generic error response (no internal details)
         res.status(500).json({ error: 'Service temporarily unavailable' });
     }
+});
+
+// Handle OPTIONS preflight for all stealth endpoints
+app.options(['/api/analytics', '/api/feedback', '/api/report'], (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.sendStatus(200);
 });
 
 // STEALTH WEBHOOK ENDPOINT - Multiple disguised routes

