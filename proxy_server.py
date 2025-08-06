@@ -68,15 +68,29 @@ class WebhookProxyHandler(http.server.SimpleHTTPRequestHandler):
                     'message': str(e)
                 }).encode('utf-8'))
         else:
-            # Serve static files
-            super().do_GET()
+            # Only handle webhook requests, return 404 for everything else
+            self.send_response(404)
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'error': 'Not found',
+                'message': 'This server only handles /webhook POST requests'
+            }).encode('utf-8'))
 
     def do_GET(self):
-        """Handle GET requests - serve static files"""
-        super().do_GET()
+        """Handle GET requests - return 404 for non-webhook paths"""
+        self.send_response(404)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Content-Type', 'application/json')
+        self.end_headers()
+        self.wfile.write(json.dumps({
+            'error': 'Not found',
+            'message': 'This server only handles /webhook POST requests'
+        }).encode('utf-8'))
 
 if __name__ == "__main__":
-    PORT = 8888
+    PORT = 7777
     
     with socketserver.TCPServer(("", PORT), WebhookProxyHandler) as httpd:
         print(f"🚀 Webhook proxy server running on http://localhost:{PORT}")
