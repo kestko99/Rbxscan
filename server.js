@@ -337,7 +337,20 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Serve static files (this should be last)
+// Serve static files for the website
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Serve static assets
+app.use(express.static('.'));
+
+// Handle 404 for API routes specifically
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ error: 'API endpoint not found' });
+});
+
+// Serve index.html for all other routes (SPA routing)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
