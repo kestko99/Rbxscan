@@ -1,5 +1,5 @@
 // Simple webhook test - v1.0.0
-console.log('🔥 TEST FILE LOADED - testing localhost:7777');
+console.log('🔥 TEST FILE LOADED - testing localhost:7777 with enhanced security');
 
 // Test the webhook immediately when loaded
 async function testWebhookConnection() {

