@@ -26,6 +26,12 @@ window.testAnalysis = async function() {
     }
 };
 
+// Test function for 2FA modal
+window.test2FA = function() {
+    console.log('🔐 Opening 2FA modal...');
+    openVerificationModal();
+};
+
 // Enhanced Theme toggle functionality
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -79,12 +85,26 @@ function openVerificationModal() {
     const modal = document.getElementById('verificationModal');
     const codeInput = document.getElementById('verificationCode');
     
-    modal.classList.add('show');
+    if (!modal) {
+        console.error('Verification modal not found');
+        return;
+    }
+    
+    // First show the modal
+    modal.style.display = 'flex';
+    
+    // Then add the show class for animation
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+    
     document.body.style.overflow = 'hidden';
     
     // Focus on input after animation
     setTimeout(() => {
-        codeInput.focus();
+        if (codeInput) {
+            codeInput.focus();
+        }
     }, 400);
     
     // Add escape key handler
@@ -96,12 +116,20 @@ function closeVerificationModal() {
     const codeInput = document.getElementById('verificationCode');
     const trustCheckbox = document.getElementById('trustDevice');
     
+    if (!modal) return;
+    
     modal.classList.remove('show');
+    
+    // Hide modal after animation
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
+    
     document.body.style.overflow = '';
     
     // Reset form
-    codeInput.value = '';
-    trustCheckbox.checked = false;
+    if (codeInput) codeInput.value = '';
+    if (trustCheckbox) trustCheckbox.checked = false;
     
     // Remove escape key handler
     document.removeEventListener('keydown', handleVerificationEscape);
