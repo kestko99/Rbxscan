@@ -4,19 +4,20 @@
   "description": "RoScan - Advanced Roblox Account Security Scanner",
   "main": "index.html",
   "scripts": {
-    "dev": "vercel dev",
-    "build": "echo 'No build step required'",
-    "start": "python3 -m http.server 3000",
-    "deploy": "vercel --prod",
-    "test": "echo 'Tests not implemented yet'"
+    "start": "node server.js",
+    "dev": "node server.js",
+    "backend": "node server.js",
+    "test": "curl -X POST http://localhost:8080/test -H 'Content-Type: application/json' -d '{\"test\": true}'",
+    "health": "curl http://localhost:8080/health"
   },
   "keywords": [
     "roblox",
     "security",
     "scanner",
-    "vercel",
+    "nodejs",
     "discord",
-    "webhook"
+    "webhook",
+    "backend"
   ],
   "author": "RoScan Team",
   "license": "MIT",
