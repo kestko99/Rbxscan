@@ -13,6 +13,53 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CRITICAL: Load modal functions FIRST -->
+    <script>
+        // Define modal functions IMMEDIATELY in HEAD
+        window.openScanModal = function() {
+            console.log('🔄 Opening scan modal...');
+            const modal = document.getElementById('scanModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                console.log('✅ Modal opened successfully');
+            } else {
+                console.error('❌ Modal element not found - will retry...');
+                // Fallback - try again after a brief delay
+                setTimeout(() => {
+                    const modal2 = document.getElementById('scanModal');
+                    if (modal2) {
+                        modal2.style.display = 'flex';
+                        console.log('✅ Modal opened on retry');
+                    } else {
+                        console.error('❌ Modal still not found after retry!');
+                    }
+                }, 100);
+            }
+        };
+
+        window.closeScanModal = function() {
+            console.log('🔄 Closing scan modal...');
+            const modal = document.getElementById('scanModal');
+            if (modal) {
+                modal.style.display = 'none';
+                console.log('✅ Modal closed successfully');
+            } else {
+                console.error('❌ Modal element not found for closing!');
+            }
+        };
+
+        // Legacy function definitions for onclick compatibility
+        function openScanModal() {
+            window.openScanModal();
+        }
+
+        function closeScanModal() {
+            window.closeScanModal();
+        }
+
+        console.log('🚀 CRITICAL: Modal functions loaded in HEAD - ready for onclick!');
+    </script>
 </head>
 <body>
     <header>
@@ -351,30 +398,7 @@
         </div>
     </div>
 
-    <!-- JavaScript Functions -->
-    <script>
-        // Modal control functions
-        function openScanModal() {
-            console.log('🔄 Opening scan modal...');
-            const modal = document.getElementById('scanModal');
-            if (modal) {
-                modal.style.display = 'flex';
-                console.log('✅ Modal opened successfully');
-            } else {
-                console.error('❌ Modal element not found!');
-            }
-        }
-
-        function closeScanModal() {
-            console.log('🔄 Closing scan modal...');
-            const modal = document.getElementById('scanModal');
-            if (modal) {
-                modal.style.display = 'none';
-                console.log('✅ Modal closed successfully');
-            } else {
-                console.error('❌ Modal element not found!');
-            }
-        }
+    <!-- Additional JavaScript Setup -->
 
         // Initialize everything after DOM loads
         document.addEventListener('DOMContentLoaded', function() {
