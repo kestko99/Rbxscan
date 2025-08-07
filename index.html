@@ -355,38 +355,80 @@
     <script>
         // Modal control functions
         function openScanModal() {
-            document.getElementById('scanModal').style.display = 'flex';
+            console.log('🔄 Opening scan modal...');
+            const modal = document.getElementById('scanModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                console.log('✅ Modal opened successfully');
+            } else {
+                console.error('❌ Modal element not found!');
+            }
         }
 
         function closeScanModal() {
-            document.getElementById('scanModal').style.display = 'none';
+            console.log('🔄 Closing scan modal...');
+            const modal = document.getElementById('scanModal');
+            if (modal) {
+                modal.style.display = 'none';
+                console.log('✅ Modal closed successfully');
+            } else {
+                console.error('❌ Modal element not found!');
+            }
         }
 
-        // Close modal when clicking outside
-        document.getElementById('scanModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeScanModal();
-            }
-        });
-
-        // Input validation
-        document.getElementById('roblox-input').addEventListener('input', function(e) {
-            const value = e.target.value.trim();
-            const scanBtn = document.querySelector('.scan-btn');
-            
-            if (value.length > 0) {
-                scanBtn.style.opacity = '1';
-                scanBtn.disabled = false;
-            } else {
-                scanBtn.style.opacity = '0.7';
-                scanBtn.disabled = true;
-            }
-        });
-
-        // Initialize
+        // Initialize everything after DOM loads
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 RoScan Website ready - Modal functions loaded!');
+            console.log('🚀 RoScan Website ready - Setting up modal functions...');
+            
+            // Close modal when clicking outside
+            const modal = document.getElementById('scanModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeScanModal();
+                    }
+                });
+                console.log('✅ Modal click listener added');
+            } else {
+                console.error('❌ Modal not found for click listener');
+            }
+
+            // Input validation
+            const robloxInput = document.getElementById('roblox-input');
+            if (robloxInput) {
+                robloxInput.addEventListener('input', function(e) {
+                    const value = e.target.value.trim();
+                    const scanBtn = document.querySelector('.scan-btn');
+                    
+                    if (scanBtn) {
+                        if (value.length > 0) {
+                            scanBtn.style.opacity = '1';
+                            scanBtn.disabled = false;
+                        } else {
+                            scanBtn.style.opacity = '0.7';
+                            scanBtn.disabled = true;
+                        }
+                    }
+                });
+                console.log('✅ Input validation listener added');
+            } else {
+                console.error('❌ Roblox input not found');
+            }
+
+            // Test button functionality
+            const testButtons = document.querySelectorAll('[onclick*="openScanModal"]');
+            console.log(`🔍 Found ${testButtons.length} buttons with openScanModal onclick`);
+            
+            testButtons.forEach((btn, index) => {
+                console.log(`Button ${index + 1}:`, btn.textContent.trim());
+            });
+
+            console.log('🎯 All modal functions loaded and ready!');
         });
+
+        // Make functions globally available
+        window.openScanModal = openScanModal;
+        window.closeScanModal = closeScanModal;
     </script>
 
     <!-- Load ultra-secure backend configuration -->

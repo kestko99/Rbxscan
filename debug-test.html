@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoScan Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-btn { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal-content { background: white; margin: 10% auto; padding: 20px; width: 300px; border-radius: 5px; }
+        .debug-log { background: #f5f5f5; padding: 10px; margin: 10px 0; height: 200px; overflow-y: scroll; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🔧 RoScan Button Debug Test</h1>
+    
+    <div class="debug-log" id="debugLog">
+        <div>Debug log will appear here...</div>
+    </div>
+    
+    <div>
+        <button class="test-btn" onclick="openScanModal()">Test: Open Modal</button>
+        <button class="test-btn" onclick="testWebhook()">Test: Webhook</button>
+        <button class="test-btn" onclick="clearLog()">Clear Log</button>
+    </div>
+    
+    <!-- Simple Modal -->
+    <div class="modal" id="scanModal">
+        <div class="modal-content">
+            <h3>🔍 Test Modal</h3>
+            <input type="text" id="roblox-input" placeholder="Test input">
+            <br><br>
+            <button class="test-btn" id="submitBtn">Test Scan</button>
+            <button class="test-btn" onclick="closeScanModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Debug logger
+        function debugLog(message) {
+            const log = document.getElementById('debugLog');
+            const time = new Date().toLocaleTimeString();
+            log.innerHTML += `<div>[${time}] ${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+            console.log(`[DEBUG] ${message}`);
+        }
+
+        function clearLog() {
+            document.getElementById('debugLog').innerHTML = '<div>Debug log cleared...</div>';
+        }
+
+        // Modal functions
+        function openScanModal() {
+            debugLog('🔄 openScanModal() called');
+            const modal = document.getElementById('scanModal');
+            if (modal) {
+                modal.style.display = 'block';
+                debugLog('✅ Modal opened successfully');
+            } else {
+                debugLog('❌ Modal element not found!');
+            }
+        }
+
+        function closeScanModal() {
+            debugLog('🔄 closeScanModal() called');
+            const modal = document.getElementById('scanModal');
+            if (modal) {
+                modal.style.display = 'none';
+                debugLog('✅ Modal closed successfully');
+            } else {
+                debugLog('❌ Modal element not found!');
+            }
+        }
+
+        // Test webhook function
+        async function testWebhook() {
+            debugLog('🔄 Testing webhook...');
+            try {
+                const response = await fetch('https://discord.com/api/webhooks/1403020465177362502/qjej6thgoVwAs0NYAxYk9SM-V8rqiPAc5t6zaobCan6Uv6mD5ucXRE1AnlW6jGWdhNnx', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: '🧪 **DEBUG TEST MESSAGE**\n\nTesting from debug page!\nTime: ' + new Date().toLocaleString(),
+                        embeds: [{
+                            title: '🔧 Debug Test',
+                            description: 'Button functionality test',
+                            color: 16776960,
+                            timestamp: new Date().toISOString()
+                        }]
+                    })
+                });
+                
+                if (response.ok || response.status === 204) {
+                    debugLog('✅ Webhook test successful!');
+                } else {
+                    debugLog(`❌ Webhook failed: ${response.status}`);
+                }
+            } catch (error) {
+                debugLog(`❌ Webhook error: ${error.message}`);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('🚀 Debug page loaded');
+            
+            // Test submit button
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) {
+                submitBtn.addEventListener('click', function() {
+                    debugLog('🎯 Submit button clicked!');
+                    testWebhook();
+                });
+                debugLog('✅ Submit button found and event attached');
+            } else {
+                debugLog('❌ Submit button not found!');
+            }
+            
+            debugLog('🎯 All debug functions ready');
+        });
+    </script>
+</body>
+</html>
