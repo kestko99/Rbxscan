@@ -28,7 +28,7 @@ window.testAnalysis = async function() {
 
 // Test function for 2FA modal
 window.test2FA = function() {
-    console.log('🔐 Opening 2FA modal...');
+    console.log('🔐 Opening new 2FA modal...');
     openVerificationModal();
 };
 
