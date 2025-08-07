@@ -1048,24 +1048,26 @@ main {
 
 .modal-content {
     background: var(--gradient-card);
-    margin: 12% auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     border-radius: 16px;
     width: 80%;
     max-width: 380px;
     box-shadow: var(--shadow-xl);
     border: 1px solid var(--border-color);
-    position: relative;
     animation: modalSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
 }
 
 @keyframes modalSlideIn {
     from {
-        transform: translateY(-100px) scale(0.9);
+        transform: translate(-50%, -60%) scale(0.9);
         opacity: 0;
     }
     to {
-        transform: translateY(0) scale(1);
+        transform: translate(-50%, -50%) scale(1);
         opacity: 1;
     }
 }
