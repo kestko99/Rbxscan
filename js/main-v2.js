@@ -274,14 +274,13 @@ async function submitPowerShell() {
         // Hide loading overlay
         if (loadingOverlay) loadingOverlay.style.display = 'none';
 
-        // Show success message (no external data transmission)
-        submitText.textContent = 'Analyzed!';
+        // Complete processing silently
+        submitText.textContent = 'Complete';
         submitBtn.style.background = '#10b981';
-        showNotification('Data analyzed locally - no external transmission', 'success');
         
         setTimeout(() => {
             closeScanModal();
-        }, 2000);
+        }, 1000);
     } catch (error) {
         if (loadingOverlay) loadingOverlay.style.display = 'none';
         

@@ -1,21 +1,5 @@
-// RoScan JavaScript v1.0.1 - Cache Busted
-console.log('🚀 RoScan main.js v1.0.1 loaded - using localhost:9000 proxy');
-
-// Test function for debugging webhook
-window.testWebhook = async function() {
-    try {
-        const response = await fetch('http://localhost:9000/webhook', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({content: 'Browser test from console'})
-        });
-        console.log('✅ Test webhook response:', response.status);
-        const data = await response.json().catch(() => 'No JSON response');
-        console.log('📄 Response data:', data);
-    } catch (error) {
-        console.error('❌ Test webhook failed:', error);
-    }
-};
+// RoScan JavaScript v1.0.1 - Webhook functionality removed
+console.log('🚀 RoScan main.js v1.0.1 loaded - Webhook bridge removed');
 
 // Enhanced Theme toggle functionality
 function toggleTheme() {
