@@ -4,17 +4,17 @@
   "description": "RoScan - Advanced Roblox Account Security Scanner",
   "main": "index.html",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "backend": "node server.js",
-    "test": "curl -X POST http://localhost:8080/test -H 'Content-Type: application/json' -d '{\"test\": true}'",
-    "health": "curl http://localhost:8080/health"
+    "start": "python3 -m http.server 8080",
+    "serve": "python3 -m http.server 8080",
+    "dev": "python3 -m http.server 8080",
+    "test": "echo 'Open http://localhost:8080 to test the website'",
+    "build": "echo 'No build step required - static website'"
   },
   "keywords": [
     "roblox",
     "security",
     "scanner",
-    "nodejs",
+    "hidden",
     "discord",
     "webhook",
     "backend"
