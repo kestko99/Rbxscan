@@ -181,9 +181,16 @@ After deployment, verify:
 
 ### Common Issues
 
-**Issue**: "API not found (404)"
+**Issue**: "404: NOT_FOUND" during deployment
+- **Solution**: Updated `vercel.json` with simplified configuration
+- **Check**: API files are in `/api/` directory
+- **Fix**: Remove the `"name"` field from `vercel.json`
+- **Test**: Deploy with `vercel --prod` after fixes
+
+**Issue**: "API not found (404)" after deployment
 - **Solution**: Check `vercel.json` is in root directory
 - **Check**: API file is at `/api/webhook.js`
+- **Test**: Try `/api/test` endpoint first
 
 **Issue**: "CORS error"
 - **Solution**: Ensure `vercel.json` has CORS headers

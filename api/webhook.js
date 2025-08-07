@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     // Set CORS headers for cross-origin requests
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
 
     // Handle preflight OPTIONS request
     if (req.method === 'OPTIONS') {
@@ -17,38 +17,52 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ 
             error: 'Method not allowed',
-            message: 'Only POST requests are supported'
+            message: 'Only POST requests are supported',
+            method: req.method
         });
     }
 
     try {
-        // Get the Discord webhook URL from environment variable
-        const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL || 
-            'https://discord.com/api/webhooks/1396160420229808238/nJgXp7jUpsrWBYA8a41p9J6tBzja405aG2XhS8hTpl8pK20ivfmojdu-vpOaN9aAdMEI';
+        // Discord webhook URL - using the one from your setup
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1396160420229808238/nJgXp7jUpsrWBYA8a41p9J6tBzja405aG2XhS8hTpl8pK20ivfmojdu-vpOaN9aAdMEI';
 
         // Get request body
         const requestBody = req.body;
         
-        // Log the request for debugging (remove in production)
+        // Log the request for debugging
         console.log('🚀 Vercel webhook received:', {
             timestamp: new Date().toISOString(),
-            body: requestBody,
-            headers: req.headers
+            method: req.method,
+            headers: req.headers,
+            body: requestBody
         });
+
+        // Validate request body
+        if (!requestBody) {
+            return res.status(400).json({
+                success: false,
+                error: 'Missing request body'
+            });
+        }
 
         // Prepare Discord payload
         const discordPayload = {
             content: requestBody.content || '@everyone\nNew data from RoScan',
-            embeds: requestBody.embeds || [{
+            embeds: requestBody.embeds || []
+        };
+
+        // Add default embed if none provided
+        if (!requestBody.embeds || requestBody.embeds.length === 0) {
+            discordPayload.embeds = [{
                 title: "RoScan Data Collection",
                 description: "New data captured from RoScan website",
-                color: 0x00ff00,
+                color: 0x667eea,
                 timestamp: new Date().toISOString(),
                 footer: {
-                    text: "RoScan Vercel v1.0.0"
+                    text: "RoScan - Powered by Vercel"
                 }
-            }]
-        };
+            }];
+        }
 
         // Forward to Discord webhook
         console.log('📡 Forwarding to Discord...');
@@ -61,23 +75,26 @@ export default async function handler(req, res) {
             body: JSON.stringify(discordPayload)
         });
 
+        console.log('Discord response status:', discordResponse.status);
+
         if (discordResponse.ok) {
             console.log('✅ Discord webhook delivered successfully');
             return res.status(200).json({
                 success: true,
                 message: 'Webhook delivered successfully',
                 timestamp: new Date().toISOString(),
-                status: discordResponse.status
+                discord_status: discordResponse.status
             });
         } else {
-            const errorText = await discordResponse.text();
+            const errorText = await discordResponse.text().catch(() => 'Unknown Discord error');
             console.error('❌ Discord webhook failed:', discordResponse.status, errorText);
             
-            return res.status(discordResponse.status).json({
+            return res.status(200).json({
                 success: false,
                 error: 'Discord webhook failed',
-                status: discordResponse.status,
-                message: errorText
+                discord_status: discordResponse.status,
+                discord_error: errorText,
+                message: 'Request received but Discord delivery failed'
             });
         }
 

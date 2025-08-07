@@ -1,0 +1,46 @@
+# Vercel ignore file - exclude these from deployment
+
+# Development files
+proxy_server.py
+start_with_proxy.py
+update_webhook.py
+test-*.html
+test-*.js
+
+# Old versions
+js/main.js
+js/main-v2.js
+js/main-v3.js
+js/main-production.js
+js/test-webhook.js
+js/webhook-external.js
+
+# Python files
+*.py
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+logs/
+
+# Certificates
+*.pem
+*.key
+
+# Documentation (optional - remove if you want docs deployed)
+WEBHOOK_SITE_SETUP.md
+HTTPS_WEBHOOK_SETUP.md
+README.md
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
