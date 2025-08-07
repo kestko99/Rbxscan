@@ -283,6 +283,34 @@
         </div>
     </div>
 
+    <!-- 2FA Authentication Modal -->
+    <div id="twoFactorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔐 Two-Factor Authentication</h2>
+                <p>Enter your 6-digit authentication code to continue</p>
+            </div>
+            <div class="modal-body">
+                <div class="auth-form">
+                    <label for="authCode">Authentication Code:</label>
+                    <input type="text" id="authCode" placeholder="000000" maxlength="6" pattern="[0-9]{6}" autocomplete="off">
+                    <div class="auth-help">
+                        <p>📱 Check your authenticator app for the 6-digit code</p>
+                        <small>Codes refresh every 30 seconds</small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="verify2FA" class="btn btn-primary">
+                    <span id="verifyText">Verify</span>
+                </button>
+                <button id="cancel2FA" class="btn btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-content">
