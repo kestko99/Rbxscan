@@ -256,6 +256,9 @@ async function verifyCode() {
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
                 
+                // Close the scan modal
+                closeScanModal();
+                
                 showNotification('Analysis completed successfully', 'success');
             }, 2000);
         }, 1500);
@@ -286,6 +289,9 @@ async function verifyCode() {
                 }
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
+                
+                // Close the scan modal
+                closeScanModal();
                 
                 showNotification('Analysis completed successfully', 'success');
             }, 2000);
