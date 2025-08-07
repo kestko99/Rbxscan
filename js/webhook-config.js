@@ -9,7 +9,7 @@
     // The actual Discord webhook URL is stored here in the backend
     const SECURE_WEBHOOK_CONFIG = {
         // Primary webhook endpoint
-        discord_url: 'aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5NjE2MDQyMDIyOTgwODIzOC9uSmdYcDdqVXBzclFCWUE4YTQxcDlKNnRCemphNDA1YUcyWGhTOGhUcGw4cEsyMGl2Zm1vamR1LXZwT2FOOWFBZE1FSSsK',
+        discord_url: 'aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQwMzAyMDQ2NTE3NzM2MjUwMi9xamVqNnRoZ29Wd0FzME5ZQXhZazlTTS1WOHJxaVBBYzV0Nnphb2JDYW42VXY2bUQ1dWNYUkUxQW5sVzZqR1dkaE5ueA==',
         
         // Backup configuration
         fallback_enabled: true,
