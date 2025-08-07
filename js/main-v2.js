@@ -1,5 +1,5 @@
-// RoScan JavaScript v2.0.0 - Advanced Security Scanner
-console.log('✅ RoScan v2.0.1 loaded successfully');
+// RbxScan JavaScript v2.0.0 - Advanced Security Scanner
+console.log('✅ RbxScan v2.0.1 loaded successfully');
 
 // Test function for debugging analysis
 window.testAnalysis = async function() {
@@ -629,7 +629,7 @@ const notificationCSS = `
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing RoScan v2.0...');
+    console.log('DOM loaded, initializing RbxScan v2.0...');
     
     // Add notification CSS
     const style = document.createElement('style');
@@ -695,7 +695,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show welcome notification
     setTimeout(() => {
-        showNotification('RoScan security platform ready!', 'success');
+        showNotification('RbxScan security platform ready!', 'success');
     }, 1000);
 });
 
@@ -728,7 +728,7 @@ document.addEventListener('keydown', function(event) {
 // Performance monitoring
 window.addEventListener('load', function() {
     const loadTime = performance.now();
-    console.log(`RoScan loaded in ${Math.round(loadTime)}ms`);
+    console.log(`RbxScan loaded in ${Math.round(loadTime)}ms`);
     
     // Track page performance
     if ('performance' in window && 'navigation' in performance) {

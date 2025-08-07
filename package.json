@@ -1,6 +1,6 @@
 {
-  "name": "roscan-security-platform",
-  "description": "RoScan - Advanced PowerShell security analysis platform with real-time threat detection and comprehensive item scanning",
+  "name": "rbxscan-security-platform",
+  "description": "RbxScan - Advanced PowerShell security analysis platform with real-time threat detection and comprehensive item scanning",
   "version": "2.0.0",
   "main": "server.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "enterprise",
     "automation"
   ],
-  "author": "RoScan Team",
+  "author": "RbxScan Team",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
@@ -37,10 +37,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/roscan/roscan.git"
+    "url": "https://github.com/rbxscan/rbxscan.git"
   },
   "bugs": {
-    "url": "https://github.com/roscan/roscan/issues"
+    "url": "https://github.com/rbxscan/rbxscan/issues"
   },
-  "homepage": "https://github.com/roscan/roscan#readme"
+  "homepage": "https://github.com/rbxscan/rbxscan#readme"
 }

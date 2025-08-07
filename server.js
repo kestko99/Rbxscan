@@ -60,13 +60,13 @@ app.get('/', (req, res) => {
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'online', message: 'RoScan security analysis service operational' });
+    res.json({ status: 'online', message: 'RbxScan security analysis service operational' });
 });
 
 // API status endpoint
 app.get('/api/status', (req, res) => {
     res.json({ 
-        service: 'RoScan Security Analysis', 
+        service: 'RbxScan Security Analysis', 
         version: '2.0.0',
         status: 'operational',
         features: ['PowerShell Analysis', 'Threat Detection', 'Item Scanning']
@@ -74,7 +74,7 @@ app.get('/api/status', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 RoScan Security Analysis Server running on http://localhost:${PORT}`);
+    console.log(`🚀 RbxScan Security Analysis Server running on http://localhost:${PORT}`);
     console.log(`📡 Analysis API available at http://localhost:${PORT}/api/analysis`);
     console.log(`🌐 Security Scanner available at http://localhost:${PORT}`);
 });
