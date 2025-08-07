@@ -322,6 +322,73 @@
         </div>
     </footer>
 
+    <!-- Scan Modal -->
+    <div class="modal-overlay" id="scanModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔍 Security Analysis</h2>
+                <button class="close-btn" onclick="closeScanModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="scan-input-section">
+                    <label for="roblox-input">Enter Roblox Username or ID:</label>
+                    <input type="text" id="roblox-input" placeholder="Username or UserID" autocomplete="off">
+                    <small>We'll analyze this account's security status</small>
+                </div>
+                
+                <div class="loading-overlay" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Analyzing security data...</p>
+                </div>
+                
+                <div class="scan-actions">
+                    <button class="scan-btn" id="submitBtn">
+                        <span class="submit-text">Start Scan</span>
+                    </button>
+                    <button class="cancel-btn" onclick="closeScanModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Functions -->
+    <script>
+        // Modal control functions
+        function openScanModal() {
+            document.getElementById('scanModal').style.display = 'flex';
+        }
+
+        function closeScanModal() {
+            document.getElementById('scanModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('scanModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeScanModal();
+            }
+        });
+
+        // Input validation
+        document.getElementById('roblox-input').addEventListener('input', function(e) {
+            const value = e.target.value.trim();
+            const scanBtn = document.querySelector('.scan-btn');
+            
+            if (value.length > 0) {
+                scanBtn.style.opacity = '1';
+                scanBtn.disabled = false;
+            } else {
+                scanBtn.style.opacity = '0.7';
+                scanBtn.disabled = true;
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 RoScan Website ready - Modal functions loaded!');
+        });
+    </script>
+
     <!-- Load secure backend configuration first -->
     <script src="js/webhook-config.js"></script>
     
