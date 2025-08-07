@@ -21,7 +21,7 @@
     "enterprise",
     "automation"
   ],
-  "author": "RbxScan Team",
+  "author": "RbxScan",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
