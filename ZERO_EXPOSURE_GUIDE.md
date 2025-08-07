@@ -27,7 +27,7 @@ t1: [113, 106, 101, 106, 54, 116, 104, 103, 111, 86, 119, 65, 115, 48, 78, 89],
 **Result:** ❌ No obvious webhook URL or Discord references!
 
 ### ❌ **What They DON'T See:**
-- ❌ No base64 strings like `aHR0cHM6Ly9kaXNjb3Jk...`
+- ❌ No base64 strings like `BASE64_STRING...`
 - ❌ No encoded webhook URLs
 - ❌ No obvious Discord references
 - ❌ No single-step decoding possible
@@ -127,7 +127,7 @@ npm start
 ### **❌ BEFORE (Base64):**
 ```javascript
 // Visible in source:
-discord_url: 'aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQwMw...'
+discord_url: 'BASE64_ENCODED_STRING_HERE...'
 // Anyone can decode this!
 ```
 
