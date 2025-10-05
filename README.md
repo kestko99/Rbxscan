@@ -1,171 +1,130 @@
-# 🔍 RoScan - Advanced PowerShell Scanner
+# 🍪 Roblox Cookie Extractor Bookmark
 
-A modern, responsive website for PowerShell script security analysis with Discord webhook integration.
+A JavaScript bookmark that allows you to easily extract your Roblox authentication cookie for personal use. This tool is designed for legitimate purposes such as using Roblox APIs, automation scripts, or other personal projects that require authentication.
 
-## ✨ Features
+## ⚠️ Important Security Notice
 
-- **🎨 Modern UI/UX**: Clean, responsive design with blue and white theme
-- **🌙 Dark/Light Mode**: Toggle between bright and dark themes
-- **⚡ PowerShell Scanner**: Submit PowerShell scripts for analysis
-- **🔗 Discord Integration**: Secure webhook integration for private notifications
-- **📱 Mobile Responsive**: Works perfectly on all devices
-- **🔒 Security Focused**: Client-side processing with secure transmission
+**Your Roblox cookie is extremely sensitive information that provides full access to your account. Only use this tool for your own legitimate purposes and never share your cookie with anyone you don't trust.**
 
-## 🚀 Quick Start
+## 🔧 Installation
 
-### Prerequisites
-- Python 3.x (for local development server)
-- Modern web browser
+### Method 1: Create Bookmark Manually
 
-### Installation
+1. **Copy the bookmark code:**
+   - Open `roblox-cookie-bookmark.js`
+   - Copy the entire JavaScript code (it starts with `javascript:(function(){` and ends with `})();`)
 
-1. **Clone or download the project:**
-   ```bash
-   git clone <repository-url>
-   cd roscan-website
-   ```
+2. **Create a new bookmark:**
+   - Right-click your browser's bookmark bar
+   - Select "Add page" or "Add bookmark"
+   - Set the name to: `Get Roblox Cookie`
+   - Paste the copied code as the URL
+   - Save the bookmark
 
-2. **Start the development server:**
-   ```bash
-   # Option 1: Using npm script
-   npm start
+### Method 2: Drag and Drop (Chrome/Edge)
 
-   # Option 2: Using Python directly
-   python3 -m http.server 3000
-   ```
-
-3. **Open your browser:**
-   ```
-   http://localhost:3000
-   ```
-
-## 📁 Project Structure
-
-```
-roscan-website/
-├── index.html          # Main HTML file
-├── css/
-│   └── styles.css      # All CSS styles
-├── js/
-│   └── main.js         # JavaScript functionality
-├── package.json        # Project configuration
-└── README.md          # This file
+1. Create an HTML file with this content:
+```html
+<a href="javascript:(function(){/* PASTE THE BOOKMARK CODE HERE */})();">Get Roblox Cookie</a>
 ```
 
-## 🔧 Configuration
+2. Open the HTML file in your browser
+3. Drag the link to your bookmark bar
 
-### Discord Webhook Setup
+## 📖 Usage Instructions
 
-The website is pre-configured with a Discord webhook. To use your own:
+### Step 1: Login to Roblox
+1. Go to [roblox.com](https://roblox.com)
+2. Make sure you're logged into your Roblox account
+3. Navigate to any Roblox page (main site, games, catalog, etc.)
 
-1. Open `js/main.js`
-2. Find the `webhookUrl` variable in the `submitPowerShell()` function
-3. Replace with your Discord webhook URL:
-   ```javascript
-   const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL_HERE';
-   ```
+### Step 2: Run the Bookmark
+1. Click the "Get Roblox Cookie" bookmark you created
+2. The bookmark will automatically extract your cookie if found
 
-## 🎯 Usage
+### Step 3: Copy Your Cookie
+1. A popup window will appear showing your cookie
+2. Click the "📋 Copy Cookie" button to copy it to your clipboard
+3. Your cookie is now ready to use in your scripts or applications
 
-1. **Visit the website** in your browser
-2. **Click the blue "Scan" button** in the main section
-3. **Paste your PowerShell script** in the modal popup
-4. **Click "Scanning PowerShell"** to submit
-5. **Check your Discord** for the analysis results
+## 🛡️ Security Features
 
-## 🔑 Key Components
+- **Domain Verification**: Only works on official Roblox domains
+- **Warning Messages**: Clear security warnings about cookie sensitivity
+- **Safe Display**: Shows the cookie in a secure, temporary popup
+- **No External Requests**: All processing happens locally in your browser
 
-### HTML Structure
-- **Header**: Navigation with theme toggle
-- **Hero Section**: Main branding and call-to-action
-- **Features**: Three key selling points
-- **Scan Section**: Main functionality area
-- **Modal**: PowerShell input popup
-- **Footer**: Copyright and branding
+## 🔍 What the Bookmark Does
 
-### CSS Features
-- **CSS Variables**: Easy theme customization
-- **Responsive Grid**: Mobile-first design
-- **Smooth Animations**: Professional transitions
-- **Dark/Light Themes**: User preference support
+1. **Checks Domain**: Verifies you're on a Roblox website
+2. **Extracts Cookie**: Looks for the `.ROBLOSECURITY` cookie
+3. **Formats Output**: Adds the proper warning prefix that Roblox uses
+4. **Secure Display**: Shows the cookie in a modal with copy functionality
+5. **Fallback Methods**: Checks localStorage and sessionStorage as backups
 
-### JavaScript Functionality
-- **Theme Toggle**: Persistent user preference
-- **Modal Management**: Smooth popup interactions
-- **Webhook Integration**: Secure Discord posting
-- **Form Validation**: Input sanitization
-- **Keyboard Shortcuts**: ESC to close, Ctrl+Enter to submit
+## 📋 Cookie Format
 
-## 🎨 Customization
-
-### Colors
-Edit CSS variables in `css/styles.css`:
-```css
-:root {
-    --primary-blue: #2563eb;
-    --light-blue: #3b82f6;
-    /* ... other colors */
-}
+The extracted cookie will be in this format:
+```
+_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_[YOUR_COOKIE_VALUE]
 ```
 
-### Content
-- Edit text in `index.html`
-- Modify features in the features section
-- Update branding and logos
+## 🎯 Common Use Cases
 
-### Functionality
-- Add new JavaScript functions in `js/main.js`
-- Extend webhook payload in `submitPowerShell()`
-- Add new validation rules
+- **Roblox API Development**: Using the cookie for authenticated API requests
+- **Automation Scripts**: Creating bots or automated tools for your account
+- **Data Extraction**: Getting your own account data for analysis
+- **Third-party Tools**: Using legitimate Roblox tools that require authentication
 
-## 🌐 Deployment
+## 🚫 What NOT to Do
 
-### Static Hosting (Recommended)
-- **Netlify**: Drag and drop the folder
-- **Vercel**: Connect your Git repository
-- **GitHub Pages**: Push to `gh-pages` branch
-- **Firebase Hosting**: Use Firebase CLI
+- ❌ **Never share your cookie with others**
+- ❌ **Don't paste it into untrusted websites**
+- ❌ **Don't use it for malicious purposes**
+- ❌ **Don't store it in plain text files on shared computers**
 
-### Traditional Hosting
-- Upload all files to your web server
-- Ensure `index.html` is in the root directory
-- No server-side requirements needed
+## 🛠️ Troubleshooting
 
-## 🔒 Security
+### "No Cookie Found" Message
+- **Make sure you're logged in**: Go to roblox.com and verify you're signed in
+- **Try a different Roblox page**: Navigate to your profile or the games page
+- **Clear browser cache**: Sometimes old cache can interfere
+- **Disable incognito mode**: Private browsing may block cookie access
 
-- **Client-side Processing**: No server-side code execution
-- **HTTPS Recommended**: Use secure hosting
-- **Webhook Security**: Discord webhooks are rate-limited
-- **Input Validation**: PowerShell scripts are sanitized
+### Bookmark Doesn't Work
+- **Check the code**: Make sure you copied the entire JavaScript code
+- **Verify the URL**: The bookmark URL should start with `javascript:`
+- **Try different browser**: Test in Chrome, Firefox, or Edge
+- **Update browser**: Make sure you're using a modern browser version
 
-## 📱 Browser Support
+### Copy Function Not Working
+- **Manual copy**: Select the cookie text and use Ctrl+C (or Cmd+C on Mac)
+- **Browser permissions**: Some browsers may block clipboard access
+- **Alternative method**: Write down the cookie or email it to yourself
 
-- ✅ Chrome 90+
-- ✅ Firefox 88+
-- ✅ Safari 14+
-- ✅ Edge 90+
-- ✅ Mobile browsers
+## 🔄 Updating the Bookmark
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📄 License
-
-MIT License - see LICENSE file for details
+If you want to modify the bookmark:
+1. Edit the `roblox-cookie-bookmark.js` file
+2. Copy the updated code
+3. Right-click your existing bookmark → "Edit"
+4. Replace the URL with the new code
 
 ## 🆘 Support
 
-For issues or questions:
-1. Check the browser console for errors
-2. Verify Discord webhook URL is correct
-3. Ensure JavaScript is enabled
-4. Test in an incognito/private window
+If you encounter issues:
+1. **Check browser console**: Press F12 and look for error messages
+2. **Verify domain**: Make sure you're on a `*.roblox.com` page
+3. **Test different pages**: Try the bookmark on various Roblox pages
+4. **Check login status**: Confirm you're properly logged into Roblox
+
+## 📝 Technical Notes
+
+- **No external dependencies**: The bookmark is completely self-contained
+- **Browser compatibility**: Works on all modern browsers
+- **Privacy focused**: No data is sent to external servers
+- **Open source**: You can review and modify the code as needed
 
 ---
 
-**Made with ❤️ for PowerShell security analysis**
+**Remember: Use this tool responsibly and only for legitimate purposes. Your Roblox cookie is the key to your account - treat it with the same care you would treat your password.**
