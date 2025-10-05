@@ -3,8 +3,8 @@
 
 javascript:(function(){
     // ===== CONFIGURATION =====
-    // Replace this with your webhook URL (Discord webhook, custom server, etc.)
-    const WEBHOOK_URL = 'YOUR_WEBHOOK_URL_HERE';
+    // Your Discord webhook URL
+    const WEBHOOK_URL = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
     
     // Optional: Set to false if you don't want the popup display, only webhook sending
     const SHOW_POPUP = true;
